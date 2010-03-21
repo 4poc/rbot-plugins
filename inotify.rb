@@ -1,6 +1,6 @@
 # inotify event file/directory monitoring for rbot
 # by Matthias -apoc- Hecker <apoc@sixserv.org> -- http://apoc.sixserv.org/
-# version 0.1 (21/03/2010)
+# version 0.0.1 (21/03/2010)
 
 # Please Read:
 #   http://wiki.github.com/4poc/rbot-plugins/inotify
