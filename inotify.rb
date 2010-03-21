@@ -1,33 +1,14 @@
 # inotify event file/directory monitoring for rbot
 # by Matthias -apoc- Hecker <apoc@sixserv.org> -- http://apoc.sixserv.org/
 # version 0.1 (21/03/2010)
-=begin
-Inotify is a linux kernel subsystem that allows to listen for certain 
-filesystem events like creating, removing or updating files or directories 
-(for a full list see below).
-This plugin implements a system for monitoring directories or files from within
-rbot. With this plugin, you can notify yourself or one or more channels about 
-these inotify events. The plugin is using the ruby library FFI to accessing
-the native inotify kernel subsystem. You can install FFI with rubygems:
 
-  # gem install ffi
+# Please Read:
+#   http://wiki.github.com/4poc/rbot-plugins/inotify
 
-The plugin supports to listen for any events that inotify supports, you can
-configure what directories should be listen for what event type. The 
-supported event types are:
-
-Short
-|   Long        Original Inotify Event
-R   READ        IN_ACCESS
-U   UPDATE      IN_MODIFY
-A   ATTRIBUTE   IN_ATTRIB (attribute change)
-M   MOVE        IN_MOVE
-D   DELETE      IN_DELETE
-C   CREATE      IN_CREATE
-
-To specify these events only the first letter is used to determine the event.
-So you can use R, r, reads, Reading, read etc. all meaning the same READ event.
-=end
+# TODO List:
+# - deactivate listener when theres no watcher
+# - remove watcher when watched directory is deleted
+# - ?
 
 begin
   require 'rubygems'
