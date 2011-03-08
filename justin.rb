@@ -13,6 +13,7 @@ class JustinPlugin < Plugin
   API_STREAMS_SUMMARY = 'http://api.justin.tv/api/stream/summary.json?channel=%s'
   API_REGISTER_CALLBACK = 'http://api.justin.tv/api/stream/register_callback.json'
   API_UNREGISTER_CALLBACK = 'http://api.justin.tv/api/stream/unregister_callback.json'
+  API_CHANNEL_UPDATE = 'http://api.justin.tv/api/channel/update.json'
 
   Config.register(Config::IntegerValue.new('justin.server_port',
     :default => 7207,
@@ -35,10 +36,16 @@ class JustinPlugin < Plugin
   Config.register(Config::BooleanValue.new('justin.irgnore_iphone_stream',
     :default => true,
     :desc => 'Ignore iphone* stream names in callbacks'))
+  Config.register(Config::BooleanValue.new('justin.show_include_description',
+    :default => true,
+    :desc => 'Include channel description in show'))
+  Config.register(Config::BooleanValue.new('justin.show_include_about',
+    :default => false,
+    :desc => 'Include channel about text in show'))
   
   include WEBrick
   
-  def help(topic)
+  def help(plugin,topic="")
     return 'justin.tv rbot plugin: justin status|authorize|deauthorize|show|watch|unwatch'
   end
   
@@ -250,11 +257,14 @@ class JustinPlugin < Plugin
     end
     
     about = ''
-    if response['about'] and not response['about'].empty?
+    if response['about'] and not response['about'].empty? and @bot.config['justin.show_include_about']
       about = ' - ['+ response['about'].ircify_html + ']'
     end
-    
-    
+
+    description = ''
+    if response['description'] and not response['description'].empty? and @bot.config['justin.show_include_description']
+      description = ' - ['+ response['description'].ircify_html + ']'
+    end
     
     begin
       stats = rest_request(m.sourcenick, API_STREAMS_SUMMARY % channel)
@@ -263,9 +273,26 @@ class JustinPlugin < Plugin
       return false
     end
     
-    m.reply "#{Bold}#{response['title']}#{Bold}#{about} - #{response['status']} (http://justin.tv/#{response['login']}) (#{stats['viewers_count']} viewers)"
+    m.reply "#{Bold}#{response['title']}#{Bold}#{about}#{description} - #{response['status']} (http://justin.tv/#{response['login']}) (#{stats['viewers_count']} viewers)"
   end
 
+  def update_status(m, params)
+    message = params[:message]
+    
+    if not has_access(m, true)
+      return false
+    end
+    begin
+      post = {:status => message}
+      response = rest_request(m.sourcenick, API_CHANNEL_UPDATE, post)
+    rescue Exception => e
+      m.reply e
+      return false
+    end
+    m.okay
+    
+  end
+  
   private
   
   def rest_request(sourcenick, url, post=nil)
@@ -321,8 +348,10 @@ plugin.map('justin status', :action => 'status')
 plugin.map('justin authorize', :action => 'authorize', :public => false)
 plugin.map('justin deauthorize', :action => 'deauthorize', :public => false)
 
-plugin.map('justin callback register [:channel]', :action => 'callback_register')
-plugin.map('justin callback unregister [:channel]', :action => 'callback_unregister')
+plugin.map('justin watch [:channel]', :action => 'callback_register')
+plugin.map('justin unwatch [:channel]', :action => 'callback_unregister')
 
 plugin.map('justin show [:channel]', :action => 'show')
+
+plugin.map('justin status *message', :action => 'update_status')
 
