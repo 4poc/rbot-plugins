@@ -2,16 +2,18 @@ begin
   require 'rubygems'
 rescue LoadError
 end
-begin
-  require 'oauth'
-rescue LoadError
-  error 'OAuth module could not be loaded'
-end
+require 'oauth'
+require 'json'
 require 'webrick'
 
 class JustinPlugin < Plugin
   attr_accessor :reg
-  
+
+  API_SHOW = 'http://api.justin.tv/api/channel/show/%s.json'
+  API_STREAMS_SUMMARY = 'http://api.justin.tv/api/stream/summary.json?channel=%s'
+  API_REGISTER_CALLBACK = 'http://api.justin.tv/api/stream/register_callback.json'
+  API_UNREGISTER_CALLBACK = 'http://api.justin.tv/api/stream/unregister_callback.json'
+
   Config.register(Config::IntegerValue.new('justin.server_port',
     :default => 7207,
     :desc => 'Port to use for the callback http server.'))
@@ -30,6 +32,9 @@ class JustinPlugin < Plugin
   Config.register(Config::ArrayValue.new('justin.announce_dst',
     :default => [],
     :desc => 'A list of channel to announce up callbacks'))
+  Config.register(Config::BooleanValue.new('justin.irgnore_iphone_stream',
+    :default => true,
+    :desc => 'Ignore iphone* stream names in callbacks'))
   
   include WEBrick
   
@@ -56,9 +61,7 @@ class JustinPlugin < Plugin
     @http_server = HTTPServer.new(:Port => port, :BindAddress => bind)
     @http_server.mount_proc('/') do |request, response|
       message = 'server ready'
-      @bot.say('#sixtest', request.request_method+' '+request.path)
       if request.path == '/callback'
-        @bot.say('#sixtest', 'query: '+request.query.inspect)
         if request.query.has_key? 'oauth_token'
           # request access token
           token = request.query['oauth_token']
@@ -82,19 +85,54 @@ class JustinPlugin < Plugin
           raise HTTPStatus::OK
         end # oauth access key
         
-        if request.query.has_key? 'event' and request.query['event'] == 'stream_up'
-          @bot.config['justin.announce_dst'].each do |dst|
-            @bot.say(dst, "channel goes live: http://justin.tv/#{request.query['channel']} (stream_name:#{request.query['stream_name']})")
+        # justin.tv up/down events
+        if request.query.has_key? 'event'
+          channel = request.query['channel']
+          server_time = request.query['server_time']
+          stream_name = request.query['stream_name']
+          event = request.query['event']
+          
+          if @bot.config['justin.irgnore_iphone_stream']
+            if stream_name.include? 'iphone'
+              raise HTTPStatus::OK
+            end
           end
           
+          last_callback_key = 'last_'+channel+'_callback_'+event
+          if @reg.has_key? last_callback_key
+            if (server_time.to_i - @reg[last_callback_key]) < 10 # sec.
+              raise HTTPStatus::OK
+            end
+          else
+            @reg[last_callback_key] = server_time.to_i
+          end
+            
+
+          channel_info = nil
+          begin
+            channel_info = rest_request(nil, API_SHOW % channel)
+          rescue Exception => e
+          end
           
+          message = "#{channel_info['title']} just "
+          if event == 'stream_up'
+            message += "went #{Bold}live#{Bold}"
+          elsif event == 'stream_down'
+            message += "gone #{Bold}offline#{Bold}"
+          end
+          
+          if channel_info
+            message += " '#{channel_info['status']}' on Justin.tv"
+          end
+          
+          message += " (http://justin.tv/#{channel}) {#{stream_name}}"
+    
+          @bot.config['justin.announce_dst'].each do |dst|
+            @bot.say(dst, message)
+          end
         end
         
-        
-        
       end 
-      
-      
       
       # default response:
       response['content-type'] = 'text/plain'
@@ -169,52 +207,112 @@ class JustinPlugin < Plugin
     m.okay
   end
   
-  
-  
-  def callback_unwatch(m, params)
-    access = YAML::load(@reg['oauth_access_' + m.sourcenick])
+  def callback_register(m, params)
     channel = m.sourcenick
     channel = params[:channel] if params.has_key? :channel
     
     begin
-      response = access.post('http://api.justin.tv/api/stream/unregister_callback.json', {
-        :event => 'stream_up', 
-        :channel => channel, 
-        :callback_url => @callback_url})
-    rescue
-      m.reply 'something gone wrong'
+      post = {:channel => channel, :callback_url => @callback_url}
+      response = rest_request(m.sourcenick, API_REGISTER_CALLBACK, post.merge({:event => 'stream_up'}))
+      response = rest_request(m.sourcenick, API_REGISTER_CALLBACK, post.merge({:event => 'stream_down'}))
+    rescue Exception => e
+      m.reply e
+      return false
     end
-    m.reply 'not longer watching for '+channel+' to go online: '+response.inspect
+    m.reply 'watching for '+channel+' events'
   end
   
-  def callback_watch(m, params)
-    access = YAML::load(@reg['oauth_access_' + m.sourcenick])
+  def callback_unregister(m, params)
     channel = m.sourcenick
     channel = params[:channel] if params.has_key? :channel
     
     begin
-      response = access.post('http://api.justin.tv/api/stream/register_callback.json', {
-        :event => 'stream_up', 
-        :channel => channel, 
-        :callback_url => @callback_url})
-    rescue
-      m.reply 'something gone wrong'
+      post = {:channel => channel, :callback_url => @callback_url}
+      response = rest_request(m.sourcenick, API_UNREGISTER_CALLBACK, post.merge({:event => 'stream_up'}))
+      response = rest_request(m.sourcenick, API_UNREGISTER_CALLBACK, post.merge({:event => 'stream_down'}))
+    rescue Exception => e
+      m.reply e
+      return false
     end
-    m.reply 'watching for '+channel+' to go online: '+response.inspect
+    m.reply 'removed a callback for '+channel
   end
   
-  def callback_list(m, params)
-    access = YAML::load(@reg['oauth_access_' + m.sourcenick])
+
+  def show(m, params)
     channel = m.sourcenick
     channel = params[:channel] if params.has_key? :channel
 
     begin
-      response = access.get("http://api.justin.tv/api/stream/list_callbacks.json?channel=#{channel}")
-    rescue
-      m.reply 'something gone wrong'
+      response = rest_request(m.sourcenick, API_SHOW % channel)
+    rescue Exception => e
+      m.reply e
+      return false
     end
-    m.reply 'callbacks for '+channel+': '+response.inspect
     
+    about = ''
+    if response['about'] and not response['about'].empty?
+      about = ' - ['+ response['about'].ircify_html + ']'
+    end
+    
+    
+    
+    begin
+      stats = rest_request(m.sourcenick, API_STREAMS_SUMMARY % channel)
+    rescue Exception => e
+      m.reply e
+      return false
+    end
+    
+    m.reply "#{Bold}#{response['title']}#{Bold}#{about} - #{response['status']} (http://justin.tv/#{response['login']}) (#{stats['viewers_count']} viewers)"
+  end
+
+  private
+  
+  def rest_request(sourcenick, url, post=nil)
+    access = nil
+    if sourcenick and @reg.has_key? 'oauth_access_' + sourcenick
+      access = YAML::load(@reg['oauth_access_' + sourcenick])
+    else
+      # just use the first one
+      @reg.each_key do |key|
+        if key.include? 'oauth_access_'
+          access = YAML::load(@reg[key])
+          break
+        end
+      end
+    end
+    if not access
+      raise 'no authorization'
+      return false
+    end
+    
+    begin
+      if not post # GET
+        response = access.get(url)
+      else # POST
+        response = access.post(url, post)
+      end
+    rescue
+      raise 'oauth access exception'
+    end
+    
+    if response.code.include? '30'
+      debug response.get_fields('location').inspect
+    end
+    if response.code != '200'
+      raise 'rest api invalid response code: '+response.code
+    end
+    
+    return JSON::parse(response.body)
+  end
+  
+  def has_access(m, reply=true)
+    if @reg.has_key? 'oauth_access_' + m.sourcenick
+      return true
+    else
+      m.reply 'you need to authorize' if reply
+      return false
+    end
   end
 end
 plugin = JustinPlugin.new
@@ -223,9 +321,8 @@ plugin.map('justin status', :action => 'status')
 plugin.map('justin authorize', :action => 'authorize', :public => false)
 plugin.map('justin deauthorize', :action => 'deauthorize', :public => false)
 
-plugin.map('justin list [:channel]', :action => 'callback_list')
-plugin.map('justin watch [:channel]', :action => 'callback_watch')
-plugin.map('justin unwatch [:channel]', :action => 'callback_unwatch')
+plugin.map('justin callback register [:channel]', :action => 'callback_register')
+plugin.map('justin callback unregister [:channel]', :action => 'callback_unregister')
 
-
+plugin.map('justin show [:channel]', :action => 'show')
 
