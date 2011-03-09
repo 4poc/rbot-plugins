@@ -108,12 +108,11 @@ class JustinPlugin < Plugin
           last_callback_key = 'last_'+channel+'_callback_'+event
           if @reg.has_key? last_callback_key
             if (server_time.to_i - @reg[last_callback_key]) < 10 # sec.
+              @reg[last_callback_key] = server_time.to_i
               raise HTTPStatus::OK
             end
-          else
-            @reg[last_callback_key] = server_time.to_i
           end
-            
+          @reg[last_callback_key] = server_time.to_i
 
           channel_info = nil
           begin
@@ -121,18 +120,26 @@ class JustinPlugin < Plugin
           rescue Exception => e
           end
           
-          message = "#{channel_info['title']} just "
+          message = "#{Bold}#{channel_info['title']}#{Bold} just went "
           if event == 'stream_up'
-            message += "went #{Bold}live#{Bold}"
+            message += "#{Bold}live#{Bold}"
           elsif event == 'stream_down'
-            message += "gone #{Bold}offline#{Bold}"
+            message += "#{Bold}offline#{Bold}"
           end
           
           if channel_info
             message += " '#{channel_info['status']}' on Justin.tv"
           end
           
-          message += " (http://justin.tv/#{channel}) {#{stream_name}}"
+          message += " (http://justin.tv/#{channel})"
+          debug message
+          debug stream_name
+          
+          # show the time between up and down events
+          if event == 'stream_down'
+            up_time = server_time.to_i - @reg['last_'+channel+'_callback_stream_up'].to_i
+            message += ' ['+up_time.to_s+' sec]'
+          end
     
           @bot.config['justin.announce_dst'].each do |dst|
             @bot.say(dst, message)
