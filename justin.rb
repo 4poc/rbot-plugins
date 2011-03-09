@@ -43,10 +43,25 @@ class JustinPlugin < Plugin
     :default => false,
     :desc => 'Include channel about text in show'))
   
-  include WEBrick
-  
+  include WEBrick  
+
   def help(plugin,topic="")
-    return 'justin.tv rbot plugin: justin status|authorize|deauthorize|show|watch|unwatch'
+    case topic
+    when 'status'
+      return 'justin status [message], update your channel status, you need to be authorized'
+    when 'authorize'
+      return 'justin authorize, login to your justin.tv account using oauth'
+    when 'deauthorize'
+      return 'justin deauthorize, remove the oauth access key'
+    when 'show'
+      return 'justin show [channel], show information about a specific channel'
+    when 'watch'
+      return 'justin watch [channel], register the channel for stream up/down callbacks'
+    when 'unwatch'
+      return 'justin unwatch [channel], removes the channel up/down callbacks'
+    else
+      return 'justin-rbot: justin status [message]|authorize|deauthorize|show [channel]|watch [channel]|unwatch [channel]'
+    end
   end
   
   def initialize
@@ -361,4 +376,3 @@ plugin.map('justin unwatch [:channel]', :action => 'callback_unregister')
 plugin.map('justin show [:channel]', :action => 'show')
 
 plugin.map('justin status *message', :action => 'update_status')
-
