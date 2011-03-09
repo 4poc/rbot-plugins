@@ -33,7 +33,7 @@ class JustinPlugin < Plugin
   Config.register(Config::ArrayValue.new('justin.announce_dst',
     :default => [],
     :desc => 'A list of channel to announce up callbacks'))
-  Config.register(Config::BooleanValue.new('justin.irgnore_iphone_stream',
+  Config.register(Config::BooleanValue.new('justin.ignore_iphone_stream',
     :default => true,
     :desc => 'Ignore iphone* stream names in callbacks'))
   Config.register(Config::BooleanValue.new('justin.show_include_description',
@@ -99,7 +99,7 @@ class JustinPlugin < Plugin
           stream_name = request.query['stream_name']
           event = request.query['event']
           
-          if @bot.config['justin.irgnore_iphone_stream']
+          if @bot.config['justin.ignore_iphone_stream']
             if stream_name.include? 'iphone'
               raise HTTPStatus::OK
             end
@@ -138,7 +138,7 @@ class JustinPlugin < Plugin
           # show the time between up and down events
           if event == 'stream_down'
             up_time = server_time.to_i - @reg['last_'+channel+'_callback_stream_up'].to_i
-            message += ' ['+up_time.to_s+' sec]'
+            message += ' [streamed for '+Utils.secs_to_string(up_time)+']'
           end
     
           @bot.config['justin.announce_dst'].each do |dst|
