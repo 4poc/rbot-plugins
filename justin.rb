@@ -1,3 +1,6 @@
+#
+#
+
 begin
   require 'rubygems'
 rescue LoadError
@@ -134,7 +137,7 @@ class JustinPlugin < Plugin
             channel_info = rest_request(nil, API_SHOW % channel)
           rescue Exception => e
           end
-          
+
           message = "#{Bold}#{channel_info['title']}#{Bold} just went "
           if event == 'stream_up'
             message += "#{Bold}live#{Bold}"
@@ -295,7 +298,9 @@ class JustinPlugin < Plugin
       return false
     end
     
-    m.reply "#{Bold}#{response['title']}#{Bold}#{about}#{description} - #{response['status']} (http://justin.tv/#{response['login']}) (#{stats['viewers_count']} viewers)"
+    m.reply "#{Bold}#{response['title']}#{Bold}#{about}#{description} -"
+            " #{response['status']} (http://justin.tv/#{response['login']})"
+            " (#{stats['viewers_count']} viewers)"
   end
 
   def update_status(m, params)
