@@ -47,11 +47,10 @@ module ::Zeitgeist
   end
 
   class Item < HashObject
-    attr_reader :tags
-    def initialize(item_obj, tags)
+    def initialize(item_obj)
       super item_obj
       @image = Image.new self.image
-      @tags = tags.map { |tag| Tag.new tag }
+      @tags = self.tags.map { |tag| Tag.new tag }
     end
   end
 
@@ -84,28 +83,28 @@ module ::Zeitgeist
       result = post('/new', :image_upload => file, :tags => tags, :announce => (announce ? 'true' : 'false'))
       # deleteme Item.new(result[:items].first, result[:tags])
       result[:items].map do |item|
-        Item.new(item, result[:tags])
+        Item.new(item)
       end
     end
 
     def remote(url, tags = '', announce = false)
       result = post('/new', :remote_url => url, :tags => tags, :announce => (announce ? 'true' : 'false'))
       result[:items].map do |item|
-        Item.new(item, result[:tags])
+        Item.new(item)
       end
     end
 
     # Returns an Item and an array of associated Tags
     def item(id)
       result = get('/' + id.to_s)
-      Item.new(result[:item], result[:tags])
+      Item.new(result[:item])
     end
 
     def update(id, add_tags, del_tags)
       result = post('/update', :id => id, 
                                :add_tags => add_tags,
                                :del_tags => del_tags)
-      Item.new(result[:item], result[:tags])
+      Item.new(result[:item])
     end
 
     def delete(id)
@@ -198,11 +197,9 @@ module ::Zeitgeist
   class CreateItemError < Error
     attr_reader :error
     attr_reader :items
-    attr_reader :tags
     def initialize(obj)
       @error = Error::create(obj[:error])
       @items = obj[:items]
-      @tags = obj[:tags]
       super obj
     end
   end
@@ -219,11 +216,11 @@ class ZeitgeistPlugin < Plugin
     :desc => 'Base URL for the Zeitgeist installation.'))
 
   Config.register(Config::ArrayValue.new('zg.listen',
-    :default => ['#example'],
+    :default => ['#sixtest'],
     :desc => 'Default list of channel to listen for URLs.'))
 
   Config.register(Config::ArrayValue.new('zg.announce',
-    :default => ['#example'],
+    :default => ['#test'],
     :desc => 'Channel announcements of new items.'))
 
 
@@ -677,44 +674,45 @@ class ZeitgeistPlugin < Plugin
 
   def message(m, dummy=nil)
     message = m.message.strip
-    return if message[0...1] == '#'
-    return if m.address?
     source = m.source.to_s
     channel = m.channel.to_s
-
-    # this also ignores query messages, to post links there, just
-    # use the zg create command
+    return if message[0...1] == '#' # ignore messages starting with #
+    return if m.address? # if the bot is addressed directly
+    # this also ignores query messages, zg create should be used instead
     return if not @bot.config['zg.listen'].include? channel
-
     # try to find the user: user maybe nil for guest postings
-    # nick may also be nil hmm
     nick, user = auth m
+
+    #
+    # parsing
+    #
+    # create items by urls and tags (optional)
+    create_urls = nil
+    create_tags = nil
+    urls = message.scan(%r{(http[s]?://[^ \)\}\]]+)})
+    if urls.length > 0
+      urls.flatten! # since we're only interested in the first matching group 
+
+      create_urls = urls
+
+      # search after last url for tags that follow #
+      after = message[(message.rindex(urls.last) + urls.last.length)..-1]
+      if after.match %r{ #\s*([^#]+)$}
+        create_tags = $1
+      end
+    end
+
+    # more...
 
     #
     # URLs IN CHANNEL MESSAGES
     #
-    urls = message.scan(%r{(http[s]?://[^ \)\}\]]+)})
-    if urls.length > 0
-      debug "urls => #{urls.inspect}"
-      urls.flatten! #since we're only interested in the first matching group
-
-      # parse for tags on the end of the message
-      # after the urls
-      debug "urls => #{urls.inspect}"
-      last_url_index = message.rindex(urls.last) + urls.last.length
-      debug "last_url_index => #{last_url_index}"
-      left = message[last_url_index..-1]
-      if left.match %r{ #\s*([^#]+)$}
-        tags = $1
-      else
-        tags = ''
-      end
-
-      # @bot.say 'apoc', "[DEBUG} hannel message with urls by #{nick || source}/#{user == nil ? 'guest' : 'auth'} urls:#{urls.inspect} tags:#{tags.inspect}"
+    if create_urls
+      debug "create_urls => #{create_urls.inspect}"
 
       req = api_request(user)
       begin
-        items = req.remote(urls, tags)
+        items = req.remote(create_urls, create_tags || '')
 
         # remember items submitted in channel
         items.each do |item|
@@ -773,7 +771,7 @@ class ZeitgeistPlugin < Plugin
     #
     # SHORTCUTS ^ or ~ in the beginning of a line to show items or tag/untag
     #
-    if message.match /^(\^|~)(-?[0-9]+)? ?(.*)?$/
+    if message.match /^(\^|~)(-?[0-9]+)?( .*)?$/
       return if not user or not user[:shortcuts]
 
       if not $2 or $2.empty?
