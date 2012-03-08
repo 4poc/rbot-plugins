@@ -1,835 +1,853 @@
 {
-  "Wooden Plank":[
-    {
-      "output":4,
-      "recipe":{
-        "Wood":1
-      }
-    }
-  ],
-  "Stick":[
-    {
-      "output":4,
-      "recipe":{
-        "Wooden Plank":2
-      }
-    }
-  ],
-  "Torch":[
-    {
-      "output":4,
-      "recipe":{
-        "Coal":1,
-        "Stick":1
-      }
-    }
-  ],
-  "Crafting Table":[
-    {
-      "output":1,
-      "recipe":{
-        "Wooden Plank":4
-      }
-    }
-  ],
-  "Furnace":[
-    {
-      "output":1,
-      "recipe":{
-        "Cobblestone":8
-      }
-    }
-  ],
-  "Chest":[
-    {
-      "output":1,
-      "recipe":{
-        "Wooden Plank":8
-      }
-    }
-  ],
-  "Gold Block":[
-    {
-      "output":1,
-      "recipe":{
-        "Gold Ingot":9
-      }
-    }
-  ],
-  "Iron Block":[
-    {
-      "output":1,
-      "recipe":{
-        "Iron Ingot":9
-      }
-    }
-  ],
-  "Diamond Block":[
-    {
-      "output":1,
-      "recipe":{
-        "Diamond Gem":9
-      }
-    }
-  ],
-  "Lapis Lazuli Block":[
-    {
-      "output":1,
-      "recipe":{
-        "Lapis Lazuli Dye":9
-      }
-    }
-  ],
-  "Glowstone Block":[
-    {
-      "output":1,
-      "recipe":{
-        "Glowstone Dust":4
-      }
-    }
-  ],
-  "White Wool":[
-    {
-      "output":1,
-      "recipe":{
-        "String":4
-      }
-    }
-  ],
-  "TNT":[
-    {
-      "output":1,
-      "recipe":{
-        "Gunpowder":5,
-        "Sand":4
-      }
-    }
-  ],
-  "Stone Slab":[
-    {
-      "output":3,
-      "recipe":{
-        "Stone":3
-      }
-    }
-  ],
-  "Sandstone Slab":[
-    {
-      "output":3,
-      "recipe":{
-        "Sandstone":3
-      }
-    }
-  ],
-  "Wooden Slab":[
-    {
-      "output":3,
-      "recipe":{
-        "Wooden Plank":3
-      }
-    }
-  ],
-  "Cobblestone Slab":[
-    {
-      "output":3,
-      "recipe":{
-        "Cobblestone":3
-      }
-    }
-  ],
-  "Brick Slab":[
-    {
-      "output":3,
-      "recipe":{
-        "Brick Block":3
-      }
-    }
-  ],
-  "Stone Bricks Slab":[
-    {
-      "output":3,
-      "recipe":{
-        "Stone Brick":3
-      }
-    }
-  ],
-  "Wooden Stairs":[
-    {
-      "output":4,
-      "recipe":{
-        "Wooden Plank":6
-      }
-    }
-  ],
-  "Cobblestone Stairs":[
-    {
-      "output":4,
-      "recipe":{
-        "Cobblestone":6
-      }
-    }
-  ],
-  "Brick Stairs":[
-    {
-      "output":4,
-      "recipe":{
-        "Brick Block":6
-      }
-    }
-  ],
-  "Stone Brick Stairs":[
-    {
-      "output":4,
-      "recipe":{
-        "Stone Brick":6
-      }
-    }
-  ],
-  "Nether Brick Stairs":[
-    {
-      "output":1,
-      "recipe":{
-        "Nether Brick":6
-      }
-    }
-  ],
-  "Snow Block":[
-    {
-      "output":1,
-      "recipe":{
-        "Snowball":4
-      }
-    }
-  ],
-  "Clay Block":[
-    {
-      "output":1,
-      "recipe":{
-        "Clay":4
-      }
-    }
-  ],
-  "Brick Block":[
-    {
-      "output":1,
-      "recipe":{
-        "Clay Brick":4
-      }
-    }
-  ],
-  "Stone Brick":[
-    {
-      "output":4,
-      "recipe":{
-        "Stone":4
-      }
-    }
-  ],
-  "Bookshelf":[
-    {
-      "output":1,
-      "recipe":{
-        "Wooden Plank":6,
-        "Book":3
-      }
-    }
-  ],
-  "Sandstone":[
-    {
-      "output":1,
-      "recipe":{
-        "Sand":4
-      }
-    }
-  ],
-  "Jack-O-Lantern":[
-    {
-      "output":1,
-      "recipe":{
-        "Pumpkin":1,
-        "Torch":1
-      }
-    }
-  ],
-  "Minecart":[
-    {
-      "output":1,
-      "recipe":{
-        "Iron Ingot":5
-      }
-    }
-  ],
-  "Powered Minecart":[
-    {
-      "output":1,
-      "recipe":{
-        "Furnace":1,
-        "Minecart":1
-      }
-    }
-  ],
-  "Storage Minecart":[
-    {
-      "output":1,
-      "recipe":{
-        "Chest":1,
-        "Minecart":1
-      }
-    }
-  ],
-  "Rails":[
-    {
-      "output":16,
-      "recipe":{
-        "Iron Ingot":6,
-        "Stick":1
-      }
-    }
-  ],
-  "Powered Rail":[
-    {
-      "output":6,
-      "recipe":{
-        "Gold Ingot":6,
-        "Stick":1,
-        "Redstone Dust":1
-      }
-    }
-  ],
-  "Detector Rail":[
-    {
-      "output":6,
-      "recipe":{
-        "Iron Ingot":6,
-        "Stone Pressure Plate":1,
-        "Redstone Dust":1
-      }
-    }
-  ],
-  "Boat":[
-    {
-      "output":1,
-      "recipe":{
-        "Wooden Plank":5
-      }
-    }
-  ],
-  "Wooden Door":[
-    {
-      "output":1,
-      "recipe":{
-        "Wooden Plank":6
-      }
-    }
-  ],
-  "Iron Door":[
-    {
-      "output":1,
-      "recipe":{
-        "Iron Ingot":6
-      }
-    }
-  ],
-  "Trapdoor":[
-    {
-      "output":2,
-      "recipe":{
-        "Wooden Plank":6
-      }
-    }
-  ],
-  "Wooden Pressure Plate":[
-    {
-      "output":1,
-      "recipe":{
-        "Wooden Plank":2
-      }
-    }
-  ],
-  "Stone Pressure Plate":[
-    {
-      "output":1,
-      "recipe":{
-        "Stone":2
-      }
-    }
-  ],
-  "Stone Button":[
-    {
-      "output":1,
-      "recipe":{
-        "Stone":2
-      }
-    }
-  ],
-  "Redstone Torch":[
-    {
-      "output":1,
-      "recipe":{
-        "Redstone Dust":1,
-        "Stick":1
-      }
-    }
-  ],
-  "Lever":[
-    {
-      "output":1,
-      "recipe":{
-        "Stick":1,
-        "Cobblestone":1
-      }
-    }
-  ],
-  "Note Block":[
-    {
-      "output":1,
-      "recipe":{
-        "Wooden Plank":8,
-        "Redstone Dust":1
-      }
-    }
-  ],
-  "Jukebox":[
-    {
-      "output":1,
-      "recipe":{
-        "Wooden Plank":8,
-        "Diamond Gem":1
-      }
-    }
-  ],
-  "Dispenser":[
-    {
-      "output":1,
-      "recipe":{
-        "Cobblestone":7,
-        "Bow":1,
-        "Redstone Dust":1
-      }
-    }
-  ],
-  "Redstone Repeater":[
-    {
-      "output":1,
-      "recipe":{
-        "Redstone Torch":2,
-        "Stone":3,
-        "Redstone Dust":1
-      }
-    }
-  ],
-  "Piston":[
-    {
-      "output":1,
-      "recipe":{
-        "Wooden Plank":3,
-        "Cobblestone":4,
-        "Iron Ingot":1,
-        "Redstone Dust":1
-      }
-    }
-  ],
-  "Sticky Piston":[
-    {
-      "output":1,
-      "recipe":{
-        "Slimeball":1,
-        "Piston":1
-      }
-    }
-  ],
-  "Bowl":[
-    {
-      "output":4,
-      "recipe":{
-        "Wooden Plank":3
-      }
-    }
-  ],
-  "Mushroom Stew":[
-    {
-      "output":1,
-      "recipe":{
-        "Red Mushroom":1,
-        "Brown Mushroom":1,
-        "Bowl":1
-      }
-    }
-  ],
-  "Bread":[
-    {
-      "output":1,
-      "recipe":{
-        "Wheat":3
-      }
-    }
-  ],
-  "Sugar":[
-    {
-      "output":1,
-      "recipe":{
-        "Sugar Cane":1
-      }
-    }
-  ],
-  "Cake":[
-    {
-      "output":1,
-      "recipe":{
-        "Milk Bucket":3,
-        "Sugar":2,
-        "Wheat":3,
-        "Egg":1
-      }
-    }
-  ],
-  "Cookie":[
-    {
-      "output":8,
-      "recipe":{
-        "Wheat":2,
-        "Cocoa Beans":1
-      }
-    }
-  ],
-  "Melon":[
-    {
-      "output":1,
-      "recipe":{
-        "Melon Slice":9
-      }
-    }
-  ],
-  "Melon Seeds":[
-    {
-      "output":1,
-      "recipe":{
-        "Melon Slice":1
-      }
-    }
-  ],
-  "Pumpkin Seeds":[
-    {
-      "output":4,
-      "recipe":{
-        "Pumpkin":1
-      }
-    }
-  ],
-  "Painting":[
-    {
-      "output":1,
-      "recipe":{
-        "Stick":8,
-        "White Wool":1
-      }
-    }
-  ],
-  "Sign":[
-    {
-      "output":1,
-      "recipe":{
-        "Wooden Plank":6,
-        "Stick":1
-      }
-    }
-  ],
-  "Ladders":[
-    {
-      "output":2,
-      "recipe":{
-        "Stick":7
-      }
-    }
-  ],
-  "Glass Pane":[
-    {
-      "output":16,
-      "recipe":{
-        "Glass":6
-      }
-    }
-  ],
-  "Iron Bars":[
-    {
-      "output":16,
-      "recipe":{
-        "Iron Ingot":6
-      }
-    }
-  ],
-  "Paper":[
-    {
-      "output":3,
-      "recipe":{
-        "Sugar Cane":3
-      }
-    }
-  ],
-  "Book":[
-    {
-      "output":1,
-      "recipe":{
-        "Paper":3
-      }
-    }
-  ],
-  "Fence":[
-    {
-      "output":2,
-      "recipe":{
-        "Stick":6
-      }
-    }
-  ],
-  "Nether Brick Fence":[
-    {
-      "output":6,
-      "recipe":{
-        "Nether Brick":6
-      }
-    }
-  ],
-  "Fence Gate":[
-    {
-      "output":1,
-      "recipe":{
-        "Stick":4,
-        "Wooden Plank":2
-      }
-    }
-  ],
-  "Bed":[
-    {
-      "output":1,
-      "recipe":{
-        "White Wool":3,
-        "Wooden Plank":3
-      }
-    }
-  ],
-  "Gold Ingot":[
-    {
-      "output":1,
-      "recipe":{
-        "Gold Nugget":9
-      }
-    }
-  ],
-  "Eye of Ender":[
-    {
-      "output":1,
-      "recipe":{
-        "Ender Pearl":1,
-        "Blaze Powder":1
-      }
-    }
-  ],
-  "Bone Meal":[
-    {
-      "output":3,
-      "recipe":{
-        "Bone":1
-      }
-    }
-  ],
-  "Light Gray Dye":[
-    {
-      "output":3,
-      "recipe":{
-        "Ink Sac":1,
-        "Bone Meal":2
-      }
-    },
-    {
-      "output":2,
-      "recipe":{
-        "Gray Dye":1,
-        "Bone Meal":1
-      }
-    }
-  ],
-  "Gray Dye":[
-    {
-      "output":2,
-      "recipe":{
-        "Ink Sac":1,
-        "Bone Meal":1
-      }
-    }
-  ],
-  "Rose Red":[
-    {
-      "output":2,
-      "recipe":{
-        "Rose":1
-      }
-    }
-  ],
-  "Orange Dye":[
-    {
-      "output":2,
-      "recipe":{
-        "Rose Red":1,
-        "Dandelion Yellow":1
-      }
-    }
-  ],
-  "Dandelion Yellow":[
-    {
-      "output":2,
-      "recipe":{
-        "Dandelion":1
-      }
-    }
-  ],
-  "Lime Dye":[
-    {
-      "output":2,
-      "recipe":{
-        "Cactus Green":1,
-        "Bone Meal":1
-      }
-    }
-  ],
-  "Light Blue Dye":[
-    {
-      "output":2,
-      "recipe":{
-        "Lapis Lazuli Dye":1,
-        "Bone Meal":1
-      }
-    }
-  ],
-  "Cyan Dye":[
-    {
-      "output":2,
-      "recipe":{
-        "Lapis Lazuli Dye":1,
-        "Cactus Green":1
-      }
-    }
-  ],
-  "Purple Dye":[
-    {
-      "output":2,
-      "recipe":{
-        "Lapis Lazuli Dye":1,
-        "Rose Red":1
-      }
-    }
-  ],
-  "Magenta Dye":[
-    {
-      "output":2,
-      "recipe":{
-        "Purple Dye":1,
-        "Pink Dye":1
-      }
-    },
-    {
-      "output":4,
-      "recipe":{
-        "Lapis Lazuli Dye":1,
-        "Rose Red":2,
-        "Bone Meal":1
-      }
-    },
-    {
-      "output":3,
-      "recipe":{
-        "Pink Dye":1,
-        "Rose Red":1,
-        "Lapis Lazuli Dye":1
-      }
-    }
-  ],
-  "Pink Dye":[
-    {
-      "output":2,
-      "recipe":{
-        "Rose Red":1,
-        "Bone Meal":1
-      }
-    }
-  ],
-  "Glass Bottle":[
-    {
-      "output":3,
-      "recipe":{
-        "Glass":3
-      }
-    }
-  ],
-  "Cauldron":[
-    {
-      "output":1,
-      "recipe":{
-        "Iron Ingot":7
-      }
-    }
-  ],
-  "Brewing Stand":[
-    {
-      "output":1,
-      "recipe":{
-        "Cobblestone":3,
-        "Blaze Rod":1
-      }
-    }
-  ],
-  "Blaze Powder":[
-    {
-      "output":2,
-      "recipe":{
-        "Blaze Rod":1
-      }
-    }
-  ],
-  "Magma Cream":[
-    {
-      "output":1,
-      "recipe":{
-        "Slimeball":1,
-        "Blaze Powder":1
-      }
-    }
-  ],
-  "Fermented Spider Eye":[
-    {
-      "output":1,
-      "recipe":{
-        "Spider Eye":1,
-        "Brown Mushroom":1,
-        "Sugar":1
-      }
-    }
-  ],
-  "Glistering Melon":[
-    {
-      "output":1,
-      "recipe":{
-        "Melon Slice":1,
-        "Gold Nugget":1
-      }
-    }
-  ],
-  "Gold Nugget":[
-    {
-      "output":9,
-      "recipe":{
-        "Gold Ingot":1
-      }
-    }
-  ],
-  "Enchantment Table":[
-    {
-      "output":1,
-      "recipe":{
-        "Diamond Gem":2,
-        "Obsidian":4,
-        "Book":1
-      }
-    }
-  ]
+    "Wooden Plank": [
+        {
+            "output": 4,
+            "recipe": {
+                "Wood": 1
+            }
+        }
+    ],
+    "Stick": [
+        {
+            "output": 4,
+            "recipe": {
+                "Wooden Plank": 2
+            }
+        }
+    ],
+    "Torch": [
+        {
+            "output": 4,
+            "recipe": {
+                "Coal": 1,
+                "Stick": 1
+            }
+        }
+    ],
+    "Crafting Table": [
+        {
+            "output": 1,
+            "recipe": {
+                "Wooden Plank": 4
+            }
+        }
+    ],
+    "Furnace": [
+        {
+            "output": 1,
+            "recipe": {
+                "Cobblestone": 8
+            }
+        }
+    ],
+    "Chest": [
+        {
+            "output": 1,
+            "recipe": {
+                "Wooden Plank": 8
+            }
+        }
+    ],
+    "Gold Block": [
+        {
+            "output": 1,
+            "recipe": {
+                "Gold Ingot": 9
+            }
+        }
+    ],
+    "Iron Block": [
+        {
+            "output": 1,
+            "recipe": {
+                "Iron Ingot": 9
+            }
+        }
+    ],
+    "Diamond Block": [
+        {
+            "output": 1,
+            "recipe": {
+                "Diamond Gem": 9
+            }
+        }
+    ],
+    "Lapis Lazuli Block": [
+        {
+            "output": 1,
+            "recipe": {
+                "Lapis Lazuli Dye": 9
+            }
+        }
+    ],
+    "Glowstone Block": [
+        {
+            "output": 1,
+            "recipe": {
+                "Glowstone Dust": 4
+            }
+        }
+    ],
+    "White Wool": [
+        {
+            "output": 1,
+            "recipe": {
+                "String": 4
+            }
+        }
+    ],
+    "TNT": [
+        {
+            "output": 1,
+            "recipe": {
+                "Gunpowder": 5,
+                "Sand": 4
+            }
+        }
+    ],
+    "Stone Slab": [
+        {
+            "output": 6,
+            "recipe": {
+                "Stone": 3
+            }
+        }
+    ],
+    "Sandstone Slab": [
+        {
+            "output": 6,
+            "recipe": {
+                "Sandstone": 3
+            }
+        }
+    ],
+    "Wooden Slab": [
+        {
+            "output": 6,
+            "recipe": {
+                "Wooden Plank": 3
+            }
+        }
+    ],
+    "Cobblestone Slab": [
+        {
+            "output": 6,
+            "recipe": {
+                "Cobblestone": 3
+            }
+        }
+    ],
+    "Brick Slab": [
+        {
+            "output": 6,
+            "recipe": {
+                "Brick Block": 3
+            }
+        }
+    ],
+    "Stone Bricks Slab": [
+        {
+            "output": 6,
+            "recipe": {
+                "Stone Brick": 3
+            }
+        }
+    ],
+    "Wooden Stairs": [
+        {
+            "output": 4,
+            "recipe": {
+                "Wooden Plank": 6
+            }
+        }
+    ],
+    "Cobblestone Stairs": [
+        {
+            "output": 4,
+            "recipe": {
+                "Cobblestone": 6
+            }
+        }
+    ],
+    "Brick Stairs": [
+        {
+            "output": 4,
+            "recipe": {
+                "Brick Block": 6
+            }
+        }
+    ],
+    "Stone Brick Stairs": [
+        {
+            "output": 4,
+            "recipe": {
+                "Stone Brick": 6
+            }
+        }
+    ],
+    "Nether Brick Stairs": [
+        {
+            "output": 1,
+            "recipe": {
+                "Nether Brick": 6
+            }
+        }
+    ],
+    "Snow Block": [
+        {
+            "output": 1,
+            "recipe": {
+                "Snowball": 4
+            }
+        }
+    ],
+    "Clay Block": [
+        {
+            "output": 1,
+            "recipe": {
+                "Clay": 4
+            }
+        }
+    ],
+    "Brick Block": [
+        {
+            "output": 1,
+            "recipe": {
+                "Clay Brick": 4
+            }
+        }
+    ],
+    "Stone Brick": [
+        {
+            "output": 4,
+            "recipe": {
+                "Stone": 4
+            }
+        }
+    ],
+    "Bookshelf": [
+        {
+            "output": 1,
+            "recipe": {
+                "Wooden Plank": 6,
+                "Book": 3
+            }
+        }
+    ],
+    "Sandstone": [
+        {
+            "output": 1,
+            "recipe": {
+                "Sand": 4
+            }
+        }
+    ],
+    "Jack-O-Lantern": [
+        {
+            "output": 1,
+            "recipe": {
+                "Pumpkin": 1,
+                "Torch": 1
+            }
+        }
+    ],
+    "Minecart": [
+        {
+            "output": 1,
+            "recipe": {
+                "Iron Ingot": 5
+            }
+        }
+    ],
+    "Powered Minecart": [
+        {
+            "output": 1,
+            "recipe": {
+                "Furnace": 1,
+                "Minecart": 1
+            }
+        }
+    ],
+    "Storage Minecart": [
+        {
+            "output": 1,
+            "recipe": {
+                "Chest": 1,
+                "Minecart": 1
+            }
+        }
+    ],
+    "Rails": [
+        {
+            "output": 16,
+            "recipe": {
+                "Iron Ingot": 6,
+                "Stick": 1
+            }
+        }
+    ],
+    "Powered Rail": [
+        {
+            "output": 6,
+            "recipe": {
+                "Gold Ingot": 6,
+                "Stick": 1,
+                "Redstone Dust": 1
+            }
+        }
+    ],
+    "Detector Rail": [
+        {
+            "output": 6,
+            "recipe": {
+                "Iron Ingot": 6,
+                "Stone Pressure Plate": 1,
+                "Redstone Dust": 1
+            }
+        }
+    ],
+    "Boat": [
+        {
+            "output": 1,
+            "recipe": {
+                "Wooden Plank": 5
+            }
+        }
+    ],
+    "Wooden Door": [
+        {
+            "output": 1,
+            "recipe": {
+                "Wooden Plank": 6
+            }
+        }
+    ],
+    "Iron Door": [
+        {
+            "output": 1,
+            "recipe": {
+                "Iron Ingot": 6
+            }
+        }
+    ],
+    "Trapdoor": [
+        {
+            "output": 2,
+            "recipe": {
+                "Wooden Plank": 6
+            }
+        }
+    ],
+    "Wooden Pressure Plate": [
+        {
+            "output": 1,
+            "recipe": {
+                "Wooden Plank": 2
+            }
+        }
+    ],
+    "Stone Pressure Plate": [
+        {
+            "output": 1,
+            "recipe": {
+                "Stone": 2
+            }
+        }
+    ],
+    "Stone Button": [
+        {
+            "output": 1,
+            "recipe": {
+                "Stone": 2
+            }
+        }
+    ],
+    "Redstone Torch": [
+        {
+            "output": 1,
+            "recipe": {
+                "Redstone Dust": 1,
+                "Stick": 1
+            }
+        }
+    ],
+    "Lever": [
+        {
+            "output": 1,
+            "recipe": {
+                "Stick": 1,
+                "Cobblestone": 1
+            }
+        }
+    ],
+    "Note Block": [
+        {
+            "output": 1,
+            "recipe": {
+                "Wooden Plank": 8,
+                "Redstone Dust": 1
+            }
+        }
+    ],
+    "Jukebox": [
+        {
+            "output": 1,
+            "recipe": {
+                "Wooden Plank": 8,
+                "Diamond Gem": 1
+            }
+        }
+    ],
+    "Dispenser": [
+        {
+            "output": 1,
+            "recipe": {
+                "Cobblestone": 7,
+                "Bow": 1,
+                "Redstone Dust": 1
+            }
+        }
+    ],
+    "Redstone Repeater": [
+        {
+            "output": 1,
+            "recipe": {
+                "Redstone Torch": 2,
+                "Stone": 3,
+                "Redstone Dust": 1
+            }
+        }
+    ],
+    "Piston": [
+        {
+            "output": 1,
+            "recipe": {
+                "Wooden Plank": 3,
+                "Cobblestone": 4,
+                "Iron Ingot": 1,
+                "Redstone Dust": 1
+            }
+        }
+    ],
+    "Sticky Piston": [
+        {
+            "output": 1,
+            "recipe": {
+                "Slimeball": 1,
+                "Piston": 1
+            }
+        }
+    ],
+    "Redstone Lamp": [
+        {
+            "output": 1,
+            "recipe": {
+                "Redstone Dust": 4,
+                "Glowstone Block": 1
+            }
+        }
+    ],
+    "Bowl": [
+        {
+            "output": 4,
+            "recipe": {
+                "Wooden Plank": 3
+            }
+        }
+    ],
+    "Mushroom Stew": [
+        {
+            "output": 1,
+            "recipe": {
+                "Red Mushroom": 1,
+                "Brown Mushroom": 1,
+                "Bowl": 1
+            }
+        }
+    ],
+    "Bread": [
+        {
+            "output": 1,
+            "recipe": {
+                "Wheat": 3
+            }
+        }
+    ],
+    "Sugar": [
+        {
+            "output": 1,
+            "recipe": {
+                "Sugar Cane": 1
+            }
+        }
+    ],
+    "Cake": [
+        {
+            "output": 1,
+            "recipe": {
+                "Milk Bucket": 3,
+                "Sugar": 2,
+                "Wheat": 3,
+                "Egg": 1
+            }
+        }
+    ],
+    "Cookie": [
+        {
+            "output": 8,
+            "recipe": {
+                "Wheat": 2,
+                "Cocoa Beans": 1
+            }
+        }
+    ],
+    "Golden Apple": [
+        {
+            "output": 1,
+            "recipe": {
+                "Gold Nugget": 8,
+                "Red Apple": 1
+            }
+        }
+    ],
+    "Melon": [
+        {
+            "output": 1,
+            "recipe": {
+                "Melon Slice": 9
+            }
+        }
+    ],
+    "Melon Seeds": [
+        {
+            "output": 1,
+            "recipe": {
+                "Melon Slice": 1
+            }
+        }
+    ],
+    "Pumpkin Seeds": [
+        {
+            "output": 4,
+            "recipe": {
+                "Pumpkin": 1
+            }
+        }
+    ],
+    "Painting": [
+        {
+            "output": 1,
+            "recipe": {
+                "Stick": 8,
+                "White Wool": 1
+            }
+        }
+    ],
+    "Sign": [
+        {
+            "output": 1,
+            "recipe": {
+                "Wooden Plank": 6,
+                "Stick": 1
+            }
+        }
+    ],
+    "Ladders": [
+        {
+            "output": 3,
+            "recipe": {
+                "Stick": 7
+            }
+        }
+    ],
+    "Glass Pane": [
+        {
+            "output": 16,
+            "recipe": {
+                "Glass": 6
+            }
+        }
+    ],
+    "Iron Bars": [
+        {
+            "output": 16,
+            "recipe": {
+                "Iron Ingot": 6
+            }
+        }
+    ],
+    "Paper": [
+        {
+            "output": 3,
+            "recipe": {
+                "Sugar Cane": 3
+            }
+        }
+    ],
+    "Book": [
+        {
+            "output": 1,
+            "recipe": {
+                "Paper": 3
+            }
+        }
+    ],
+    "Fence": [
+        {
+            "output": 2,
+            "recipe": {
+                "Stick": 6
+            }
+        }
+    ],
+    "Nether Brick Fence": [
+        {
+            "output": 6,
+            "recipe": {
+                "Nether Brick": 6
+            }
+        }
+    ],
+    "Fence Gate": [
+        {
+            "output": 1,
+            "recipe": {
+                "Stick": 4,
+                "Wooden Plank": 2
+            }
+        }
+    ],
+    "Bed": [
+        {
+            "output": 1,
+            "recipe": {
+                "White Wool": 3,
+                "Wooden Plank": 3
+            }
+        }
+    ],
+    "Gold Ingot": [
+        {
+            "output": 1,
+            "recipe": {
+                "Gold Nugget": 9
+            }
+        }
+    ],
+    "Eye of Ender": [
+        {
+            "output": 1,
+            "recipe": {
+                "Ender Pearl": 1,
+                "Blaze Powder": 1
+            }
+        }
+    ],
+    "Bone Meal": [
+        {
+            "output": 3,
+            "recipe": {
+                "Bone": 1
+            }
+        }
+    ],
+    "Light Gray Dye": [
+        {
+            "output": 3,
+            "recipe": {
+                "Ink Sac": 1,
+                "Bone Meal": 2
+            }
+        },
+        {
+            "output": 2,
+            "recipe": {
+                "Gray Dye": 1,
+                "Bone Meal": 1
+            }
+        }
+    ],
+    "Gray Dye": [
+        {
+            "output": 2,
+            "recipe": {
+                "Ink Sac": 1,
+                "Bone Meal": 1
+            }
+        }
+    ],
+    "Rose Red": [
+        {
+            "output": 2,
+            "recipe": {
+                "Rose": 1
+            }
+        }
+    ],
+    "Orange Dye": [
+        {
+            "output": 2,
+            "recipe": {
+                "Rose Red": 1,
+                "Dandelion Yellow": 1
+            }
+        }
+    ],
+    "Dandelion Yellow": [
+        {
+            "output": 2,
+            "recipe": {
+                "Dandelion": 1
+            }
+        }
+    ],
+    "Lime Dye": [
+        {
+            "output": 2,
+            "recipe": {
+                "Cactus Green": 1,
+                "Bone Meal": 1
+            }
+        }
+    ],
+    "Light Blue Dye": [
+        {
+            "output": 2,
+            "recipe": {
+                "Lapis Lazuli Dye": 1,
+                "Bone Meal": 1
+            }
+        }
+    ],
+    "Cyan Dye": [
+        {
+            "output": 2,
+            "recipe": {
+                "Lapis Lazuli Dye": 1,
+                "Cactus Green": 1
+            }
+        }
+    ],
+    "Purple Dye": [
+        {
+            "output": 2,
+            "recipe": {
+                "Lapis Lazuli Dye": 1,
+                "Rose Red": 1
+            }
+        }
+    ],
+    "Magenta Dye": [
+        {
+            "output": 2,
+            "recipe": {
+                "Purple Dye": 1,
+                "Pink Dye": 1
+            }
+        },
+        {
+            "output": 4,
+            "recipe": {
+                "Lapis Lazuli Dye": 1,
+                "Rose Red": 2,
+                "Bone Meal": 1
+            }
+        },
+        {
+            "output": 3,
+            "recipe": {
+                "Pink Dye": 1,
+                "Rose Red": 1,
+                "Lapis Lazuli Dye": 1
+            }
+        }
+    ],
+    "Pink Dye": [
+        {
+            "output": 2,
+            "recipe": {
+                "Rose Red": 1,
+                "Bone Meal": 1
+            }
+        }
+    ],
+    "Glass Bottle": [
+        {
+            "output": 3,
+            "recipe": {
+                "Glass": 3
+            }
+        }
+    ],
+    "Cauldron": [
+        {
+            "output": 1,
+            "recipe": {
+                "Iron Ingot": 7
+            }
+        }
+    ],
+    "Brewing Stand": [
+        {
+            "output": 1,
+            "recipe": {
+                "Cobblestone": 3,
+                "Blaze Rod": 1
+            }
+        }
+    ],
+    "Blaze Powder": [
+        {
+            "output": 2,
+            "recipe": {
+                "Blaze Rod": 1
+            }
+        }
+    ],
+    "Magma Cream": [
+        {
+            "output": 1,
+            "recipe": {
+                "Slimeball": 1,
+                "Blaze Powder": 1
+            }
+        }
+    ],
+    "Fermented Spider Eye": [
+        {
+            "output": 1,
+            "recipe": {
+                "Spider Eye": 1,
+                "Brown Mushroom": 1,
+                "Sugar": 1
+            }
+        }
+    ],
+    "Glistering Melon": [
+        {
+            "output": 1,
+            "recipe": {
+                "Melon Slice": 1,
+                "Gold Nugget": 1
+            }
+        }
+    ],
+    "Gold Nugget": [
+        {
+            "output": 9,
+            "recipe": {
+                "Gold Ingot": 1
+            }
+        }
+    ],
+    "Enchantment Table": [
+        {
+            "output": 1,
+            "recipe": {
+                "Diamond Gem": 2,
+                "Obsidian": 4,
+                "Book": 1
+            }
+        }
+    ]
 }
