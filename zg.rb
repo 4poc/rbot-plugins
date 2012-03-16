@@ -677,6 +677,7 @@ class ZeitgeistPlugin < Plugin
     source = m.source.to_s
     channel = m.channel.to_s
     return if message[0...1] == '#' # ignore messages starting with #
+    return if message.match /^[^\/]*#/
     return if m.address? # if the bot is addressed directly
     # this also ignores query messages, zg create should be used instead
     return if not @bot.config['zg.listen'].include? channel
@@ -709,6 +710,10 @@ class ZeitgeistPlugin < Plugin
     #
     if create_urls
       debug "create_urls => #{create_urls.inspect}"
+
+      create_urls.each do |url|
+        create_urls.delete(url) if url.include? @base_url
+      end
 
       req = api_request(user)
       begin
