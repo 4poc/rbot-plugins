@@ -21,6 +21,7 @@ rescue LoadError
 end
 require 'rest_client'
 require 'json'
+require 'action_view'
 
 # used to symbolize the yaml config file
 module HashExtensions
@@ -269,6 +270,8 @@ class ZeitgeistPlugin < Plugin
 
     colorize h
   end
+
+  include ActionView::Helpers::DateHelper
 
   def initialize
     super
@@ -976,10 +979,12 @@ class ZeitgeistPlugin < Plugin
       end
     end
 
-    str << " (#{Bold + url + NormalText})"
+    str << " #{Bold + url + NormalText}"
 
     str << " +#{item.upvote_count}"
 
+    relative_create_at = distance_of_time_in_words(Time.parse(item.created_at), Time.now)
+    str << " - #{relative_create_at} ago"
 
     str
   end
