@@ -23,7 +23,7 @@ require 'rest_client'
 require 'json'
 require 'action_view'
 
-# used to symbolize the yaml config file
+=begin
 module HashExtensions
   def symbolize_keys
     inject({}) do |acc, (k,v)|
@@ -35,6 +35,7 @@ module HashExtensions
   end
 end
 Hash.send(:include, HashExtensions)
+=end
 
 module ::Zeitgeist
   class HashObject
@@ -88,8 +89,8 @@ module ::Zeitgeist
       end
     end
 
-    def remote(url, tags = '', announce = false)
-      result = post('/new', :remote_url => url, :tags => tags, :announce => (announce ? 'true' : 'false'))
+    def remote(url, tags = '', title = '', announce = false)
+      result = post('/new', :remote_url => url, :tags => tags, :title => [title], :announce => (announce ? 'true' : 'false'))
       result[:items].map do |item|
         Item.new(item)
       end
@@ -117,6 +118,20 @@ module ::Zeitgeist
       post('/upvote', :id => id, 
                       :remove => remove.to_s)
     end
+
+    def search(query, type)
+      result = get('/search?q=%s&type=%s' % [URI::escape(query), URI::escape(type)]) 
+      if type == 'source' or type == 'title' # returned list of items
+        # deserialize items:
+        result[:items].map do |item|
+          Item.new(item)
+        end
+      else # tags return Tag objects, deserialize:
+        result[:tags].map do |tag|
+          Tag.new(tag)
+        end
+      end
+    end
     
     private
 
@@ -125,6 +140,7 @@ module ::Zeitgeist
     end
 
     def post(path, payload)
+      debug 'post(%s, %s)' % [path, payload.inspect]
       rest_request(:post, path, payload)
     end
 
@@ -159,6 +175,7 @@ module ::Zeitgeist
   class Error < StandardError
     attr_reader :type #original error type
     def initialize(obj)
+      debug obj.inspect
       @type = obj[:type]
       super obj[:message]
     end
@@ -189,7 +206,7 @@ module ::Zeitgeist
     attr_reader :error
     attr_reader :url
     def initialize(obj)
-      @error = Error::create(obj[:error])
+      @error = Error::create(obj[:error].symbolize_keys)
       @url = obj[:url]
       super obj
     end
@@ -199,7 +216,7 @@ module ::Zeitgeist
     attr_reader :error
     attr_reader :items
     def initialize(obj)
-      @error = Error::create(obj[:error])
+      @error = Error::create(obj[:error].symbolize_keys)
       @items = obj[:items]
       super obj
     end
@@ -229,8 +246,7 @@ class ZeitgeistPlugin < Plugin
     host = URI.parse(@bot.config['zg.base_url']).host
     listen = @bot.config['zg.listen'].join ','
 
-    h = '*%s* | media links in *%s* are published | messages starting with *#* are ignored | end message with *# tag1, tag2* to submit with tags | usage: zg [*command*] | commands: *(none)* user options/help; *show* item; *create*; *update*; *delete*; *upvote*; *auth* reg/login; *enable* option; *disable* option; *alt* set alternative nicks; *test* show auth status | /msg %s help zg *<command or topic>*' % [host, listen, @bot.nick]
-    h << "\nQry/hl *apoc* with bugs, annoyances and feature requests ;)"
+    h = '*%s* | media links in *%s* are published | messages starting with *#* are ignored | end message with *# tag1, tag2* to submit with tags | usage: zg [*command*] | commands: *(none)* user options/help; *show* item; *create*; *update*; *delete*; *upvote*; *auth* reg/login; *enable* option; *disable* option; *alt* set alternative nicks; *test* show auth status; *search* | /msg %s help zg *<command or topic>*' % [host, listen, @bot.nick]
 
     case topic
     when 'show'
@@ -258,13 +274,16 @@ class ZeitgeistPlugin < Plugin
       h = '*zg disable <OPTION>* - disables an boolean *OPTION* | for a list of options and their values use the *zg* command'
 
     when 'alt'
-      h = '*zg alt <NICK>* - adds or removes a alternative *NICK*'
+      h = '*zg alt <NICK>* - adds or removes an alternative *NICK*'
 
     when 'test'
       h = '*zg test* - check authentication against *%s* and show nickserv status' % host 
 
     when 'shortcuts'
       h = '*^[<ID/OFFSET>] [<TAG1, TAG2, ...>]* - used in channels the bot listens in, to show or update an item specified by *ID* or *OFFSET* (by default with -1/last, of the submitted items in that room) | you need to have the *shortcuts* option enabled'
+
+    when 'search'
+      h = '*zg [tags|title|source] search <QUERY>* - search for tags or items by title and source url (default search by title)'
 
     end
 
@@ -278,6 +297,7 @@ class ZeitgeistPlugin < Plugin
     @base_url = @bot.config['zg.base_url']
     @reg = @registry[:zg]
     if not @reg
+      @bot.say('apoc', 'warning, empty zeitgeist registry!!!!')
       @reg = {
         :users => {},
         # links in listened channel are posted to zg and guest users
@@ -446,10 +466,10 @@ class ZeitgeistPlugin < Plugin
     alt_nick = params[:alt_nick]
     if user[:alt].include? alt_nick
       user[:alt].delete alt_nick
-      m.reply "No longer recogize #{Bold}#{alt_nick}#{NormalText} as a alternative nickname."
+      m.reply "No longer recogize #{Bold}#{alt_nick}#{NormalText} as an alternative nickname."
     else
       user[:alt] << alt_nick
-      m.reply "Recognize #{Bold}#{alt_nick}#{NormalText} as a alternative nickname."
+      m.reply "Recognize #{Bold}#{alt_nick}#{NormalText} as an alternative nickname."
     end
   end
 
@@ -490,6 +510,16 @@ class ZeitgeistPlugin < Plugin
     begin
       item = api_request.item id
       m.reply item_to_s item
+    rescue Exception => e
+      m.reply "class:#{e.class} => #{e.message}"
+    end
+  end
+
+  def cmd_item_show_fp(m, params)
+    id = params[:id]
+    begin
+      item = api_request.item id
+      m.reply '%d: %d' % [id, item.fingerprint]
     rescue Exception => e
       m.reply "class:#{e.class} => #{e.message}"
     end
@@ -602,7 +632,6 @@ class ZeitgeistPlugin < Plugin
       req = api_request(user)
       result = req.upvote(id, remove)
 
-      m.reply result.inspect
       m.reply "#{Bold + result[:id].to_s + NormalText} #{remove ? 'upvote removed' : 'upvoted'} #{Bold + '+' + result[:upvotes].to_s + NormalText}"
     rescue ConnectionError => e
       m.reply "I can't connect to zeitgeist: #{e.message}"
@@ -630,7 +659,6 @@ class ZeitgeistPlugin < Plugin
     end
 
     h = 'Errors in %s:' % [channel]
-    m.reply @errorlog.inspect
     (1..3).each do |i|
       obj = @errorlog[channel][i * -1]
       break if not obj
@@ -646,6 +674,50 @@ class ZeitgeistPlugin < Plugin
     end
     m.reply colorize(h)
   end
+
+  #############################################################################
+  # 
+  # Search for tags, title or source links
+  #
+  # Command: .zg search [for [tag/source/title]] [query]
+  # Params: :channel (optional)
+  # Access: open
+  def cmd_item_search(m, params)
+    if not %w{tags title source}.include? params[:type]
+      m.reply 'you can only search for tags, title or source'
+      return
+    end
+
+    type = params[:type]
+    query = params[:query].join(' ')
+
+    if not query or query.empty? or query.length < 3
+      m.reply 'search for what exactly?'
+      return
+    end
+
+    req = api_request
+    items = req.search(query, type)
+    if type == 'tags'
+      tags = items
+      s = tags[0...10].map { |t| t.tagname }.join ', '
+      s += '...' if tags.length > 10
+      m.reply "Found #{Bold}%d#{NormalText} tags: %s" % [tags.length, s]
+    else
+
+      if type == 'title'
+        s = items[0...10].map { |i| "#{Bold}%d#{NormalText} : %s" % [i.id, i.title] }.join ', '
+      else
+        s = items[0...10].map { |i| "#{Bold}%d#{NormalText} : %s" % [i.id, i.source] }.join ', '
+      end
+      s += '...' if items.length > 10
+      m.reply "Found #{Bold}%d#{NormalText} items: %s" % [items.length, s]
+    end
+
+  end
+#plugin.map 'zg search *query',
+#           :threaded => true, 
+#           :action => 'cmd_item_search' 
 
   #############################################################################
   # Upvote an item specified by ID
@@ -693,6 +765,7 @@ class ZeitgeistPlugin < Plugin
     # create items by urls and tags (optional)
     create_urls = nil
     create_tags = nil
+    create_title = nil
     urls = message.scan(%r{(http[s]?://[^ \)\}\]]+)})
     if urls.length > 0
       urls.flatten! # since we're only interested in the first matching group 
@@ -701,26 +774,30 @@ class ZeitgeistPlugin < Plugin
 
       # search after last url for tags that follow #
       after = message[(message.rindex(urls.last) + urls.last.length)..-1]
-      if after.match %r{ #\s*([^#]+)$}
+      if after.match %r{ #\s*([^#!]+)}
         create_tags = $1
+      end
+      if after.match %r{ !\s*([^#!]+)}
+        create_title = $1
       end
     end
 
     # more...
-
-    #
-    # URLs IN CHANNEL MESSAGES
-    #
+    # ignore base_url in messages?
     if create_urls
-      debug "create_urls => #{create_urls.inspect}"
-
       create_urls.each do |url|
         create_urls.delete(url) if url.include? @base_url
       end
+    end
+    #
+    # URLs IN CHANNEL MESSAGES
+    #
+    if create_urls and create_urls.length > 0
+      debug "create_urls => #{create_urls.inspect}"
 
       req = api_request(user)
       begin
-        items = req.remote(create_urls, create_tags || '')
+        items = req.remote(create_urls, create_tags || '', create_title)
 
         # remember items submitted in channel
         items.each do |item|
@@ -753,6 +830,7 @@ class ZeitgeistPlugin < Plugin
       rescue ConnectionError => e
         debug "I can't connect to zeitgeist: #{e.message}"
       rescue CreateItemError => e
+        # m.reply 'CreateItemError: ' + e.error.inspect
         error = e.error
         if e.error.class == DuplicateError
           item = req.item(e.error.id) 
@@ -770,6 +848,7 @@ class ZeitgeistPlugin < Plugin
 
         e.items.map {|item| push_history channel, item.id }
       rescue Error => e
+        m.reply "Error: #{e.message}"
         debug "#{Bold}Error occured:#{NormalText} #{e.message}"
       end
 
@@ -928,7 +1007,7 @@ class ZeitgeistPlugin < Plugin
 
     # if nickserv is required by user authentication or the param
     if (user[:nickserv] or require_nickserv) and not nickserv? m.source
-      m.reply "NickServ authentication required to continue."
+      @bot.say(nick, 'please identify with nickserv!')
       return [nil, nil]
     end
 
@@ -985,6 +1064,12 @@ class ZeitgeistPlugin < Plugin
 
     relative_create_at = distance_of_time_in_words(Time.parse(item.created_at), Time.now)
     str << " - #{relative_create_at} ago"
+
+    if item.respond_to? 'username' and item.username
+      str << " - posted by #{Bold + item.username + NormalText}"
+    end
+
+    # str << "{#{item.dm_user_id}}"
 
     str
   end
@@ -1043,6 +1128,10 @@ plugin.map 'zg show :id',
            :threaded => true, 
            :action => 'cmd_item_show'
 
+plugin.map 'zg show fp :id', 
+           :threaded => true, 
+           :action => 'cmd_item_show_fp'
+
 plugin.map 'zg create :url [*tags]', 
            :defaults => {:tags => ''} ,
            :threaded => true, 
@@ -1069,4 +1158,9 @@ plugin.map 'zg error [:channel]',
 plugin.map 'zg announce :id', 
            :threaded => true, 
            :action => 'cmd_item_announce' 
+
+plugin.map 'zg [:type] search *query', # search for title
+           :threaded => true, 
+           :defaults => {:type => 'title'} ,
+           :action => 'cmd_item_search' 
 
