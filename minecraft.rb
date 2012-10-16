@@ -1,4 +1,4 @@
-# some more or less random minecraft related features
+# rbot minecraft plugin
 begin
   require 'rubygems'
 rescue LoadError
@@ -60,7 +60,17 @@ class Minecraft < Plugin
       # ingredients how many of each..
       recipe_list = []
       recipe_crafting_list = []
-      recipe['recipe'].each_pair do |recipe_item, recipe_amount|
+      # count ingredients
+      counts = {}
+      recipe['recipe'].each do |ingredient|
+        next if not ingredient or ingredient.empty?
+        if counts.has_key? ingredient
+          counts[ingredient] += 1
+        else
+          counts[ingredient] = 1
+        end
+      end
+      counts.each_pair do |recipe_item, recipe_amount|
         recipe_amount *= factor
 
         recipe_list << "#{recipe_amount} #{recipe_item}"
@@ -119,6 +129,102 @@ class Minecraft < Plugin
       end
     else
       m.reply "Found #{@recipes.length} crafting recipes."
+    end
+  end
+
+  def recipe(m, params)
+    results = @recipes.search params[:search].join ' '
+    if results.length == 0
+      m.reply "Sorry, recipe not found :("
+    elsif results.length > 1
+      m.reply "What did you mean? #{results.join ', '}"
+    else
+      product = results.first  
+      recipe = @recipes.get(product).first
+
+      # m.reply '[dbg] product = ' + product.inspect
+
+      legend = {} # short character -> long ingredient name
+
+      # build legend (manage conflicts etc.)
+      recipe['recipe'].each do |ingredient|
+        next if not ingredient
+        # default wood plank uses oak wood planks (can use all types of wood)
+        ingredient = 'Wood Planks' if ingredient == 'Oak Wood Planks'
+
+        # short character for crafting grid and legend
+        short = ingredient[0]
+
+        # conflict search
+        if legend.has_key? short and legend[short] != ingredient
+          # first try to gracefully resolve the conflict by using the second word first letter
+          # of both ingredients:
+          if ingredient.split(' ').length > 1
+            short = ingredient.split(' ')[1][0]
+          elsif legend[short].split(' ').length > 1
+            # change the conflicting ingredient
+            new_short = legend[short].split(' ')[1][0]
+            legend[new_short] = legend[short]
+          end
+          # TODO: test if still conflicts
+        end
+
+        legend[short] = ingredient
+      end
+
+
+
+
+      lines = [] # recipe lines, 3 strings each 3 characters
+      line = '' # current line
+      recipe['recipe'].each do |ingredient|
+        # default wood plank uses oak wood planks (can use all types of wood)
+        ingredient = 'Wood Planks' if ingredient == 'Oak Wood Planks'
+
+        # search short:
+        short = ' '
+        legend.each_pair do |s, name|
+          if name == ingredient
+            short = s
+            break
+          end
+        end
+
+        line << short
+        if line.length == 3
+          lines << line
+          line = ''
+        end
+      end
+
+      # m.reply '[dbg] legend = ' + legend.inspect
+      # m.reply '[dbg] lines = ' + lines.inspect
+
+      # output formatting:
+      m.reply lines[0] + ' | Recipe for ' + product + ((recipe['shapeless'] == 1) ? ' (shapeless)' : '')
+      m.reply lines[1] + ' |'
+      legend_list = []
+      legend.each_pair { |short, name|
+        legend_list << [short, name].join('=')
+      }
+      m.reply lines[2] + ' | ' + legend_list.join(' ')
+
+
+
+=begin
+      t = []
+      legend.each_pair do |short, name|
+        t << '%s=%s' % [short, name]
+      end
+      tmp << ' ' + t.join(' ')
+
+      m.reply tmp
+=end
+      
+
+
+
+
     end
   end
 
@@ -201,6 +307,8 @@ plugin = Minecraft.new
 
 plugin.map('craft', :action => 'craft')
 plugin.map('craft [:amount] *search', :action => 'craft', :requirements => {:amount => /\d+/})
+
+plugin.map('recipe *search', :action => 'recipe')
 
 plugin.map('overworld *coords', :action => 'overworld_nether')
 plugin.map('nether *coords', :action => 'nether_overworld')
