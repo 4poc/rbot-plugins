@@ -246,7 +246,7 @@ class ZeitgeistPlugin < Plugin
     host = URI.parse(@bot.config['zg.base_url']).host
     listen = @bot.config['zg.listen'].join ','
 
-    h = '*%s* | media links in *%s* are published | messages starting with *#* are ignored | end message with *# tag1, tag2* to submit with tags | usage: zg [*command*] | commands: *(none)* user options/help; *show* item; *create*; *update*; *delete*; *upvote*; *auth* reg/login; *enable* option; *disable* option; *alt* set alternative nicks; *test* show auth status; *search* | /msg %s help zg *<command or topic>*' % [host, listen, @bot.nick]
+    h = '*%s* | media links in *%s* are published | messages starting with *#* are ignored | end message with *# tag1, tag2* to submit with tags | end message with *! title* to submit with title | usage: zg [*command*] | commands: *(none)* user options/help; *show* item; *create*; *update*; *delete*; *upvote*; *auth* reg/login; *enable* option; *disable* option; *alt* set alternative nicks; *test* show auth status; *search* | /msg %s help zg *<command or topic>*' % [host, listen, @bot.nick]
 
     case topic
     when 'show'
@@ -914,31 +914,6 @@ class ZeitgeistPlugin < Plugin
       end
 
 
-
-    end
-
-    if message.match /([+\-])1/
-      return if not user or not user[:shortupvotes]
-
-      id = @reg[:history][channel][-1]
-
-      remove = true
-      remove = false if $1 == '+'
-
-      req = api_request(user)
-      begin
-        req.upvote(id, remove)
-        # response in query if notify
-        if user[:notify]
-          # @bot.say(source, )
-          item = req.item(id)
-          m.reply "item #{remove ? 'upvote removed' : 'upvoted'} #{item_to_s(item)}", :to => :private
-        end
-      rescue ConnectionError => e
-        debug "I can't connect to zeitgeist: #{e.message}"
-      rescue Error => e
-        debug "#{Bold}Error occured:#{NormalText} #{e.message}"
-      end
 
     end
   end
