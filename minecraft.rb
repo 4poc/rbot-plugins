@@ -94,7 +94,7 @@ class Minecraft < Plugin
   end
 
   def help(plugin, topic='')
-    "Minecraft utilities: craft [amount] [item] | overworld [x] [y] [z] | nether [x] [y] [z] | mcpoll [host] [port]"
+    "Minecraft utilities: craft [amount] [item] | recipe [item] | overworld [x] [y] [z] | nether [x] [y] [z] | mcpoll [host] [port]"
   end
 
   def initialize
