@@ -109,14 +109,18 @@ module ::Zeitgeist
       Item.new(result[:item])
     end
 
-    def delete(id)
-      post('/delete', :id => id)[:id]
+    def update_title(id, title)
+      result = post('/update', :id => id, 
+                               :title => title)
+      Item.new(result[:item])
     end
 
-    # returns {:id => [id of upvoted], :upvotes => [current number of upvotes]}
-    def upvote(id, remove=false)
-      post('/upvote', :id => id, 
-                      :remove => remove.to_s)
+    def claim(id)
+      post('/claim', :id => id)
+    end
+
+    def delete(id)
+      post('/delete', :id => id)[:id]
     end
 
     def search(query, type)
@@ -246,7 +250,7 @@ class ZeitgeistPlugin < Plugin
     host = URI.parse(@bot.config['zg.base_url']).host
     listen = @bot.config['zg.listen'].join ','
 
-    h = '*%s* | media links in *%s* are published | messages starting with *#* are ignored | end message with *# tag1, tag2* to submit with tags | end message with *! title* to submit with title | usage: zg [*command*] | commands: *(none)* user options/help; *show* item; *create*; *update*; *delete*; *upvote*; *auth* reg/login; *enable* option; *disable* option; *alt* set alternative nicks; *test* show auth status; *search* | /msg %s help zg *<command or topic>*' % [host, listen, @bot.nick]
+    h = '*%s* | media links in *%s* are published | messages starting with *#* are ignored | end message with *# tag1, tag2* to submit with tags | end message with *! title* to submit with title | usage: zg [*command*] | commands: *(none)* user options/help; *show* item; *create*; *update*; *title*; *claim*; *delete*; *auth* reg/login; *enable* option; *disable* option; *alt* set alternative nicks; *test* show auth status; *search* | *shortcuts* for help with the ^~ in-channel shortcut commands | /msg %s help zg *<command or topic>*' % [host, listen, @bot.nick]
 
     case topic
     when 'show'
@@ -258,11 +262,14 @@ class ZeitgeistPlugin < Plugin
     when 'update'
       h = '*zg update <ID> [<TAG1, TAG2, ...>]* - update item specified by *ID* with comma seperated tag list | *-TAG* will remove *TAG* from item'
 
+    when 'claim'
+      h = '*zg claim <ID>* - claims an anonymously posted item (you need to be authenticated, use */msg %s zg* for info on that)' % @bot.nick
+
+    when 'title'
+      h = '*zg title <ID> <TITLE>* - changes the title of the item <ID> to <TITLE>'
+
     when 'delete'
       h = '*zg delete <ID>* - delete an item specified by *ID* | non-admins can only delete their own items'
-
-    when 'upvote'
-      h = '*zg upvote [remove] <ID>* - upvote an item specified by *ID* or undo an previous upvote | if you are authenticated and enabled the shortupvote option, you can use *+1* in any channel message to upvote the last submitted item in that channel'
 
     when 'auth'
       h = '*zg auth <EMAIL> <API SECRET>* - authenticate yourself or update your email/key | you find your *API SECRET* here: %s' % [ @base_url + 'api_secret' ]
@@ -280,7 +287,7 @@ class ZeitgeistPlugin < Plugin
       h = '*zg test* - check authentication against *%s* and show nickserv status' % host 
 
     when 'shortcuts'
-      h = '*^[<ID/OFFSET>] [<TAG1, TAG2, ...>]* - used in channels the bot listens in, to show or update an item specified by *ID* or *OFFSET* (by default with -1/last, of the submitted items in that room) | you need to have the *shortcuts* option enabled'
+      h = '*^[<ID/OFFSET>] [<TAG1, TAG2, ...>|<!TITLE>]* - used in channels the bot listens in, to show or update an item specified by *ID* or *OFFSET* (by default with -1/last, of the submitted items in that room) | you need to have the *shortcuts* option enabled | prefix with ! to set a title'
 
     when 'search'
       h = '*zg [tags|title|source] search <QUERY>* - search for tags or items by title and source url (default search by title)'
@@ -313,6 +320,8 @@ class ZeitgeistPlugin < Plugin
     end
     @history = {}
     @errorlog = {} # logs item submission errors
+
+    self.priority = 0
 
     # send periodical WHOs in the channels listened:
     @who_timer = @bot.timer.add(60*5) do
@@ -351,14 +360,13 @@ class ZeitgeistPlugin < Plugin
     nick, user = auth m
     if not user
       host = URI.parse(@bot.config['zg.base_url']).host
-      h = 'You\'re not yet recognized and thus post anonymously, if you do register an account at *%s* you can authenticate with the bot. This enables you to (as you wish) delete your submissions, you can also upvote items and enable bot features like channel shortcuts and notification messages. For more information on how to authenticate: */msg %s zg auth*' % [host, @bot.nick]
+      h = 'You\'re not yet recognized and thus post anonymously, if you do register an account at *%s* you can authenticate with the bot. This enables you to (as you wish) delete your submissions, you can also enable bot features like channel shortcuts and notification messages. For more information on how to authenticate: */msg %s zg auth*' % [host, @bot.nick]
 
       m.reply colorize(h), :to => :private
     else
       h = 'You\'re recognized as *%s*. You\'ve got the following options:' % [user[:email]]
       h << ' | *shortcuts* (%s) - opt-in the ^ syntax: *help zg shortcuts*' % [user[:shortcuts] ? 'enabled' : 'disabled']
-      h << ' | *shortupvotes* (%s) - opt-in the use of *+1* and *-1* for upvotes' % [user[:shortupvotes] ? 'enabled' : 'disabled']
-      h << ' | *notify* (%s) - get queried about own submissions, taggings and upvotes' % [user[:notify] ? 'enabled' : 'disabled']
+      h << ' | *notify* (%s) - get queried about own submissions and taggings' % [user[:notify] ? 'enabled' : 'disabled']
       h << ' | *nickserv* (%s) - increase security by enforcing nickserv identification' % [user[:nickserv] ? 'enabled' : 'disabled']
       h << ' | *alt* (%s) - alternative nicknames to recognize you under' % [user[:alt].length > 0 ? user[:alt].join(', ') : 'none']
 
@@ -581,6 +589,26 @@ class ZeitgeistPlugin < Plugin
   end
 
   #############################################################################
+  # Claim an item by ID
+  #
+  # Command: .zg claim [id]
+  # Params: :id integer id of item
+  # Access: restricted (needs authentication)
+  def cmd_item_claim(m, params)
+    nick, user = auth(m, true, true)
+    id = params[:id]
+    begin
+      req = api_request(user)
+      req.claim(id)
+      m.reply "you've claimed item ##{id}."
+    rescue ConnectionError => e
+      m.reply "I can't connect to zeitgeist: #{e.message}"
+    rescue Error => e
+      m.reply "#{Bold}Error occured:#{NormalText} #{e.message}"
+    end
+  end
+
+  #############################################################################
   # Update an item by ID (add or delete tags)
   #
   # Command: .zg update [id] [tags]
@@ -615,24 +643,25 @@ class ZeitgeistPlugin < Plugin
   end
 
   #############################################################################
-  # Upvote an item specified by ID
+  # Update an item title by ID
   #
-  # Command: .zg upvote [delete] [id]
-  # Params: :remove (optional) if set, delete the upvote
-  #         :id integer id of item
-  # Access: restricted
-  def cmd_item_upvote(m, params)
-    # access control: require authentication
-    nick, user = auth m, true
-    return if not user
+  # Command: .zg update title [id] [title]
+  # Params: :id integer id of item
+  #         :title string title to update
+  # Access: open (use account if possible)
+  def cmd_item_update_title(m, params)
+    nick, user = auth m
     id = params[:id]
-    remove = params.has_key? :remove
+    if params.has_key? :title
+      title = params[:title].join(' ')
+    else
+      title = ''
+    end
 
     begin
       req = api_request(user)
-      result = req.upvote(id, remove)
-
-      m.reply "#{Bold + result[:id].to_s + NormalText} #{remove ? 'upvote removed' : 'upvoted'} #{Bold + '+' + result[:upvotes].to_s + NormalText}"
+      item = req.update_title(id, title)
+      m.reply "updated item: " + item_to_s(item)
     rescue ConnectionError => e
       m.reply "I can't connect to zeitgeist: #{e.message}"
     rescue Error => e
@@ -715,17 +744,7 @@ class ZeitgeistPlugin < Plugin
     end
 
   end
-#plugin.map 'zg search *query',
-#           :threaded => true, 
-#           :action => 'cmd_item_search' 
 
-  #############################################################################
-  # Upvote an item specified by ID
-  #
-  # Command: .zg upvote [delete] [id]
-  # Params: :remove (optional) if set, delete the upvote
-  #         :id integer id of item
-  # Access: restricted
   def cmd_item_announce(m, params)
     id = params[:id]
 
@@ -753,7 +772,6 @@ class ZeitgeistPlugin < Plugin
     channel = m.channel.to_s
     return if message[0...1] == '#' # ignore messages starting with #
     return if message.match /^[^\/]*#/
-    return if m.address? # if the bot is addressed directly
     # this also ignores query messages, zg create should be used instead
     return if not @bot.config['zg.listen'].include? channel
     # try to find the user: user maybe nil for guest postings
@@ -806,6 +824,21 @@ class ZeitgeistPlugin < Plugin
 
         # prepare announce message:
         announce = "#{Bold + items.length.to_s + NormalText} item(s) submitted: #{items.map { |item| item_to_s(item)}.join(' | ')}"
+
+        # announce video title in channel:
+        if not m.replied
+          video_item = items.first
+          if video_item.type == 'video' and not video_item.title.empty?
+            if not channel.empty?
+              if video_item.source.match %r{youtube\.com/watch\?.*v=([^&]+)} 
+                url = "http://youtu.be/#{$1}"
+              else
+                url = video_item.source
+              end
+              m.reply "\"#{Bold}#{video_item.title}#{NormalText}\" (#{url}) "
+            end
+          end
+        end
 
         # guest user?
         if not user
@@ -875,8 +908,22 @@ class ZeitgeistPlugin < Plugin
 
         # push_history channel, id
 
-        if $3 and not $3.empty?
-          tags = $3.split ','
+        action = $3
+
+        if action and action.match /!(.*)/
+          title = $1
+          item = req.update_title(id, title)
+          if not title or title.empty?
+            m.reply "##{id} title removed."
+          else
+            m.reply "##{id} new title: \"#{title}\""
+          end
+          if user[:notify]
+            m.reply "item title changed: #{item_to_s(item)}", :to => :private
+          end
+
+        elsif action and not action.empty?
+          tags = action.split ','
           add_tags = []
           del_tags = []
 
@@ -981,10 +1028,10 @@ class ZeitgeistPlugin < Plugin
     return [nil, nil] if not user
 
     # if nickserv is required by user authentication or the param
-    if (user[:nickserv] or require_nickserv) and not nickserv? m.source
-      @bot.say(nick, 'please identify with nickserv!')
-      return [nil, nil]
-    end
+   # if (user[:nickserv] or require_nickserv) and not nickserv? m.source
+   #   @bot.say(nick, 'please identify with nickserv!')
+   #   return [nil, nil]
+    #end
 
     return [nick, user]
   end
@@ -1034,8 +1081,6 @@ class ZeitgeistPlugin < Plugin
     end
 
     str << " #{Bold + url + NormalText}"
-
-    str << " +#{item.upvote_count}"
 
     relative_create_at = distance_of_time_in_words(Time.parse(item.created_at), Time.now)
     str << " - #{relative_create_at} ago"
@@ -1121,9 +1166,13 @@ plugin.map 'zg update :id *tags',
            :threaded => true, 
            :action => 'cmd_item_update' 
 
-plugin.map 'zg upvote [:remove] :id', 
+plugin.map 'zg title :id [*title]', 
            :threaded => true, 
-           :action => 'cmd_item_upvote' 
+           :action => 'cmd_item_update_title' 
+
+plugin.map 'zg claim :id', 
+           :threaded => true, 
+           :action => 'cmd_item_claim' 
 
 plugin.map 'zg error [:channel]', 
            :threaded => true, 
