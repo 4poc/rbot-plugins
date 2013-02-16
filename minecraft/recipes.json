@@ -1,3499 +1,3805 @@
 {
-  "Wooden Sword":[
+  "Activator Rail": [
     {
-      "output":1,
-      "recipe":[
-        null,
-        "Oak Wood Planks",
-        null,
-        null,
-        "Oak Wood Planks",
-        null,
-        null,
-        "Stick",
+      "output": 6, 
+      "recipe": [
+        "Iron Ingot", 
+        "Iron Ingot", 
+        "Iron Ingot", 
+        "Stick", 
+        "Redstone Torch", 
+        "Stick", 
+        "Iron Ingot", 
+        "Iron Ingot", 
+        "Iron Ingot"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Anvil": [
+    {
+      "output": 1, 
+      "recipe": [
+        "Block of Iron", 
+        null, 
+        "Iron Ingot", 
+        "Block of Iron", 
+        "Iron Ingot", 
+        "Iron Ingot", 
+        "Block of Iron", 
+        null, 
+        "Iron Ingot"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Arrow": [
+    {
+      "output": 4, 
+      "recipe": [
+        null, 
+        null, 
+        null, 
+        "Flint", 
+        "Stick", 
+        "Feather", 
+        null, 
+        null, 
         null
-      ],
-      "shapeless":0
-    }
-  ],
-  "Stone Sword":[
-    {
-      "output":1,
-      "recipe":[
-        null,
-        "Cobblestone",
-        null,
-        null,
-        "Cobblestone",
-        null,
-        null,
-        null,
-        null
-      ],
-      "shapeless":0
-    }
-  ],
-  "Iron Sword":[
-    {
-      "output":1,
-      "recipe":[
-        null,
-        "Iron Ingot",
-        null,
-        null,
-        "Iron Ingot",
-        null,
-        null,
-        null,
-        null
-      ],
-      "shapeless":0
-    }
-  ],
-  "Gold Sword":[
-    {
-      "output":1,
-      "recipe":[
-        null,
-        "Gold Ingot",
-        null,
-        null,
-        "Gold Ingot",
-        null,
-        null,
-        null,
-        null
-      ],
-      "shapeless":0
-    }
-  ],
-  "Diamond Sword":[
-    {
-      "output":1,
-      "recipe":[
-        null,
-        "Diamond",
-        null,
-        null,
-        "Diamond",
-        null,
-        null,
-        null,
-        null
-      ],
-      "shapeless":0
-    }
-  ],
-  "Bow":[
-    {
-      "output":1,
-      "recipe":[
-        null,
-        "Stick",
-        "String",
-        "Stick",
-        null,
-        "String",
-        null,
-        "Stick",
-        "String"
-      ],
-      "shapeless":0
-    }
-  ],
-  "Arrow":[
-    {
-      "output":4,
-      "recipe":[
-        null,
-        "Flint",
-        null,
-        null,
-        "Stick",
-        null,
-        null,
-        "Feather",
-        null
-      ],
-      "shapeless":0
-    }
-  ],
-  "Wooden Axe":[
-    {
-      "output":1,
-      "recipe":[
-        "Oak Wood Planks",
-        "Oak Wood Planks",
-        null,
-        "Oak Wood Planks",
-        "Stick",
-        null,
-        null,
-        "Stick",
-        null
-      ],
-      "shapeless":0
-    }
-  ],
-  "Stone Axe":[
-    {
-      "output":1,
-      "recipe":[
-        "Cobblestone",
-        "Cobblestone",
-        null,
-        "Cobblestone",
-        null,
-        null,
-        null,
-        null,
-        null
-      ],
-      "shapeless":0
-    }
-  ],
-  "Iron Axe":[
-    {
-      "output":1,
-      "recipe":[
-        "Iron Ingot",
-        "Iron Ingot",
-        null,
-        "Iron Ingot",
-        null,
-        null,
-        null,
-        null,
-        null
-      ],
-      "shapeless":0
-    }
-  ],
-  "Gold Axe":[
-    {
-      "output":1,
-      "recipe":[
-        "Gold Ingot",
-        "Gold Ingot",
-        null,
-        "Gold Ingot",
-        null,
-        null,
-        null,
-        null,
-        null
-      ],
-      "shapeless":0
-    }
-  ],
-  "Diamond Axe":[
-    {
-      "output":1,
-      "recipe":[
-        "Diamond",
-        "Diamond",
-        null,
-        "Diamond",
-        null,
-        null,
-        null,
-        null,
-        null
-      ],
-      "shapeless":0
-    }
-  ],
-  "Wooden Pickaxe":[
-    {
-      "output":1,
-      "recipe":[
-        "Oak Wood Planks",
-        "Oak Wood Planks",
-        "Oak Wood Planks",
-        null,
-        "Stick",
-        null,
-        null,
-        "Stick",
-        null
-      ],
-      "shapeless":0
-    }
-  ],
-  "Stone Pickaxe":[
-    {
-      "output":1,
-      "recipe":[
-        "Cobblestone",
-        "Cobblestone",
-        "Cobblestone",
-        null,
-        null,
-        null,
-        null,
-        null,
-        null
-      ],
-      "shapeless":0
-    }
-  ],
-  "Iron Pickaxe":[
-    {
-      "output":1,
-      "recipe":[
-        "Iron Ingot",
-        "Iron Ingot",
-        "Iron Ingot",
-        null,
-        null,
-        null,
-        null,
-        null,
-        null
-      ],
-      "shapeless":0
-    }
-  ],
-  "Gold Pickaxe":[
-    {
-      "output":1,
-      "recipe":[
-        "Gold Ingot",
-        "Gold Ingot",
-        "Gold Ingot",
-        null,
-        null,
-        null,
-        null,
-        null,
-        null
-      ],
-      "shapeless":0
-    }
-  ],
-  "Diamond Pickaxe":[
-    {
-      "output":1,
-      "recipe":[
-        "Diamond",
-        "Diamond",
-        "Diamond",
-        null,
-        null,
-        null,
-        null,
-        null,
-        null
-      ],
-      "shapeless":0
-    }
-  ],
-  "Wooden Shovel":[
-    {
-      "output":1,
-      "recipe":[
-        null,
-        "Oak Wood Planks",
-        null,
-        null,
-        "Stick",
-        null,
-        null,
-        "Stick",
-        null
-      ],
-      "shapeless":0
-    }
-  ],
-  "Stone Shovel":[
-    {
-      "output":1,
-      "recipe":[
-        null,
-        "Cobblestone",
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null
-      ],
-      "shapeless":0
-    }
-  ],
-  "Iron Shovel":[
-    {
-      "output":1,
-      "recipe":[
-        null,
-        "Iron Ingot",
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null
-      ],
-      "shapeless":0
-    }
-  ],
-  "Gold Shovel":[
-    {
-      "output":1,
-      "recipe":[
-        null,
-        "Gold Ingot",
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null
-      ],
-      "shapeless":0
-    }
-  ],
-  "Diamond Shovel":[
-    {
-      "output":1,
-      "recipe":[
-        null,
-        "Diamond",
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null
-      ],
-      "shapeless":0
-    }
-  ],
-  "Wooden Hoe":[
-    {
-      "output":1,
-      "recipe":[
-        "Oak Wood Planks",
-        "Oak Wood Planks",
-        null,
-        null,
-        "Stick",
-        null,
-        null,
-        "Stick",
-        null
-      ],
-      "shapeless":0
-    }
-  ],
-  "Stone Hoe":[
-    {
-      "output":1,
-      "recipe":[
-        "Cobblestone",
-        "Cobblestone",
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null
-      ],
-      "shapeless":0
-    }
-  ],
-  "Iron Hoe":[
-    {
-      "output":1,
-      "recipe":[
-        "Iron Ingot",
-        "Iron Ingot",
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null
-      ],
-      "shapeless":0
-    }
-  ],
-  "Gold Hoe":[
-    {
-      "output":1,
-      "recipe":[
-        "Gold Ingot",
-        "Gold Ingot",
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null
-      ],
-      "shapeless":0
-    }
-  ],
-  "Diamond Hoe":[
-    {
-      "output":1,
-      "recipe":[
-        "Diamond",
-        "Diamond",
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null
-      ],
-      "shapeless":0
-    }
-  ],
-  "Flint and Steel":[
-    {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        "Iron Ingot",
-        null,
-        null,
-        null,
-        "Flint",
-        null
-      ],
-      "shapeless":0
-    }
-  ],
-  "Bucket":[
-    {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        "Iron Ingot",
-        null,
-        "Iron Ingot",
-        null,
-        "Iron Ingot",
-        null
-      ],
-      "shapeless":0
-    }
-  ],
-  "Compass":[
-    {
-      "output":1,
-      "recipe":[
-        null,
-        "Iron Ingot",
-        null,
-        "Iron Ingot",
-        "Redstone Dust",
-        "Iron Ingot",
-        null,
-        "Iron Ingot",
-        null
-      ],
-      "shapeless":0
-    }
-  ],
-  "Map":[
-    {
-      "output":1,
-      "recipe":[
-        "Paper",
-        "Paper",
-        "Paper",
-        "Paper",
-        "Compass",
-        "Paper",
-        "Paper",
-        "Paper",
-        "Paper"
-      ],
-      "shapeless":0
-    }
-  ],
-  "Clock":[
-    {
-      "output":1,
-      "recipe":[
-        null,
-        "Gold Ingot",
-        null,
-        "Gold Ingot",
-        "Redstone Dust",
-        "Gold Ingot",
-        null,
-        "Gold Ingot",
-        null
-      ],
-      "shapeless":0
-    }
-  ],
-  "Fishing Rod":[
-    {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        "Stick",
-        null,
-        "Stick",
-        "String",
-        "Stick",
-        null,
-        "String"
-      ],
-      "shapeless":0
-    }
-  ],
-  "Carrot on a Stick":[
-    {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        "Fishing Rod",
-        null,
-        null,
-        null,
-        "Carrot",
-        null
-      ],
-      "shapeless":0
-    }
-  ],
-  "Shears":[
-    {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        "Iron Ingot",
-        null,
-        "Iron Ingot",
-        null,
-        null
-      ],
-      "shapeless":0
-    }
-  ],
-  "Fire Charge":[
-    {
-      "output":3,
-      "recipe":[
-        null,
-        null,
-        null,
-        "Blaze Powder",
-        "Coal",
-        null,
-        null,
-        "Gunpowder",
-        null
-      ],
-      "shapeless":1
-    }
-  ],
-  "Oak Wood Planks":[
-    {
-      "output":4,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        "Oak Wood",
-        null,
-        null,
-        null,
-        null
-      ],
-      "shapeless":1
-    }
-  ],
-  "Spruce Wood Planks":[
-    {
-      "output":4,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        "Spruce Wood",
-        null,
-        null,
-        null,
-        null
-      ],
-      "shapeless":1
-    }
-  ],
-  "Birch Wood Planks":[
-    {
-      "output":4,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        "Birch Wood",
-        null,
-        null,
-        null,
-        null
-      ],
-      "shapeless":1
-    }
-  ],
-  "Jungle Wood Planks":[
-    {
-      "output":4,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        "Jungle Wood",
-        null,
-        null,
-        null,
-        null
-      ],
-      "shapeless":1
-    }
-  ],
-  "Crafting Table":[
-    {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        "Oak Wood Planks",
-        "Oak Wood Planks",
-        null,
-        "Oak Wood Planks",
-        "Oak Wood Planks",
-        null
-      ],
-      "shapeless":0
-    }
-  ],
-  "Furnace":[
-    {
-      "output":1,
-      "recipe":[
-        "Cobblestone",
-        "Cobblestone",
-        "Cobblestone",
-        "Cobblestone",
-        null,
-        "Cobblestone",
-        "Cobblestone",
-        "Cobblestone",
-        "Cobblestone"
-      ],
-      "shapeless":0
-    }
-  ],
-  "Chest":[
-    {
-      "output":1,
-      "recipe":[
-        "Oak Wood Planks",
-        "Oak Wood Planks",
-        "Oak Wood Planks",
-        "Oak Wood Planks",
-        null,
-        "Oak Wood Planks",
-        "Oak Wood Planks",
-        "Oak Wood Planks",
-        "Oak Wood Planks"
-      ],
-      "shapeless":0
-    }
-  ],
-  "Glowstone Block":[
-    {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        "Glowstone Dust",
-        "Glowstone Dust",
-        null,
-        "Glowstone Dust",
-        "Glowstone Dust",
-        null
-      ],
-      "shapeless":0
-    }
-  ],
-  "White Wool":[
-    {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        "String",
-        "String",
-        null,
-        "String",
-        "String",
-        null
-      ],
-      "shapeless":0
-    }
-  ],
-  "TNT":[
-    {
-      "output":1,
-      "recipe":[
-        "Gunpowder",
-        "Sand",
-        "Gunpowder",
-        "Sand",
-        "Gunpowder",
-        "Sand",
-        "Gunpowder",
-        "Sand",
-        "Gunpowder"
-      ],
-      "shapeless":0
-    }
-  ],
-  "Oak Wood Slab":[
-    {
-      "output":6,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        "Oak Wood Planks",
-        "Oak Wood Planks",
-        "Oak Wood Planks"
-      ],
-      "shapeless":0
-    }
-  ],
-  "Spruce Wood Slab":[
-    {
-      "output":6,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        "Spruce Wood Planks",
-        "Spruce Wood Planks",
-        "Spruce Wood Planks"
-      ],
-      "shapeless":0
-    }
-  ],
-  "Birch Wood Slab":[
-    {
-      "output":6,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        "Birch Wood Planks",
-        "Birch Wood Planks",
-        "Birch Wood Planks"
-      ],
-      "shapeless":0
-    }
-  ],
-  "Jungle Wood Slab":[
-    {
-      "output":6,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        "Jungle Wood Planks",
-        "Jungle Wood Planks",
-        "Jungle Wood Planks"
-      ],
-      "shapeless":0
-    }
-  ],
-  "Stone Slab":[
-    {
-      "output":6,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        "Stone",
-        "Stone",
-        "Stone"
-      ],
-      "shapeless":0
-    }
-  ],
-  "Sandstone Slab":[
-    {
-      "output":6,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        "Sandstone",
-        "Sandstone",
-        "Sandstone"
-      ],
-      "shapeless":0
-    }
-  ],
-  "Cobblestone Slab":[
-    {
-      "output":6,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        "Cobblestone",
-        "Cobblestone",
-        "Cobblestone"
-      ],
-      "shapeless":0
-    }
-  ],
-  "Bricks Slab":[
-    {
-      "output":6,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        "Bricks",
-        "Bricks",
-        "Bricks"
-      ],
-      "shapeless":0
-    }
-  ],
-  "Stone Bricks Slab":[
-    {
-      "output":6,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        "Stone Brick",
-        "Stone Brick",
-        "Stone Brick"
-      ],
-      "shapeless":0
-    }
-  ],
-  "Oak Wood Stairs":[
-    {
-      "output":4,
-      "recipe":[
-        null,
-        null,
-        "Oak Wood Planks",
-        null,
-        "Oak Wood Planks",
-        "Oak Wood Planks",
-        "Oak Wood Planks",
-        "Oak Wood Planks",
-        "Oak Wood Planks"
-      ],
-      "shapeless":0
-    }
-  ],
-  "Spruce Wood Stairs":[
-    {
-      "output":4,
-      "recipe":[
-        null,
-        null,
-        "Spruce Wood Planks",
-        null,
-        "Spruce Wood Planks",
-        "Spruce Wood Planks",
-        "Spruce Wood Planks",
-        "Spruce Wood Planks",
-        "Spruce Wood Planks"
-      ],
-      "shapeless":0
-    }
-  ],
-  "Birch Wood Stairs":[
-    {
-      "output":4,
-      "recipe":[
-        null,
-        null,
-        "Birch Wood Planks",
-        null,
-        "Birch Wood Planks",
-        "Birch Wood Planks",
-        "Birch Wood Planks",
-        "Birch Wood Planks",
-        "Birch Wood Planks"
-      ],
-      "shapeless":0
-    }
-  ],
-  "Jungle Wood Stairs":[
-    {
-      "output":4,
-      "recipe":[
-        null,
-        null,
-        "Jungle Wood Planks",
-        null,
-        "Jungle Wood Planks",
-        "Jungle Wood Planks",
-        "Jungle Wood Planks",
-        "Jungle Wood Planks",
-        "Jungle Wood Planks"
-      ],
-      "shapeless":0
-    }
-  ],
-  "Cobblestone Stairs":[
-    {
-      "output":4,
-      "recipe":[
-        null,
-        null,
-        "Cobblestone",
-        null,
-        "Cobblestone",
-        "Cobblestone",
-        "Cobblestone",
-        "Cobblestone",
-        "Cobblestone"
-      ],
-      "shapeless":0
-    }
-  ],
-  "Brick Stairs":[
-    {
-      "output":4,
-      "recipe":[
-        null,
-        null,
-        "Bricks",
-        null,
-        "Bricks",
-        "Bricks",
-        "Bricks",
-        "Bricks",
-        "Bricks"
-      ],
-      "shapeless":0
-    }
-  ],
-  "Stone Brick Stairs":[
-    {
-      "output":4,
-      "recipe":[
-        null,
-        null,
-        "Stone Brick",
-        null,
-        "Stone Brick",
-        "Stone Brick",
-        "Stone Brick",
-        "Stone Brick",
-        "Stone Brick"
-      ],
-      "shapeless":0
-    }
-  ],
-  "Nether Brick Stairs":[
-    {
-      "output":4,
-      "recipe":[
-        null,
-        null,
-        "Nether Brick",
-        null,
-        "Nether Brick",
-        "Nether Brick",
-        "Nether Brick",
-        "Nether Brick",
-        "Nether Brick"
-      ],
-      "shapeless":0
-    }
-  ],
-  "Sandstone Stairs":[
-    {
-      "output":4,
-      "recipe":[
-        null,
-        null,
-        "Sandstone",
-        null,
-        "Sandstone",
-        "Sandstone",
-        "Sandstone",
-        "Sandstone",
-        "Sandstone"
-      ],
-      "shapeless":0
-    }
-  ],
-  "Snow Block":[
-    {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        "Snowball",
-        "Snowball",
-        null,
-        "Snowball",
-        "Snowball",
-        null
-      ],
-      "shapeless":0
-    }
-  ],
-  "Clay Block":[
-    {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        "Clay Balls",
-        "Clay Balls",
-        null,
-        "Clay Balls",
-        "Clay Balls",
-        null
-      ],
-      "shapeless":0
-    }
-  ],
-  "Bricks":[
-    {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        "Brick",
-        "Brick",
-        null,
-        "Brick",
-        "Brick",
-        null
-      ],
-      "shapeless":0
-    }
-  ],
-  "Stone Brick":[
-    {
-      "output":4,
-      "recipe":[
-        null,
-        null,
-        null,
-        "Stone",
-        "Stone",
-        null,
-        "Stone",
-        "Stone",
-        null
-      ],
-      "shapeless":0
-    }
-  ],
-  "Bookshelf":[
-    {
-      "output":1,
-      "recipe":[
-        "Oak Wood Planks",
-        "Oak Wood Planks",
-        "Oak Wood Planks",
-        "Book",
-        "Book",
-        "Book",
-        "Oak Wood Planks",
-        "Oak Wood Planks",
-        "Oak Wood Planks"
-      ],
-      "shapeless":0
-    }
-  ],
-  "Sandstone":[
-    {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        "Sand",
-        "Sand",
-        null,
-        "Sand",
-        "Sand",
-        null
-      ],
-      "shapeless":0
-    }
-  ],
-  "Smooth Sandstone":[
-    {
-      "output":4,
-      "recipe":[
-        null,
-        null,
-        null,
-        "Sandstone",
-        "Sandstone",
-        null,
-        "Sandstone",
-        "Sandstone",
-        null
-      ],
-      "shapeless":0
-    }
-  ],
-  "Chiseled Sandstone":[
-    {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        "Sandstone Slab",
-        null,
-        null,
-        "Sandstone Slab",
-        null
-      ],
-      "shapeless":0
-    }
-  ],
-  "Jack 'o' Lantern":[
-    {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        "Pumpkin",
-        null,
-        null,
-        "Torch",
-        null
-      ],
-      "shapeless":0
-    }
-  ],
-  "Ender Chest":[
-    {
-      "output":1,
-      "recipe":[
-        "Obsidian",
-        "Obsidian",
-        "Obsidian",
-        "Obsidian",
-        "Eye of Ender",
-        "Obsidian",
-        "Obsidian",
-        "Obsidian",
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Beacon": [
+    {
+      "output": 1, 
+      "recipe": [
+        "Glass", 
+        "Glass", 
+        "Obsidian", 
+        "Glass", 
+        "Nether Star", 
+        "Obsidian", 
+        "Glass", 
+        "Glass", 
         "Obsidian"
-      ],
-      "shapeless":0
+      ], 
+      "shapeless": 0
     }
-  ],
-  "Anvil":[
+  ], 
+  "Bed": [
     {
-      "output":1,
-      "recipe":[
-        "Block of Iron",
-        "Block of Iron",
-        "Block of Iron",
-        null,
-        "Iron Ingot",
-        null,
-        "Iron Ingot",
-        "Iron Ingot",
-        "Iron Ingot"
-      ],
-      "shapeless":0
-    }
-  ],
-  "Beacon":[
-    {
-      "output":1,
-      "recipe":[
-        "Glass",
-        "Glass",
-        "Glass",
-        "Glass",
-        "Nether Star",
-        "Glass",
-        "Obsidian",
-        "Obsidian",
-        "Obsidian"
-      ],
-      "shapeless":0
-    }
-  ],
-  "Rail":[
-    {
-      "output":16,
-      "recipe":[
-        "Iron Ingot",
-        null,
-        "Iron Ingot",
-        "Iron Ingot",
-        "Stick",
-        "Iron Ingot",
-        "Iron Ingot",
-        null,
-        "Iron Ingot"
-      ],
-      "shapeless":0
-    }
-  ],
-  "Powered Rail":[
-    {
-      "output":6,
-      "recipe":[
-        "Gold Ingot",
-        null,
-        "Gold Ingot",
-        "Gold Ingot",
-        "Stick",
-        "Gold Ingot",
-        "Gold Ingot",
-        "Redstone Dust",
-        "Gold Ingot"
-      ],
-      "shapeless":0
-    }
-  ],
-  "Detector Rail":[
-    {
-      "output":6,
-      "recipe":[
-        "Iron Ingot",
-        null,
-        "Iron Ingot",
-        "Iron Ingot",
-        "Stone Pressure Plate",
-        "Iron Ingot",
-        "Iron Ingot",
-        "Redstone Dust",
-        "Iron Ingot"
-      ],
-      "shapeless":0
-    }
-  ],
-  "Trapdoor":[
-    {
-      "output":2,
-      "recipe":[
-        null,
-        null,
-        null,
-        "Oak Wood Planks",
-        "Oak Wood Planks",
-        "Oak Wood Planks",
-        "Oak Wood Planks",
-        "Oak Wood Planks",
+      "output": 1, 
+      "recipe": [
+        null, 
+        "White Wool", 
+        "Oak Wood Planks", 
+        null, 
+        "White Wool", 
+        "Oak Wood Planks", 
+        null, 
+        "White Wool", 
         "Oak Wood Planks"
-      ],
-      "shapeless":0
+      ], 
+      "shapeless": 0
     }
-  ],
-  "Wooden Pressure Plate":[
+  ], 
+  "Birch Wood Planks": [
     {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        "Oak Wood Planks",
-        "Oak Wood Planks",
+      "output": 4, 
+      "recipe": [
+        null, 
+        null, 
+        null, 
+        null, 
+        "Birch Wood", 
+        null, 
+        null, 
+        null, 
         null
-      ],
-      "shapeless":0
-    },
+      ], 
+      "shapeless": 1
+    }
+  ], 
+  "Birch Wood Slab": [
     {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        "Spruce Wood Planks",
-        "Spruce Wood Planks",
+      "output": 6, 
+      "recipe": [
+        null, 
+        null, 
+        "Birch Wood Planks", 
+        null, 
+        null, 
+        "Birch Wood Planks", 
+        null, 
+        null, 
+        "Birch Wood Planks"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Birch Wood Stairs": [
+    {
+      "output": 4, 
+      "recipe": [
+        null, 
+        null, 
+        "Birch Wood Planks", 
+        null, 
+        "Birch Wood Planks", 
+        "Birch Wood Planks", 
+        "Birch Wood Planks", 
+        "Birch Wood Planks", 
+        "Birch Wood Planks"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Black Wool": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        null, 
+        "White Wool", 
+        null, 
+        null, 
+        "Ink Sac", 
+        null, 
+        null, 
         null
-      ],
-      "shapeless":0
-    },
+      ], 
+      "shapeless": 1
+    }
+  ], 
+  "Blaze Powder": [
     {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        "Birch Wood Planks",
-        "Birch Wood Planks",
+      "output": 2, 
+      "recipe": [
+        null, 
+        null, 
+        null, 
+        null, 
+        null, 
+        "Blaze Rod", 
+        null, 
+        null, 
         null
-      ],
-      "shapeless":0
-    },
-    {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        "Jungle Wood Planks",
-        "Jungle Wood Planks",
-        null
-      ],
-      "shapeless":0
+      ], 
+      "shapeless": 1
     }
-  ],
-  "Stone Pressure Plate":[
+  ], 
+  "Block of Diamond": [
     {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        "Stone",
-        "Stone",
-        null
-      ],
-      "shapeless":0
-    }
-  ],
-  "Button":[
-    {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        "Stone",
-        null,
-        null,
-        null,
-        null
-      ],
-      "shapeless":0
-    }
-  ],
-  "Wooden Button":[
-    {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        "Wooden Plank",
-        null,
-        null,
-        null,
-        null
-      ],
-      "shapeless":0
-    }
-  ],
-  "Note Block":[
-    {
-      "output":1,
-      "recipe":[
-        "Oak Wood Planks",
-        "Oak Wood Planks",
-        "Oak Wood Planks",
-        "Oak Wood Planks",
-        "Redstone Dust",
-        "Oak Wood Planks",
-        "Oak Wood Planks",
-        "Oak Wood Planks",
-        "Oak Wood Planks"
-      ],
-      "shapeless":0
-    }
-  ],
-  "Jukebox":[
-    {
-      "output":1,
-      "recipe":[
-        "Oak Wood Planks",
-        "Oak Wood Planks",
-        "Oak Wood Planks",
-        "Oak Wood Planks",
-        "Diamond",
-        "Oak Wood Planks",
-        "Oak Wood Planks",
-        "Oak Wood Planks",
-        "Oak Wood Planks"
-      ],
-      "shapeless":0
-    }
-  ],
-  "Dispenser":[
-    {
-      "output":1,
-      "recipe":[
-        "Cobblestone",
-        "Cobblestone",
-        "Cobblestone",
-        "Cobblestone",
-        "Bow",
-        "Cobblestone",
-        "Cobblestone",
-        "Redstone Dust",
-        "Cobblestone"
-      ],
-      "shapeless":0
-    }
-  ],
-  "Piston":[
-    {
-      "output":1,
-      "recipe":[
-        "Oak Wood Planks",
-        "Oak Wood Planks",
-        "Oak Wood Planks",
-        "Cobblestone",
-        "Iron Ingot",
-        "Cobblestone",
-        "Cobblestone",
-        "Redstone Dust",
-        "Cobblestone"
-      ],
-      "shapeless":0
-    }
-  ],
-  "Sticky Piston":[
-    {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        "Slimeball",
-        null,
-        null,
-        "Piston",
-        null
-      ],
-      "shapeless":0
-    }
-  ],
-  "Redstone Lamp":[
-    {
-      "output":1,
-      "recipe":[
-        null,
-        "Redstone Dust",
-        null,
-        "Redstone Dust",
-        "Glowstone Block",
-        "Redstone Dust",
-        null,
-        "Redstone Dust",
-        null
-      ],
-      "shapeless":0
-    }
-  ],
-  "Block of Gold":[
-    {
-      "output":1,
-      "recipe":[
-        "Gold Ingot",
-        "Gold Ingot",
-        "Gold Ingot",
-        "Gold Ingot",
-        "Gold Ingot",
-        "Gold Ingot",
-        "Gold Ingot",
-        "Gold Ingot",
-        "Gold Ingot"
-      ],
-      "shapeless":0
-    }
-  ],
-  "Block of Iron":[
-    {
-      "output":1,
-      "recipe":[
-        "Iron Ingot",
-        "Iron Ingot",
-        "Iron Ingot",
-        "Iron Ingot",
-        "Iron Ingot",
-        "Iron Ingot",
-        "Iron Ingot",
-        "Iron Ingot",
-        "Iron Ingot"
-      ],
-      "shapeless":0
-    }
-  ],
-  "Block of Diamond":[
-    {
-      "output":1,
-      "recipe":[
-        "Diamond",
-        "Diamond",
-        "Diamond",
-        "Diamond",
-        "Diamond",
-        "Diamond",
-        "Diamond",
-        "Diamond",
+      "output": 1, 
+      "recipe": [
+        "Diamond", 
+        "Diamond", 
+        "Diamond", 
+        "Diamond", 
+        "Diamond", 
+        "Diamond", 
+        "Diamond", 
+        "Diamond", 
         "Diamond"
-      ],
-      "shapeless":0
+      ], 
+      "shapeless": 0
     }
-  ],
-  "Lapis Lazuli Block":[
+  ], 
+  "Block of Emerald": [
     {
-      "output":1,
-      "recipe":[
-        "Lapis Lazuli Dye",
-        "Lapis Lazuli Dye",
-        "Lapis Lazuli Dye",
-        "Lapis Lazuli Dye",
-        "Lapis Lazuli Dye",
-        "Lapis Lazuli Dye",
-        "Lapis Lazuli Dye",
-        "Lapis Lazuli Dye",
-        "Lapis Lazuli Dye"
-      ],
-      "shapeless":0
-    }
-  ],
-  "Block of Emerald":[
-    {
-      "output":1,
-      "recipe":[
-        "Emerald",
-        "Emerald",
-        "Emerald",
-        "Emerald",
-        "Emerald",
-        "Emerald",
-        "Emerald",
-        "Emerald",
+      "output": 1, 
+      "recipe": [
+        "Emerald", 
+        "Emerald", 
+        "Emerald", 
+        "Emerald", 
+        "Emerald", 
+        "Emerald", 
+        "Emerald", 
+        "Emerald", 
         "Emerald"
-      ],
-      "shapeless":0
+      ], 
+      "shapeless": 0
     }
-  ],
-  "Ladders":[
+  ], 
+  "Block of Gold": [
     {
-      "output":3,
-      "recipe":[
-        "Stick",
-        null,
-        "Stick",
-        "Stick",
-        "Stick",
-        "Stick",
-        "Stick",
-        null,
-        "Stick"
-      ],
-      "shapeless":0
+      "output": 1, 
+      "recipe": [
+        "Gold Ingot", 
+        "Gold Ingot", 
+        "Gold Ingot", 
+        "Gold Ingot", 
+        "Gold Ingot", 
+        "Gold Ingot", 
+        "Gold Ingot", 
+        "Gold Ingot", 
+        "Gold Ingot"
+      ], 
+      "shapeless": 0
     }
-  ],
-  "Glass Pane":[
+  ], 
+  "Block of Iron": [
     {
-      "output":16,
-      "recipe":[
-        null,
-        null,
-        null,
-        "Glass",
-        "Glass",
-        "Glass",
-        "Glass",
-        "Glass",
-        "Glass"
-      ],
-      "shapeless":0
-    }
-  ],
-  "Iron Bars":[
-    {
-      "output":16,
-      "recipe":[
-        null,
-        null,
-        null,
-        "Iron Ingot",
-        "Iron Ingot",
-        "Iron Ingot",
-        "Iron Ingot",
-        "Iron Ingot",
+      "output": 1, 
+      "recipe": [
+        "Iron Ingot", 
+        "Iron Ingot", 
+        "Iron Ingot", 
+        "Iron Ingot", 
+        "Iron Ingot", 
+        "Iron Ingot", 
+        "Iron Ingot", 
+        "Iron Ingot", 
         "Iron Ingot"
-      ],
-      "shapeless":0
+      ], 
+      "shapeless": 0
     }
-  ],
-  "Fence":[
+  ], 
+  "Block of Quartz": [
     {
-      "output":2,
-      "recipe":[
-        null,
-        null,
-        null,
-        "Stick",
-        "Stick",
-        "Stick",
-        "Stick",
-        "Stick",
-        "Stick"
-      ],
-      "shapeless":0
+      "output": 1, 
+      "recipe": [
+        null, 
+        "Nether Quartz", 
+        "Nether Quartz", 
+        null, 
+        "Nether Quartz", 
+        "Nether Quartz", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 0
     }
-  ],
-  "Nether Brick Fence":[
+  ], 
+  "Block of Redstone": [
     {
-      "output":6,
-      "recipe":[
-        null,
-        null,
-        null,
-        "Nether Brick",
-        "Nether Brick",
-        "Nether Brick",
-        "Nether Brick",
-        "Nether Brick",
-        "Nether Brick"
-      ],
-      "shapeless":0
+      "output": 1, 
+      "recipe": [
+        "Redstone Dust", 
+        "Redstone Dust", 
+        "Redstone Dust", 
+        "Redstone Dust", 
+        "Redstone Dust", 
+        "Redstone Dust", 
+        "Redstone Dust", 
+        "Redstone Dust", 
+        "Redstone Dust"
+      ], 
+      "shapeless": 0
     }
-  ],
-  "Fence Gate":[
+  ], 
+  "Blue Wool": [
     {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        "Stick",
-        "Oak Wood Planks",
-        "Stick",
-        "Stick",
-        "Oak Wood Planks",
-        "Stick"
-      ],
-      "shapeless":0
+      "output": 1, 
+      "recipe": [
+        null, 
+        null, 
+        "White Wool", 
+        null, 
+        null, 
+        "Lapis Lazuli", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 1
     }
-  ],
-  "Cobblestone Wall":[
+  ], 
+  "Boat": [
     {
-      "output":6,
-      "recipe":[
-        null,
-        null,
-        null,
-        "Cobblestone",
-        "Cobblestone",
-        "Cobblestone",
-        "Cobblestone",
-        "Cobblestone",
+      "output": 1, 
+      "recipe": [
+        null, 
+        "Oak Wood Planks", 
+        "Oak Wood Planks", 
+        null, 
+        null, 
+        "Oak Wood Planks", 
+        null, 
+        "Oak Wood Planks", 
+        "Oak Wood Planks"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Bone Meal": [
+    {
+      "output": 3, 
+      "recipe": [
+        null, 
+        null, 
+        null, 
+        null, 
+        null, 
+        "Bone", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 1
+    }
+  ], 
+  "Book": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        "Paper", 
+        "Paper", 
+        null, 
+        "Paper", 
+        "Leather", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 1
+    }
+  ], 
+  "Book and Quill": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        "Feather", 
+        "Ink Sac", 
+        null, 
+        null, 
+        "Book", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 1
+    }
+  ], 
+  "Bookshelf": [
+    {
+      "output": 1, 
+      "recipe": [
+        "Oak Wood Planks", 
+        "Book", 
+        "Oak Wood Planks", 
+        "Oak Wood Planks", 
+        "Book", 
+        "Oak Wood Planks", 
+        "Oak Wood Planks", 
+        "Book", 
+        "Oak Wood Planks"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Bow": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        "Stick", 
+        null, 
+        "Stick", 
+        null, 
+        "Stick", 
+        "String", 
+        "String", 
+        "String"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Bowl": [
+    {
+      "output": 4, 
+      "recipe": [
+        null, 
+        "Oak Wood Planks", 
+        null, 
+        null, 
+        null, 
+        "Oak Wood Planks", 
+        null, 
+        "Oak Wood Planks", 
+        null
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Bread": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        null, 
+        "Wheat", 
+        null, 
+        null, 
+        "Wheat", 
+        null, 
+        null, 
+        "Wheat"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Brewing Stand": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        null, 
+        "Cobblestone", 
+        null, 
+        "Blaze Rod", 
+        "Cobblestone", 
+        null, 
+        null, 
         "Cobblestone"
-      ],
-      "shapeless":0
+      ], 
+      "shapeless": 0
     }
-  ],
-  "Mossy Cobblestone Wall":[
+  ], 
+  "Brick Stairs": [
     {
-      "output":6,
-      "recipe":[
-        null,
-        null,
-        null,
-        "Moss Stone",
-        "Moss Stone",
-        "Moss Stone",
-        "Moss Stone",
-        "Moss Stone",
-        "Moss Stone"
-      ],
-      "shapeless":0
+      "output": 4, 
+      "recipe": [
+        null, 
+        null, 
+        "Bricks", 
+        null, 
+        "Bricks", 
+        "Bricks", 
+        "Bricks", 
+        "Bricks", 
+        "Bricks"
+      ], 
+      "shapeless": 0
     }
-  ],
-  "Enchantment Table":[
+  ], 
+  "Bricks": [
     {
-      "output":1,
-      "recipe":[
-        null,
-        "Book",
-        null,
-        "Diamond",
-        "Obsidian",
-        "Diamond",
-        "Obsidian",
-        "Obsidian",
+      "output": 1, 
+      "recipe": [
+        null, 
+        "Brick", 
+        "Brick", 
+        null, 
+        "Brick", 
+        "Brick", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Bricks Slab": [
+    {
+      "output": 6, 
+      "recipe": [
+        null, 
+        null, 
+        "Bricks", 
+        null, 
+        null, 
+        "Bricks", 
+        null, 
+        null, 
+        "Bricks"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Brown Wool": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        null, 
+        "White Wool", 
+        null, 
+        null, 
+        "Cocoa Beans", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 1
+    }
+  ], 
+  "Bucket": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        "Iron Ingot", 
+        null, 
+        null, 
+        null, 
+        "Iron Ingot", 
+        null, 
+        "Iron Ingot", 
+        null
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Button": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        null, 
+        null, 
+        null, 
+        "Stone", 
+        null, 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Cake": [
+    {
+      "output": 1, 
+      "recipe": [
+        "Milk", 
+        "Sugar", 
+        "Wheat", 
+        "Milk", 
+        "Chicken Egg", 
+        "Wheat", 
+        "Milk", 
+        "Sugar", 
+        "Wheat"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Carrot on a Stick": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        "Fishing Rod", 
+        null, 
+        null, 
+        null, 
+        "Carrot", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Cauldron": [
+    {
+      "output": 1, 
+      "recipe": [
+        "Iron Ingot", 
+        "Iron Ingot", 
+        "Iron Ingot", 
+        null, 
+        null, 
+        "Iron Ingot", 
+        "Iron Ingot", 
+        "Iron Ingot", 
+        "Iron Ingot"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Chain Armor Boots": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        "Fire", 
+        "Fire", 
+        null, 
+        null, 
+        null, 
+        null, 
+        "Fire", 
+        "Fire"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Chain Armor Chestplate": [
+    {
+      "output": 1, 
+      "recipe": [
+        "Fire", 
+        "Fire", 
+        "Fire", 
+        null, 
+        "Fire", 
+        "Fire", 
+        "Fire", 
+        "Fire", 
+        "Fire"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Chain Armor Helmet": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        "Fire", 
+        "Fire", 
+        null, 
+        "Fire", 
+        null, 
+        null, 
+        "Fire", 
+        "Fire"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Chain Armor Leggings": [
+    {
+      "output": 1, 
+      "recipe": [
+        "Fire", 
+        "Fire", 
+        "Fire", 
+        "Fire", 
+        null, 
+        null, 
+        "Fire", 
+        "Fire", 
+        "Fire"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Chest": [
+    {
+      "output": 1, 
+      "recipe": [
+        "Oak Wood Planks", 
+        "Oak Wood Planks", 
+        "Oak Wood Planks", 
+        "Oak Wood Planks", 
+        null, 
+        "Oak Wood Planks", 
+        "Oak Wood Planks", 
+        "Oak Wood Planks", 
+        "Oak Wood Planks"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Chiseled Quartz Block": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        null, 
+        null, 
+        null, 
+        "Quartz Slab", 
+        "Quartz Slab", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Chiseled Sandstone": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        null, 
+        null, 
+        null, 
+        "Sandstone Slab", 
+        "Sandstone Slab", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Clay Block": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        "Clay", 
+        "Clay", 
+        null, 
+        "Clay", 
+        "Clay", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Clock": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        "Gold Ingot", 
+        null, 
+        "Gold Ingot", 
+        "Redstone Dust", 
+        "Gold Ingot", 
+        null, 
+        "Gold Ingot", 
+        null
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Cobblestone Slab": [
+    {
+      "output": 6, 
+      "recipe": [
+        null, 
+        null, 
+        "Cobblestone", 
+        null, 
+        null, 
+        "Cobblestone", 
+        null, 
+        null, 
+        "Cobblestone"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Cobblestone Stairs": [
+    {
+      "output": 4, 
+      "recipe": [
+        null, 
+        null, 
+        "Cobblestone", 
+        null, 
+        "Cobblestone", 
+        "Cobblestone", 
+        "Cobblestone", 
+        "Cobblestone", 
+        "Cobblestone"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Cobblestone Wall": [
+    {
+      "output": 6, 
+      "recipe": [
+        null, 
+        "Cobblestone", 
+        "Cobblestone", 
+        null, 
+        "Cobblestone", 
+        "Cobblestone", 
+        null, 
+        "Cobblestone", 
+        "Cobblestone"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Compass": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        "Iron Ingot", 
+        null, 
+        "Iron Ingot", 
+        "Redstone Dust", 
+        "Iron Ingot", 
+        null, 
+        "Iron Ingot", 
+        null
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Cookie": [
+    {
+      "output": 8, 
+      "recipe": [
+        null, 
+        null, 
+        "Wheat", 
+        null, 
+        null, 
+        "Cocoa Beans", 
+        null, 
+        null, 
+        "Wheat"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Crafting Table": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        "Oak Wood Planks", 
+        "Oak Wood Planks", 
+        null, 
+        "Oak Wood Planks", 
+        "Oak Wood Planks", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Cyan Dye": [
+    {
+      "output": 2, 
+      "recipe": [
+        null, 
+        null, 
+        "Lapis Lazuli", 
+        null, 
+        null, 
+        "Cactus Green", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 1
+    }
+  ], 
+  "Cyan Wool": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        null, 
+        "White Wool", 
+        null, 
+        null, 
+        "Cyan Dye", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 1
+    }
+  ], 
+  "Dandelion Yellow": [
+    {
+      "output": 2, 
+      "recipe": [
+        null, 
+        null, 
+        null, 
+        null, 
+        null, 
+        "Dandelion", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 1
+    }
+  ], 
+  "Daylight Sensor": [
+    {
+      "output": 1, 
+      "recipe": [
+        "Glass", 
+        "Nether Quartz", 
+        "Wooden Slab", 
+        "Glass", 
+        "Nether Quartz", 
+        "Wooden Slab", 
+        "Glass", 
+        "Nether Quartz", 
+        "Wooden Slab"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Detector Rail": [
+    {
+      "output": 6, 
+      "recipe": [
+        "Iron Ingot", 
+        "Iron Ingot", 
+        "Iron Ingot", 
+        null, 
+        "Stone Pressure Plate", 
+        "Redstone Dust", 
+        "Iron Ingot", 
+        "Iron Ingot", 
+        "Iron Ingot"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Diamond": [
+    {
+      "output": 9, 
+      "recipe": [
+        null, 
+        null, 
+        null, 
+        null, 
+        null, 
+        "Block of Diamond", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 1
+    }
+  ], 
+  "Diamond Axe": [
+    {
+      "output": 1, 
+      "recipe": [
+        "Diamond", 
+        "Diamond", 
+        null, 
+        "Diamond", 
+        "Stick", 
+        "Stick", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Diamond Boots": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        "Diamond", 
+        "Diamond", 
+        null, 
+        null, 
+        null, 
+        null, 
+        "Diamond", 
+        "Diamond"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Diamond Chestplate": [
+    {
+      "output": 1, 
+      "recipe": [
+        "Diamond", 
+        "Diamond", 
+        "Diamond", 
+        null, 
+        "Diamond", 
+        "Diamond", 
+        "Diamond", 
+        "Diamond", 
+        "Diamond"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Diamond Helmet": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        "Diamond", 
+        "Diamond", 
+        null, 
+        "Diamond", 
+        null, 
+        null, 
+        "Diamond", 
+        "Diamond"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Diamond Hoe": [
+    {
+      "output": 1, 
+      "recipe": [
+        "Diamond", 
+        null, 
+        null, 
+        "Diamond", 
+        "Stick", 
+        "Stick", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Diamond Leggings": [
+    {
+      "output": 1, 
+      "recipe": [
+        "Diamond", 
+        "Diamond", 
+        "Diamond", 
+        "Diamond", 
+        null, 
+        null, 
+        "Diamond", 
+        "Diamond", 
+        "Diamond"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Diamond Pickaxe": [
+    {
+      "output": 1, 
+      "recipe": [
+        "Diamond", 
+        null, 
+        null, 
+        "Diamond", 
+        "Stick", 
+        "Stick", 
+        "Diamond", 
+        null, 
+        null
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Diamond Shovel": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        null, 
+        null, 
+        "Diamond", 
+        "Stick", 
+        "Stick", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Diamond Sword": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        null, 
+        null, 
+        "Diamond", 
+        "Diamond", 
+        "Stick", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Dispenser": [
+    {
+      "output": 1, 
+      "recipe": [
+        "Cobblestone", 
+        "Cobblestone", 
+        "Cobblestone", 
+        "Cobblestone", 
+        "Bow", 
+        "Redstone Dust", 
+        "Cobblestone", 
+        "Cobblestone", 
+        "Cobblestone"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Emerald": [
+    {
+      "output": 9, 
+      "recipe": [
+        null, 
+        null, 
+        null, 
+        null, 
+        null, 
+        "Block of Emerald", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 1
+    }
+  ], 
+  "Enchantment Table": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        "Diamond", 
+        "Obsidian", 
+        "Book", 
+        "Obsidian", 
+        "Obsidian", 
+        null, 
+        "Diamond", 
         "Obsidian"
-      ],
-      "shapeless":0
+      ], 
+      "shapeless": 0
     }
-  ],
-  "Stick":[
+  ], 
+  "Ender Chest": [
     {
-      "output":4,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        "Oak Wood Planks",
-        null,
-        null,
-        "Oak Wood Planks",
+      "output": 1, 
+      "recipe": [
+        "Obsidian", 
+        "Obsidian", 
+        "Obsidian", 
+        "Obsidian", 
+        "Eye of Ender", 
+        "Obsidian", 
+        "Obsidian", 
+        "Obsidian", 
+        "Obsidian"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Eye of Ender": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        null, 
+        null, 
+        null, 
+        "Ender Pearl", 
+        "Blaze Powder", 
+        null, 
+        null, 
         null
-      ],
-      "shapeless":0
+      ], 
+      "shapeless": 1
     }
-  ],
-  "Torch":[
+  ], 
+  "Fence": [
     {
-      "output":4,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        "Coal",
-        null,
-        null,
-        "Stick",
-        null
-      ],
-      "shapeless":0
-    }
-  ],
-  "Minecart":[
-    {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        "Iron Ingot",
-        null,
-        "Iron Ingot",
-        "Iron Ingot",
-        "Iron Ingot",
-        "Iron Ingot"
-      ],
-      "shapeless":0
-    }
-  ],
-  "Minecart with Furnace":[
-    {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        "Furnace",
-        null,
-        null,
-        "Minecart",
-        null
-      ],
-      "shapeless":0
-    }
-  ],
-  "Minecart with Chest":[
-    {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        "Chest",
-        null,
-        null,
-        "Minecart",
-        null
-      ],
-      "shapeless":0
-    }
-  ],
-  "Boat":[
-    {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        "Oak Wood Planks",
-        null,
-        "Oak Wood Planks",
-        "Oak Wood Planks",
-        "Oak Wood Planks",
-        "Oak Wood Planks"
-      ],
-      "shapeless":0
-    }
-  ],
-  "Wooden Door":[
-    {
-      "output":1,
-      "recipe":[
-        "Oak Wood Planks",
-        "Oak Wood Planks",
-        null,
-        "Oak Wood Planks",
-        "Oak Wood Planks",
-        null,
-        "Oak Wood Planks",
-        "Oak Wood Planks",
-        null
-      ],
-      "shapeless":0
-    },
-    {
-      "output":1,
-      "recipe":[
-        "Spruce Wood Planks",
-        "Spruce Wood Planks",
-        null,
-        "Spruce Wood Planks",
-        "Spruce Wood Planks",
-        null,
-        "Spruce Wood Planks",
-        "Spruce Wood Planks",
-        null
-      ],
-      "shapeless":0
-    },
-    {
-      "output":1,
-      "recipe":[
-        "Birch Wood Planks",
-        "Birch Wood Planks",
-        null,
-        "Birch Wood Planks",
-        "Birch Wood Planks",
-        null,
-        "Birch Wood Planks",
-        "Birch Wood Planks",
-        null
-      ],
-      "shapeless":0
-    },
-    {
-      "output":1,
-      "recipe":[
-        "Jungle Wood Planks",
-        "Jungle Wood Planks",
-        null,
-        "Jungle Wood Planks",
-        "Jungle Wood Planks",
-        null,
-        "Jungle Wood Planks",
-        "Jungle Wood Planks",
-        null
-      ],
-      "shapeless":0
-    }
-  ],
-  "Iron Door":[
-    {
-      "output":1,
-      "recipe":[
-        "Iron Ingot",
-        "Iron Ingot",
-        null,
-        "Iron Ingot",
-        "Iron Ingot",
-        null,
-        "Iron Ingot",
-        "Iron Ingot",
-        null
-      ],
-      "shapeless":0
-    }
-  ],
-  "Redstone Torch":[
-    {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        "Redstone Dust",
-        null,
-        null,
-        "Stick",
-        null
-      ],
-      "shapeless":0
-    }
-  ],
-  "Lever":[
-    {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        "Stick",
-        null,
-        null,
-        "Cobblestone",
-        null
-      ],
-      "shapeless":0
-    }
-  ],
-  "Redstone Repeater":[
-    {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        "Redstone Torch",
-        "Redstone Dust",
-        "Redstone Torch",
-        "Stone",
-        "Stone",
-        "Stone"
-      ],
-      "shapeless":0
-    }
-  ],
-  "Tripwire Hook":[
-    {
-      "output":2,
-      "recipe":[
-        null,
-        "Iron Ingot",
-        null,
-        null,
-        "Stick",
-        null,
-        null,
-        "Oak Wood Planks",
-        null
-      ],
-      "shapeless":0
-    }
-  ],
-  "Bowl":[
-    {
-      "output":4,
-      "recipe":[
-        null,
-        null,
-        null,
-        "Oak Wood Planks",
-        null,
-        "Oak Wood Planks",
-        null,
-        "Oak Wood Planks",
-        null
-      ],
-      "shapeless":0
-    }
-  ],
-  "Mushroom Stew":[
-    {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        "Red Mushroom",
-        "Brown Mushroom",
-        null,
-        null,
-        "Bowl",
-        null
-      ],
-      "shapeless":1
-    }
-  ],
-  "Bread":[
-    {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        "Wheat",
-        "Wheat",
-        "Wheat"
-      ],
-      "shapeless":0
-    }
-  ],
-  "Sugar":[
-    {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        "Sugar Cane",
-        null
-      ],
-      "shapeless":1
-    }
-  ],
-  "Cake":[
-    {
-      "output":1,
-      "recipe":[
-        "Milk",
-        "Milk",
-        "Milk",
-        "Sugar",
-        "Chicken Egg",
-        "Sugar",
-        "Wheat",
-        "Wheat",
-        "Wheat"
-      ],
-      "shapeless":0
-    }
-  ],
-  "Cookie":[
-    {
-      "output":8,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        "Wheat",
-        "Cocoa Beans",
-        "Wheat"
-      ],
-      "shapeless":0
-    }
-  ],
-  "Golden Apple":[
-    {
-      "output":1,
-      "recipe":[
-        "Gold Nugget",
-        "Gold Nugget",
-        "Gold Nugget",
-        "Gold Nugget",
-        "Red Apple",
-        "Gold Nugget",
-        "Gold Nugget",
-        "Gold Nugget",
-        "Gold Nugget"
-      ],
-      "shapeless":0
-    },
-    {
-      "output":1,
-      "recipe":[
-        "Block of Gold",
-        "Block of Gold",
-        "Block of Gold",
-        "Block of Gold",
-        "Red Apple",
-        "Block of Gold",
-        "Block of Gold",
-        "Block of Gold",
-        "Block of Gold"
-      ],
-      "shapeless":0
-    }
-  ],
-  "Melon":[
-    {
-      "output":1,
-      "recipe":[
-        "Melon Slice",
-        "Melon Slice",
-        "Melon Slice",
-        "Melon Slice",
-        "Melon Slice",
-        "Melon Slice",
-        "Melon Slice",
-        "Melon Slice",
-        "Melon Slice"
-      ],
-      "shapeless":0
-    }
-  ],
-  "Melon Seeds":[
-    {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        "Melon Slice",
-        null
-      ],
-      "shapeless":1
-    }
-  ],
-  "Pumpkin Seeds":[
-    {
-      "output":4,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        "Pumpkin",
-        null
-      ],
-      "shapeless":1
-    }
-  ],
-  "Pumpkin Pie":[
-    {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        "Chicken Egg",
-        null,
-        null,
-        "Sugar",
-        "Pumpkin",
-        null
-      ],
-      "shapeless":1
-    }
-  ],
-  "Golden Carrot":[
-    {
-      "output":1,
-      "recipe":[
-        "Gold Nugget",
-        "Gold Nugget",
-        "Gold Nugget",
-        "Gold Nugget",
-        "Carrot",
-        "Gold Nugget",
-        "Gold Nugget",
-        "Gold Nugget",
-        "Gold Nugget"
-      ],
-      "shapeless":0
-    }
-  ],
-  "Iron Ingot":[
-    {
-      "output":9,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        "Block of Iron",
-        null
-      ],
-      "shapeless":1
-    }
-  ],
-  "Gold Ingot":[
-    {
-      "output":9,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        "Block of Gold",
-        null
-      ],
-      "shapeless":1
-    },
-    {
-      "output":1,
-      "recipe":[
-        "Gold Nugget",
-        "Gold Nugget",
-        "Gold Nugget",
-        "Gold Nugget",
-        "Gold Nugget",
-        "Gold Nugget",
-        "Gold Nugget",
-        "Gold Nugget",
-        "Gold Nugget"
-      ],
-      "shapeless":0
-    }
-  ],
-  "Diamond":[
-    {
-      "output":9,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        "Block of Diamond",
-        null
-      ],
-      "shapeless":1
-    }
-  ],
-  "Emerald":[
-    {
-      "output":9,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        "Block of Emerald",
-        null
-      ],
-      "shapeless":1
-    }
-  ],
-  "Painting":[
-    {
-      "output":1,
-      "recipe":[
-        "Stick",
-        "Stick",
-        "Stick",
-        "Stick",
-        "White Wool",
-        "Stick",
-        "Stick",
-        "Stick",
+      "output": 2, 
+      "recipe": [
+        null, 
+        "Stick", 
+        "Stick", 
+        null, 
+        "Stick", 
+        "Stick", 
+        null, 
+        "Stick", 
         "Stick"
-      ],
-      "shapeless":0
+      ], 
+      "shapeless": 0
     }
-  ],
-  "Item Frame":[
+  ], 
+  "Fence Gate": [
     {
-      "output":1,
-      "recipe":[
-        "Stick",
-        "Stick",
-        "Stick",
-        "Stick",
-        "Leather",
-        "Stick",
-        "Stick",
-        "Stick",
+      "output": 1, 
+      "recipe": [
+        null, 
+        "Stick", 
+        "Stick", 
+        null, 
+        "Oak Wood Planks", 
+        "Oak Wood Planks", 
+        null, 
+        "Stick", 
         "Stick"
-      ],
-      "shapeless":0
+      ], 
+      "shapeless": 0
     }
-  ],
-  "Sign":[
+  ], 
+  "Fermented Spider Eye": [
     {
-      "output":3,
-      "recipe":[
-        "Oak Wood Planks",
-        "Oak Wood Planks",
-        "Oak Wood Planks",
-        "Oak Wood Planks",
-        "Oak Wood Planks",
-        "Oak Wood Planks",
-        null,
-        "Stick",
+      "output": 1, 
+      "recipe": [
+        null, 
+        "Spider Eye", 
+        null, 
+        null, 
+        "Brown Mushroom", 
+        "Sugar", 
+        null, 
+        null, 
         null
-      ],
-      "shapeless":0
+      ], 
+      "shapeless": 1
     }
-  ],
-  "Paper":[
+  ], 
+  "Fire Charge": [
     {
-      "output":3,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        "Sugar Cane",
-        "Sugar Cane",
-        "Sugar Cane"
-      ],
-      "shapeless":0
-    }
-  ],
-  "Book":[
-    {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        "Paper",
-        "Paper",
-        null,
-        "Paper",
-        "Leather",
+      "output": 3, 
+      "recipe": [
+        null, 
+        "Blaze Powder", 
+        null, 
+        null, 
+        "Coal", 
+        "Gunpowder", 
+        null, 
+        null, 
         null
-      ],
-      "shapeless":1
+      ], 
+      "shapeless": 1
     }
-  ],
-  "Book and Quill":[
+  ], 
+  "Fishing Rod": [
     {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        "Feather",
-        null,
-        null,
-        "Ink Sac",
-        "Book",
-        null
-      ],
-      "shapeless":1
+      "output": 1, 
+      "recipe": [
+        null, 
+        null, 
+        "Stick", 
+        null, 
+        "Stick", 
+        null, 
+        "Stick", 
+        "String", 
+        "String"
+      ], 
+      "shapeless": 0
     }
-  ],
-  "Bed":[
+  ], 
+  "Flint and Steel": [
     {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        "White Wool",
-        "White Wool",
-        "White Wool",
-        "Oak Wood Planks",
-        "Oak Wood Planks",
-        "Oak Wood Planks"
-      ],
-      "shapeless":0
+      "output": 1, 
+      "recipe": [
+        null, 
+        "Iron Ingot", 
+        null, 
+        null, 
+        null, 
+        "Flint", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 0
     }
-  ],
-  "Eye of Ender":[
+  ], 
+  "Flower Pot": [
     {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        "Ender Pearl",
-        null,
-        null,
-        "Blaze Powder",
+      "output": 1, 
+      "recipe": [
+        null, 
+        "Brick", 
+        null, 
+        null, 
+        null, 
+        "Brick", 
+        null, 
+        "Brick", 
         null
-      ],
-      "shapeless":1
+      ], 
+      "shapeless": 0
     }
-  ],
-  "Flower Pot":[
+  ], 
+  "Furnace": [
     {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        "Brick",
-        null,
-        "Brick",
-        null,
-        "Brick",
-        null
-      ],
-      "shapeless":0
-    }
-  ],
-  "Bone Meal":[
-    {
-      "output":3,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        "Bone",
-        null
-      ],
-      "shapeless":1
-    }
-  ],
-  "Light Gray Dye":[
-    {
-      "output":3,
-      "recipe":[
-        null,
-        null,
-        null,
-        "Bone Meal",
-        null,
-        null,
-        "Ink Sac",
-        "Bone Meal",
-        null
-      ],
-      "shapeless":1
-    },
-    {
-      "output":2,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        "Gray Dye",
-        "Bone Meal",
-        null
-      ],
-      "shapeless":1
-    }
-  ],
-  "Gray Dye":[
-    {
-      "output":2,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        "Ink Sac",
-        "Bone Meal",
-        null
-      ],
-      "shapeless":1
-    }
-  ],
-  "Rose Red":[
-    {
-      "output":2,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        "Rose",
-        null
-      ],
-      "shapeless":1
-    }
-  ],
-  "Orange Dye":[
-    {
-      "output":2,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        "Rose Red",
-        "Dandelion Yellow",
-        null
-      ],
-      "shapeless":1
-    }
-  ],
-  "Dandelion Yellow":[
-    {
-      "output":2,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        "Dandelion",
-        null
-      ],
-      "shapeless":1
-    }
-  ],
-  "Lime Dye":[
-    {
-      "output":2,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        "Cactus Green",
-        "Bone Meal",
-        null
-      ],
-      "shapeless":1
-    }
-  ],
-  "Light Blue Dye":[
-    {
-      "output":2,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        "Lapis Lazuli Dye",
-        "Bone Meal",
-        null
-      ],
-      "shapeless":1
-    }
-  ],
-  "Cyan Dye":[
-    {
-      "output":2,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        "Lapis Lazuli Dye",
-        "Cactus Green",
-        null
-      ],
-      "shapeless":1
-    }
-  ],
-  "Purple Dye":[
-    {
-      "output":2,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        "Lapis Lazuli Dye",
-        "Rose Red",
-        null
-      ],
-      "shapeless":1
-    }
-  ],
-  "Magenta Dye":[
-    {
-      "output":2,
-      "recipe":[
-        null,
-        null,
-        null,
-        "Pink Dye",
-        "Bone Meal",
-        null,
-        "Purple Dye",
-        "Rose Red",
-        null
-      ],
-      "shapeless":1
-    },
-    {
-      "output":4,
-      "recipe":[
-        null,
-        null,
-        null,
-        "Lapis Lazuli Dye",
-        null,
-        null,
-        "Rose Red",
-        "Rose Red",
-        null
-      ],
-      "shapeless":1
-    },
-    {
-      "output":3,
-      "recipe":[
-        null,
-        null,
-        null,
-        "Lapis Lazuli Dye",
-        null,
-        null,
-        "Pink Dye",
-        null,
-        null
-      ],
-      "shapeless":1
-    }
-  ],
-  "Pink Dye":[
-    {
-      "output":2,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        "Rose Red",
-        "Bone Meal",
-        null
-      ],
-      "shapeless":1
-    }
-  ],
-  "Glass Bottle":[
-    {
-      "output":3,
-      "recipe":[
-        null,
-        null,
-        null,
-        "Glass",
-        null,
-        "Glass",
-        null,
-        "Glass",
-        null
-      ],
-      "shapeless":0
-    }
-  ],
-  "Cauldron":[
-    {
-      "output":1,
-      "recipe":[
-        "Iron Ingot",
-        null,
-        "Iron Ingot",
-        "Iron Ingot",
-        null,
-        "Iron Ingot",
-        "Iron Ingot",
-        "Iron Ingot",
-        "Iron Ingot"
-      ],
-      "shapeless":0
-    }
-  ],
-  "Brewing Stand":[
-    {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        "Blaze Rod",
-        null,
-        "Cobblestone",
-        "Cobblestone",
+      "output": 1, 
+      "recipe": [
+        "Cobblestone", 
+        "Cobblestone", 
+        "Cobblestone", 
+        "Cobblestone", 
+        null, 
+        "Cobblestone", 
+        "Cobblestone", 
+        "Cobblestone", 
         "Cobblestone"
-      ],
-      "shapeless":0
+      ], 
+      "shapeless": 0
     }
-  ],
-  "Blaze Powder":[
+  ], 
+  "Glass Bottle": [
     {
-      "output":2,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        "Blaze Rod",
+      "output": 3, 
+      "recipe": [
+        null, 
+        "Glass", 
+        null, 
+        null, 
+        null, 
+        "Glass", 
+        null, 
+        "Glass", 
         null
-      ],
-      "shapeless":1
+      ], 
+      "shapeless": 0
     }
-  ],
-  "Magma Cream":[
+  ], 
+  "Glass Pane": [
     {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        "Slimeball",
-        null,
-        null,
-        "Blaze Powder",
+      "output": 16, 
+      "recipe": [
+        null, 
+        "Glass", 
+        "Glass", 
+        null, 
+        "Glass", 
+        "Glass", 
+        null, 
+        "Glass", 
+        "Glass"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Glistering Melon": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        "Melon Slice", 
+        null, 
+        null, 
+        "Gold Nugget", 
+        null, 
+        null, 
+        null, 
         null
-      ],
-      "shapeless":1
+      ], 
+      "shapeless": 1
     }
-  ],
-  "Fermented Spider Eye":[
+  ], 
+  "Glowstone": [
     {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        "Spider Eye",
-        "Brown Mushroom",
-        null,
-        null,
-        "Sugar",
+      "output": 1, 
+      "recipe": [
+        null, 
+        "Glowstone Dust", 
+        "Glowstone Dust", 
+        null, 
+        "Glowstone Dust", 
+        "Glowstone Dust", 
+        null, 
+        null, 
         null
-      ],
-      "shapeless":1
+      ], 
+      "shapeless": 0
     }
-  ],
-  "Glistering Melon":[
+  ], 
+  "Gold Axe": [
     {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        "Melon Slice",
-        "Gold Nugget",
-        null,
-        null,
-        null,
+      "output": 1, 
+      "recipe": [
+        "Gold Ingot", 
+        "Gold Ingot", 
+        null, 
+        "Gold Ingot", 
+        "Stick", 
+        "Stick", 
+        null, 
+        null, 
         null
-      ],
-      "shapeless":1
+      ], 
+      "shapeless": 0
     }
-  ],
-  "Gold Nugget":[
+  ], 
+  "Gold Boots": [
     {
-      "output":9,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        "Gold Ingot",
-        null,
-        null,
-        null,
-        null
-      ],
-      "shapeless":1
-    }
-  ],
-  "Leather Cap":[
-    {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        "Leather",
-        "Leather",
-        "Leather",
-        "Leather",
-        null,
-        "Leather"
-      ],
-      "shapeless":0
-    }
-  ],
-  "Gold Helmet":[
-    {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        "Gold Ingot",
-        "Gold Ingot",
-        "Gold Ingot",
-        "Gold Ingot",
-        null,
+      "output": 1, 
+      "recipe": [
+        null, 
+        "Gold Ingot", 
+        "Gold Ingot", 
+        null, 
+        null, 
+        null, 
+        null, 
+        "Gold Ingot", 
         "Gold Ingot"
-      ],
-      "shapeless":0
+      ], 
+      "shapeless": 0
     }
-  ],
-  "Chain Armor Helmet":[
+  ], 
+  "Gold Chestplate": [
     {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        "Fire",
-        "Fire",
-        "Fire",
-        "Fire",
-        null,
-        "Fire"
-      ],
-      "shapeless":0
-    }
-  ],
-  "Iron Helmet":[
-    {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        "Iron Ingot",
-        "Iron Ingot",
-        "Iron Ingot",
-        "Iron Ingot",
-        null,
-        "Iron Ingot"
-      ],
-      "shapeless":0
-    }
-  ],
-  "Diamond Helmet":[
-    {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        "Diamond",
-        "Diamond",
-        "Diamond",
-        "Diamond",
-        null,
-        "Diamond"
-      ],
-      "shapeless":0
-    }
-  ],
-  "Leather Tunic":[
-    {
-      "output":1,
-      "recipe":[
-        "Leather",
-        null,
-        "Leather",
-        "Leather",
-        "Leather",
-        "Leather",
-        "Leather",
-        "Leather",
-        "Leather"
-      ],
-      "shapeless":0
-    }
-  ],
-  "Gold Chestplate":[
-    {
-      "output":1,
-      "recipe":[
-        "Gold Ingot",
-        null,
-        "Gold Ingot",
-        "Gold Ingot",
-        "Gold Ingot",
-        "Gold Ingot",
-        "Gold Ingot",
-        "Gold Ingot",
+      "output": 1, 
+      "recipe": [
+        "Gold Ingot", 
+        "Gold Ingot", 
+        "Gold Ingot", 
+        null, 
+        "Gold Ingot", 
+        "Gold Ingot", 
+        "Gold Ingot", 
+        "Gold Ingot", 
         "Gold Ingot"
-      ],
-      "shapeless":0
+      ], 
+      "shapeless": 0
     }
-  ],
-  "Chain Armor Chestplate":[
+  ], 
+  "Gold Helmet": [
     {
-      "output":1,
-      "recipe":[
-        "Fire",
-        null,
-        "Fire",
-        "Fire",
-        "Fire",
-        "Fire",
-        "Fire",
-        "Fire",
-        "Fire"
-      ],
-      "shapeless":0
-    }
-  ],
-  "Iron Chestplate":[
-    {
-      "output":1,
-      "recipe":[
-        "Iron Ingot",
-        null,
-        "Iron Ingot",
-        "Iron Ingot",
-        "Iron Ingot",
-        "Iron Ingot",
-        "Iron Ingot",
-        "Iron Ingot",
-        "Iron Ingot"
-      ],
-      "shapeless":0
-    }
-  ],
-  "Diamond Chestplate":[
-    {
-      "output":1,
-      "recipe":[
-        "Diamond",
-        null,
-        "Diamond",
-        "Diamond",
-        "Diamond",
-        "Diamond",
-        "Diamond",
-        "Diamond",
-        "Diamond"
-      ],
-      "shapeless":0
-    }
-  ],
-  "Leather Pants":[
-    {
-      "output":1,
-      "recipe":[
-        "Leather",
-        "Leather",
-        "Leather",
-        "Leather",
-        null,
-        "Leather",
-        "Leather",
-        null,
-        "Leather"
-      ],
-      "shapeless":0
-    }
-  ],
-  "Gold Leggings":[
-    {
-      "output":1,
-      "recipe":[
-        "Gold Ingot",
-        "Gold Ingot",
-        "Gold Ingot",
-        "Gold Ingot",
-        null,
-        "Gold Ingot",
-        "Gold Ingot",
-        null,
+      "output": 1, 
+      "recipe": [
+        null, 
+        "Gold Ingot", 
+        "Gold Ingot", 
+        null, 
+        "Gold Ingot", 
+        null, 
+        null, 
+        "Gold Ingot", 
         "Gold Ingot"
-      ],
-      "shapeless":0
+      ], 
+      "shapeless": 0
     }
-  ],
-  "Chain Armor Leggings":[
+  ], 
+  "Gold Hoe": [
     {
-      "output":1,
-      "recipe":[
-        "Fire",
-        "Fire",
-        "Fire",
-        "Fire",
-        null,
-        "Fire",
-        "Fire",
-        null,
-        "Fire"
-      ],
-      "shapeless":0
+      "output": 1, 
+      "recipe": [
+        "Gold Ingot", 
+        null, 
+        null, 
+        "Gold Ingot", 
+        "Stick", 
+        "Stick", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 0
     }
-  ],
-  "Iron Leggings":[
+  ], 
+  "Gold Ingot": [
     {
-      "output":1,
-      "recipe":[
-        "Iron Ingot",
-        "Iron Ingot",
-        "Iron Ingot",
-        "Iron Ingot",
-        null,
-        "Iron Ingot",
-        "Iron Ingot",
-        null,
-        "Iron Ingot"
-      ],
-      "shapeless":0
+      "output": 9, 
+      "recipe": [
+        null, 
+        null, 
+        null, 
+        null, 
+        null, 
+        "Block of Gold", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 1
+    }, 
+    {
+      "output": 1, 
+      "recipe": [
+        "Gold Nugget", 
+        "Gold Nugget", 
+        "Gold Nugget", 
+        "Gold Nugget", 
+        "Gold Nugget", 
+        "Gold Nugget", 
+        "Gold Nugget", 
+        "Gold Nugget", 
+        "Gold Nugget"
+      ], 
+      "shapeless": 0
     }
-  ],
-  "Diamond Leggings":[
+  ], 
+  "Gold Leggings": [
     {
-      "output":1,
-      "recipe":[
-        "Diamond",
-        "Diamond",
-        "Diamond",
-        "Diamond",
-        null,
-        "Diamond",
-        "Diamond",
-        null,
-        "Diamond"
-      ],
-      "shapeless":0
-    }
-  ],
-  "Leather Boots":[
-    {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        "Leather",
-        null,
-        "Leather",
-        "Leather",
-        null,
-        "Leather"
-      ],
-      "shapeless":0
-    }
-  ],
-  "Gold Boots":[
-    {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        "Gold Ingot",
-        null,
-        "Gold Ingot",
-        "Gold Ingot",
-        null,
+      "output": 1, 
+      "recipe": [
+        "Gold Ingot", 
+        "Gold Ingot", 
+        "Gold Ingot", 
+        "Gold Ingot", 
+        null, 
+        null, 
+        "Gold Ingot", 
+        "Gold Ingot", 
         "Gold Ingot"
-      ],
-      "shapeless":0
+      ], 
+      "shapeless": 0
     }
-  ],
-  "Chain Armor Boots":[
+  ], 
+  "Gold Nugget": [
     {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        "Fire",
-        null,
-        "Fire",
-        "Fire",
-        null,
-        "Fire"
-      ],
-      "shapeless":0
+      "output": 9, 
+      "recipe": [
+        null, 
+        null, 
+        null, 
+        null, 
+        "Gold Ingot", 
+        null, 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 1
     }
-  ],
-  "Iron Boots":[
+  ], 
+  "Gold Pickaxe": [
     {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        "Iron Ingot",
-        null,
-        "Iron Ingot",
-        "Iron Ingot",
-        null,
+      "output": 1, 
+      "recipe": [
+        "Gold Ingot", 
+        null, 
+        null, 
+        "Gold Ingot", 
+        "Stick", 
+        "Stick", 
+        "Gold Ingot", 
+        null, 
+        null
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Gold Shovel": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        null, 
+        null, 
+        "Gold Ingot", 
+        "Stick", 
+        "Stick", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Gold Sword": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        null, 
+        null, 
+        "Gold Ingot", 
+        "Gold Ingot", 
+        "Stick", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Golden Apple": [
+    {
+      "output": 1, 
+      "recipe": [
+        "Gold Nugget", 
+        "Gold Nugget", 
+        "Gold Nugget", 
+        "Gold Nugget", 
+        "Apple", 
+        "Gold Nugget", 
+        "Gold Nugget", 
+        "Gold Nugget", 
+        "Gold Nugget"
+      ], 
+      "shapeless": 0
+    }, 
+    {
+      "output": 1, 
+      "recipe": [
+        "Block of Gold", 
+        "Block of Gold", 
+        "Block of Gold", 
+        "Block of Gold", 
+        "Apple", 
+        "Block of Gold", 
+        "Block of Gold", 
+        "Block of Gold", 
+        "Block of Gold"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Golden Carrot": [
+    {
+      "output": 1, 
+      "recipe": [
+        "Gold Nugget", 
+        "Gold Nugget", 
+        "Gold Nugget", 
+        "Gold Nugget", 
+        "Carrot", 
+        "Gold Nugget", 
+        "Gold Nugget", 
+        "Gold Nugget", 
+        "Gold Nugget"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Gray Dye": [
+    {
+      "output": 2, 
+      "recipe": [
+        null, 
+        null, 
+        "Ink Sac", 
+        null, 
+        null, 
+        "Bone Meal", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 1
+    }
+  ], 
+  "Gray Wool": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        null, 
+        "White Wool", 
+        null, 
+        null, 
+        "Gray Dye", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 1
+    }
+  ], 
+  "Green Wool": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        null, 
+        "White Wool", 
+        null, 
+        null, 
+        "Cactus Green", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 1
+    }
+  ], 
+  "Hopper": [
+    {
+      "output": 1, 
+      "recipe": [
+        "Iron Ingot", 
+        "Iron Ingot", 
+        null, 
+        null, 
+        "Chest", 
+        "Iron Ingot", 
+        "Iron Ingot", 
+        "Iron Ingot", 
+        null
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Iron Axe": [
+    {
+      "output": 1, 
+      "recipe": [
+        "Iron Ingot", 
+        "Iron Ingot", 
+        null, 
+        "Iron Ingot", 
+        "Stick", 
+        "Stick", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Iron Bars": [
+    {
+      "output": 16, 
+      "recipe": [
+        null, 
+        "Iron Ingot", 
+        "Iron Ingot", 
+        null, 
+        "Iron Ingot", 
+        "Iron Ingot", 
+        null, 
+        "Iron Ingot", 
         "Iron Ingot"
-      ],
-      "shapeless":0
+      ], 
+      "shapeless": 0
     }
-  ],
-  "Diamond Boots":[
+  ], 
+  "Iron Boots": [
     {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        "Diamond",
-        null,
-        "Diamond",
-        "Diamond",
-        null,
-        "Diamond"
-      ],
-      "shapeless":0
+      "output": 1, 
+      "recipe": [
+        null, 
+        "Iron Ingot", 
+        "Iron Ingot", 
+        null, 
+        null, 
+        null, 
+        null, 
+        "Iron Ingot", 
+        "Iron Ingot"
+      ], 
+      "shapeless": 0
     }
-  ],
-  "Light Gray Wool":[
+  ], 
+  "Iron Chestplate": [
     {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        "White Wool",
-        "Light Gray Dye",
+      "output": 1, 
+      "recipe": [
+        "Iron Ingot", 
+        "Iron Ingot", 
+        "Iron Ingot", 
+        null, 
+        "Iron Ingot", 
+        "Iron Ingot", 
+        "Iron Ingot", 
+        "Iron Ingot", 
+        "Iron Ingot"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Iron Door": [
+    {
+      "output": 1, 
+      "recipe": [
+        "Iron Ingot", 
+        "Iron Ingot", 
+        "Iron Ingot", 
+        "Iron Ingot", 
+        "Iron Ingot", 
+        "Iron Ingot", 
+        null, 
+        null, 
         null
-      ],
-      "shapeless":1
+      ], 
+      "shapeless": 0
     }
-  ],
-  "Gray Wool":[
+  ], 
+  "Iron Helmet": [
     {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        "White Wool",
-        "Gray Dye",
-        null
-      ],
-      "shapeless":1
+      "output": 1, 
+      "recipe": [
+        null, 
+        "Iron Ingot", 
+        "Iron Ingot", 
+        null, 
+        "Iron Ingot", 
+        null, 
+        null, 
+        "Iron Ingot", 
+        "Iron Ingot"
+      ], 
+      "shapeless": 0
     }
-  ],
-  "Black Wool":[
+  ], 
+  "Iron Hoe": [
     {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        "White Wool",
-        "Ink Sac",
+      "output": 1, 
+      "recipe": [
+        "Iron Ingot", 
+        null, 
+        null, 
+        "Iron Ingot", 
+        "Stick", 
+        "Stick", 
+        null, 
+        null, 
         null
-      ],
-      "shapeless":1
+      ], 
+      "shapeless": 0
     }
-  ],
-  "Red Wool":[
+  ], 
+  "Iron Ingot": [
     {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        "White Wool",
-        "Rose Red",
+      "output": 9, 
+      "recipe": [
+        null, 
+        null, 
+        null, 
+        null, 
+        null, 
+        "Block of Iron", 
+        null, 
+        null, 
         null
-      ],
-      "shapeless":1
+      ], 
+      "shapeless": 1
     }
-  ],
-  "Orange Wool":[
+  ], 
+  "Iron Leggings": [
     {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        "White Wool",
-        "Orange Dye",
-        null
-      ],
-      "shapeless":1
+      "output": 1, 
+      "recipe": [
+        "Iron Ingot", 
+        "Iron Ingot", 
+        "Iron Ingot", 
+        "Iron Ingot", 
+        null, 
+        null, 
+        "Iron Ingot", 
+        "Iron Ingot", 
+        "Iron Ingot"
+      ], 
+      "shapeless": 0
     }
-  ],
-  "Yellow Wool":[
+  ], 
+  "Iron Pickaxe": [
     {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        "White Wool",
-        "Dandelion Yellow",
+      "output": 1, 
+      "recipe": [
+        "Iron Ingot", 
+        null, 
+        null, 
+        "Iron Ingot", 
+        "Stick", 
+        "Stick", 
+        "Iron Ingot", 
+        null, 
         null
-      ],
-      "shapeless":1
+      ], 
+      "shapeless": 0
     }
-  ],
-  "Lime Wool":[
+  ], 
+  "Iron Shovel": [
     {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        "White Wool",
-        "Lime Dye",
+      "output": 1, 
+      "recipe": [
+        null, 
+        null, 
+        null, 
+        "Iron Ingot", 
+        "Stick", 
+        "Stick", 
+        null, 
+        null, 
         null
-      ],
-      "shapeless":1
+      ], 
+      "shapeless": 0
     }
-  ],
-  "Green Wool":[
+  ], 
+  "Iron Sword": [
     {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        "White Wool",
-        "Cactus Green",
+      "output": 1, 
+      "recipe": [
+        null, 
+        null, 
+        null, 
+        "Iron Ingot", 
+        "Iron Ingot", 
+        "Stick", 
+        null, 
+        null, 
         null
-      ],
-      "shapeless":1
+      ], 
+      "shapeless": 0
     }
-  ],
-  "Cyan Wool":[
+  ], 
+  "Item Frame": [
     {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        "White Wool",
-        "Cyan Dye",
-        null
-      ],
-      "shapeless":1
+      "output": 1, 
+      "recipe": [
+        "Stick", 
+        "Stick", 
+        "Stick", 
+        "Stick", 
+        "Leather", 
+        "Stick", 
+        "Stick", 
+        "Stick", 
+        "Stick"
+      ], 
+      "shapeless": 0
     }
-  ],
-  "Light Blue Wool":[
+  ], 
+  "Jack 'o' Lantern": [
     {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        "White Wool",
-        "Light Blue Dye",
+      "output": 1, 
+      "recipe": [
+        null, 
+        null, 
+        null, 
+        null, 
+        "Pumpkin", 
+        "Torch", 
+        null, 
+        null, 
         null
-      ],
-      "shapeless":1
+      ], 
+      "shapeless": 0
     }
-  ],
-  "Blue Wool":[
+  ], 
+  "Jukebox": [
     {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        "White Wool",
-        "Lapis Lazuli Dye",
-        null
-      ],
-      "shapeless":1
+      "output": 1, 
+      "recipe": [
+        "Oak Wood Planks", 
+        "Oak Wood Planks", 
+        "Oak Wood Planks", 
+        "Oak Wood Planks", 
+        "Diamond", 
+        "Oak Wood Planks", 
+        "Oak Wood Planks", 
+        "Oak Wood Planks", 
+        "Oak Wood Planks"
+      ], 
+      "shapeless": 0
     }
-  ],
-  "Purple Wool":[
+  ], 
+  "Jungle Wood Planks": [
     {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        "White Wool",
-        "Purple Dye",
+      "output": 4, 
+      "recipe": [
+        null, 
+        null, 
+        null, 
+        null, 
+        "Jungle Wood", 
+        null, 
+        null, 
+        null, 
         null
-      ],
-      "shapeless":1
+      ], 
+      "shapeless": 1
     }
-  ],
-  "Magenta Wool":[
+  ], 
+  "Jungle Wood Slab": [
     {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        "White Wool",
-        "Magenta Dye",
-        null
-      ],
-      "shapeless":1
+      "output": 6, 
+      "recipe": [
+        null, 
+        null, 
+        "Jungle Wood Planks", 
+        null, 
+        null, 
+        "Jungle Wood Planks", 
+        null, 
+        null, 
+        "Jungle Wood Planks"
+      ], 
+      "shapeless": 0
     }
-  ],
-  "Pink Wool":[
+  ], 
+  "Jungle Wood Stairs": [
     {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        "White Wool",
-        "Pink Dye",
-        null
-      ],
-      "shapeless":1
+      "output": 4, 
+      "recipe": [
+        null, 
+        null, 
+        "Jungle Wood Planks", 
+        null, 
+        "Jungle Wood Planks", 
+        "Jungle Wood Planks", 
+        "Jungle Wood Planks", 
+        "Jungle Wood Planks", 
+        "Jungle Wood Planks"
+      ], 
+      "shapeless": 0
     }
-  ],
-  "Brown Wool":[
+  ], 
+  "Ladder": [
     {
-      "output":1,
-      "recipe":[
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        "White Wool",
-        "Cocoa Beans",
+      "output": 3, 
+      "recipe": [
+        "Stick", 
+        "Stick", 
+        "Stick", 
+        null, 
+        "Stick", 
+        null, 
+        "Stick", 
+        "Stick", 
+        "Stick"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Lapis Lazuli Block": [
+    {
+      "output": 1, 
+      "recipe": [
+        "Lapis Lazuli Dye", 
+        "Lapis Lazuli Dye", 
+        "Lapis Lazuli Dye", 
+        "Lapis Lazuli Dye", 
+        "Lapis Lazuli Dye", 
+        "Lapis Lazuli Dye", 
+        "Lapis Lazuli Dye", 
+        "Lapis Lazuli Dye", 
+        "Lapis Lazuli Dye"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Leather Boots": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        "Leather", 
+        "Leather", 
+        null, 
+        null, 
+        null, 
+        null, 
+        "Leather", 
+        "Leather"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Leather Cap": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        "Leather", 
+        "Leather", 
+        null, 
+        "Leather", 
+        null, 
+        null, 
+        "Leather", 
+        "Leather"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Leather Pants": [
+    {
+      "output": 1, 
+      "recipe": [
+        "Leather", 
+        "Leather", 
+        "Leather", 
+        "Leather", 
+        null, 
+        null, 
+        "Leather", 
+        "Leather", 
+        "Leather"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Leather Tunic": [
+    {
+      "output": 1, 
+      "recipe": [
+        "Leather", 
+        "Leather", 
+        "Leather", 
+        null, 
+        "Leather", 
+        "Leather", 
+        "Leather", 
+        "Leather", 
+        "Leather"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Lever": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        null, 
+        null, 
+        null, 
+        "Stick", 
+        "Cobblestone", 
+        null, 
+        null, 
         null
-      ],
-      "shapeless":1
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Light Blue Dye": [
+    {
+      "output": 2, 
+      "recipe": [
+        null, 
+        null, 
+        "Lapis Lazuli", 
+        null, 
+        null, 
+        "Bone Meal", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 1
+    }
+  ], 
+  "Light Blue Wool": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        null, 
+        "White Wool", 
+        null, 
+        null, 
+        "Light Blue Dye", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 1
+    }
+  ], 
+  "Light Gray Dye": [
+    {
+      "output": 3, 
+      "recipe": [
+        null, 
+        "Bone Meal", 
+        "Ink Sac", 
+        null, 
+        null, 
+        "Bone Meal", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 1
+    }, 
+    {
+      "output": 2, 
+      "recipe": [
+        null, 
+        "Bone Meal", 
+        "Gray Dye", 
+        null, 
+        null, 
+        "Bone Meal", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 1
+    }
+  ], 
+  "Light Gray Wool": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        null, 
+        "White Wool", 
+        null, 
+        null, 
+        "Light Gray Dye", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 1
+    }
+  ], 
+  "Lime Dye": [
+    {
+      "output": 2, 
+      "recipe": [
+        null, 
+        null, 
+        "Cactus Green", 
+        null, 
+        null, 
+        "Bone Meal", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 1
+    }
+  ], 
+  "Lime Wool": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        null, 
+        "White Wool", 
+        null, 
+        null, 
+        "Lime Dye", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 1
+    }
+  ], 
+  "Magenta Dye": [
+    {
+      "output": 2, 
+      "recipe": [
+        null, 
+        "Pink Dye", 
+        "Purple Dye", 
+        null, 
+        "Bone Meal", 
+        "Rose Red", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 1
+    }, 
+    {
+      "output": 4, 
+      "recipe": [
+        null, 
+        "Lapis Lazuli Dye", 
+        "Rose Red", 
+        null, 
+        "Bone Meal", 
+        "Rose Red", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 1
+    }, 
+    {
+      "output": 3, 
+      "recipe": [
+        null, 
+        "Lapis Lazuli Dye", 
+        "Pink Dye", 
+        null, 
+        "Bone Meal", 
+        "Rose Red", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 1
+    }
+  ], 
+  "Magenta Wool": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        null, 
+        "White Wool", 
+        null, 
+        null, 
+        "Magenta Dye", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 1
+    }
+  ], 
+  "Magma Cream": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        null, 
+        null, 
+        null, 
+        "Slimeball", 
+        "Blaze Powder", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 1
+    }
+  ], 
+  "Map": [
+    {
+      "output": 1, 
+      "recipe": [
+        "Paper", 
+        "Paper", 
+        "Paper", 
+        "Paper", 
+        "Compass", 
+        "Paper", 
+        "Paper", 
+        "Paper", 
+        "Paper"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Melon": [
+    {
+      "output": 1, 
+      "recipe": [
+        "Melon Slice", 
+        "Melon Slice", 
+        "Melon Slice", 
+        "Melon Slice", 
+        "Melon Slice", 
+        "Melon Slice", 
+        "Melon Slice", 
+        "Melon Slice", 
+        "Melon Slice"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Melon Seeds": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        null, 
+        null, 
+        null, 
+        null, 
+        "Melon Slice", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 1
+    }
+  ], 
+  "Minecart": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        "Iron Ingot", 
+        "Iron Ingot", 
+        null, 
+        null, 
+        "Iron Ingot", 
+        null, 
+        "Iron Ingot", 
+        "Iron Ingot"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Minecart with Chest": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        null, 
+        null, 
+        null, 
+        "Chest", 
+        "Minecart", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Minecart with Furnace": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        null, 
+        null, 
+        null, 
+        "Furnace", 
+        "Minecart", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Minecart with Hopper": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        null, 
+        null, 
+        null, 
+        "Hopper", 
+        "Minecart", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Minecart with TNT": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        null, 
+        null, 
+        null, 
+        "TNT", 
+        "Minecart", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Mossy Cobblestone Wall": [
+    {
+      "output": 6, 
+      "recipe": [
+        null, 
+        "Moss Stone", 
+        "Moss Stone", 
+        null, 
+        "Moss Stone", 
+        "Moss Stone", 
+        null, 
+        "Moss Stone", 
+        "Moss Stone"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Mushroom Stew": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        "Red Mushroom", 
+        null, 
+        null, 
+        "Brown Mushroom", 
+        "Bowl", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 1
+    }
+  ], 
+  "Nether Brick": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        "Nether Brick", 
+        "Nether Brick", 
+        null, 
+        "Nether Brick", 
+        "Nether Brick", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Nether Brick Fence": [
+    {
+      "output": 6, 
+      "recipe": [
+        null, 
+        "Nether Brick", 
+        "Nether Brick", 
+        null, 
+        "Nether Brick", 
+        "Nether Brick", 
+        null, 
+        "Nether Brick", 
+        "Nether Brick"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Nether Brick Slab": [
+    {
+      "output": 6, 
+      "recipe": [
+        null, 
+        null, 
+        "Nether Brick", 
+        null, 
+        null, 
+        "Nether Brick", 
+        null, 
+        null, 
+        "Nether Brick"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Nether Brick Stairs": [
+    {
+      "output": 4, 
+      "recipe": [
+        null, 
+        null, 
+        "Nether Brick", 
+        null, 
+        "Nether Brick", 
+        "Nether Brick", 
+        "Nether Brick", 
+        "Nether Brick", 
+        "Nether Brick"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Note Block": [
+    {
+      "output": 1, 
+      "recipe": [
+        "Oak Wood Planks", 
+        "Oak Wood Planks", 
+        "Oak Wood Planks", 
+        "Oak Wood Planks", 
+        "Redstone Dust", 
+        "Oak Wood Planks", 
+        "Oak Wood Planks", 
+        "Oak Wood Planks", 
+        "Oak Wood Planks"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Oak Wood Planks": [
+    {
+      "output": 4, 
+      "recipe": [
+        null, 
+        null, 
+        null, 
+        null, 
+        "Oak Wood", 
+        null, 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 1
+    }
+  ], 
+  "Oak Wood Slab": [
+    {
+      "output": 6, 
+      "recipe": [
+        null, 
+        null, 
+        "Oak Wood Planks", 
+        null, 
+        null, 
+        "Oak Wood Planks", 
+        null, 
+        null, 
+        "Oak Wood Planks"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Oak Wood Stairs": [
+    {
+      "output": 4, 
+      "recipe": [
+        null, 
+        null, 
+        "Oak Wood Planks", 
+        null, 
+        "Oak Wood Planks", 
+        "Oak Wood Planks", 
+        "Oak Wood Planks", 
+        "Oak Wood Planks", 
+        "Oak Wood Planks"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Orange Dye": [
+    {
+      "output": 2, 
+      "recipe": [
+        null, 
+        null, 
+        "Rose Red", 
+        null, 
+        null, 
+        "Dandelion Yellow", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 1
+    }
+  ], 
+  "Orange Wool": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        null, 
+        "White Wool", 
+        null, 
+        null, 
+        "Orange Dye", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 1
+    }
+  ], 
+  "Painting": [
+    {
+      "output": 1, 
+      "recipe": [
+        "Stick", 
+        "Stick", 
+        "Stick", 
+        "Stick", 
+        "White Wool", 
+        "Stick", 
+        "Stick", 
+        "Stick", 
+        "Stick"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Paper": [
+    {
+      "output": 3, 
+      "recipe": [
+        null, 
+        null, 
+        "Sugar Cane", 
+        null, 
+        null, 
+        "Sugar Cane", 
+        null, 
+        null, 
+        "Sugar Cane"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Pillar Quartz Block": [
+    {
+      "output": 2, 
+      "recipe": [
+        null, 
+        null, 
+        null, 
+        null, 
+        "Block of Quartz", 
+        "Block of Quartz", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Pink Dye": [
+    {
+      "output": 2, 
+      "recipe": [
+        null, 
+        null, 
+        "Rose Red", 
+        null, 
+        null, 
+        "Bone Meal", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 1
+    }
+  ], 
+  "Pink Wool": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        null, 
+        "White Wool", 
+        null, 
+        null, 
+        "Pink Dye", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 1
+    }
+  ], 
+  "Piston": [
+    {
+      "output": 1, 
+      "recipe": [
+        "Oak Wood Planks", 
+        "Cobblestone", 
+        "Cobblestone", 
+        "Oak Wood Planks", 
+        "Iron Ingot", 
+        "Redstone Dust", 
+        "Oak Wood Planks", 
+        "Cobblestone", 
+        "Cobblestone"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Powered Rail": [
+    {
+      "output": 6, 
+      "recipe": [
+        "Gold Ingot", 
+        "Gold Ingot", 
+        "Gold Ingot", 
+        null, 
+        "Stick", 
+        "Redstone Dust", 
+        "Gold Ingot", 
+        "Gold Ingot", 
+        "Gold Ingot"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Pumpkin Pie": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        "Chicken Egg", 
+        "Sugar", 
+        null, 
+        null, 
+        "Pumpkin", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 1
+    }
+  ], 
+  "Pumpkin Seeds": [
+    {
+      "output": 4, 
+      "recipe": [
+        null, 
+        null, 
+        null, 
+        null, 
+        null, 
+        "Pumpkin", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 1
+    }
+  ], 
+  "Purple Dye": [
+    {
+      "output": 2, 
+      "recipe": [
+        null, 
+        null, 
+        "Lapis Lazuli", 
+        null, 
+        null, 
+        "Rose Red", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 1
+    }
+  ], 
+  "Purple Wool": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        null, 
+        "White Wool", 
+        null, 
+        null, 
+        "Purple Dye", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 1
+    }
+  ], 
+  "Quartz Slab": [
+    {
+      "output": 6, 
+      "recipe": [
+        null, 
+        null, 
+        "Block of Quartz", 
+        null, 
+        null, 
+        "Block of Quartz", 
+        null, 
+        null, 
+        "Block of Quartz"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Quartz Stairs": [
+    {
+      "output": 4, 
+      "recipe": [
+        null, 
+        null, 
+        "Block of Quartz", 
+        null, 
+        "Block of Quartz", 
+        "Block of Quartz", 
+        "Block of Quartz", 
+        "Block of Quartz", 
+        "Block of Quartz"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Rail": [
+    {
+      "output": 16, 
+      "recipe": [
+        "Iron Ingot", 
+        "Iron Ingot", 
+        "Iron Ingot", 
+        null, 
+        "Stick", 
+        null, 
+        "Iron Ingot", 
+        "Iron Ingot", 
+        "Iron Ingot"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Red Wool": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        null, 
+        "White Wool", 
+        null, 
+        null, 
+        "Rose Red", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 1
+    }
+  ], 
+  "Redstone Comparator": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        "Redstone Torch", 
+        "Stone", 
+        "Redstone Torch", 
+        "Nether_Quartz", 
+        "Stone", 
+        null, 
+        "Redstone Torch", 
+        "Stone"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Redstone Dust": [
+    {
+      "output": 9, 
+      "recipe": [
+        null, 
+        null, 
+        null, 
+        null, 
+        null, 
+        "Block of Redstone", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 1
+    }
+  ], 
+  "Redstone Lamp": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        "Redstone Dust", 
+        null, 
+        "Redstone Dust", 
+        "Glowstone", 
+        "Redstone Dust", 
+        null, 
+        "Redstone Dust", 
+        null
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Redstone Repeater": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        "Redstone Torch", 
+        "Stone", 
+        null, 
+        "Redstone Dust", 
+        "Stone", 
+        null, 
+        "Redstone Torch", 
+        "Stone"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Redstone Torch": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        null, 
+        null, 
+        null, 
+        "Redstone Dust", 
+        "Stick", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Rose Red": [
+    {
+      "output": 2, 
+      "recipe": [
+        null, 
+        null, 
+        null, 
+        null, 
+        null, 
+        "Rose", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 1
+    }
+  ], 
+  "Sandstone": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        "Sand", 
+        "Sand", 
+        null, 
+        "Sand", 
+        "Sand", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Sandstone Slab": [
+    {
+      "output": 6, 
+      "recipe": [
+        null, 
+        null, 
+        "Sandstone", 
+        null, 
+        null, 
+        "Sandstone", 
+        null, 
+        null, 
+        "Sandstone"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Sandstone Stairs": [
+    {
+      "output": 4, 
+      "recipe": [
+        null, 
+        null, 
+        "Sandstone", 
+        null, 
+        "Sandstone", 
+        "Sandstone", 
+        "Sandstone", 
+        "Sandstone", 
+        "Sandstone"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Shears": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        null, 
+        "Iron Ingot", 
+        null, 
+        "Iron Ingot", 
+        null, 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Sign": [
+    {
+      "output": 3, 
+      "recipe": [
+        "Oak Wood Planks", 
+        "Oak Wood Planks", 
+        null, 
+        "Oak Wood Planks", 
+        "Oak Wood Planks", 
+        "Stick", 
+        "Oak Wood Planks", 
+        "Oak Wood Planks", 
+        null
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Smooth Sandstone": [
+    {
+      "output": 4, 
+      "recipe": [
+        null, 
+        "Sandstone", 
+        "Sandstone", 
+        null, 
+        "Sandstone", 
+        "Sandstone", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Snow Block": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        "Snowball", 
+        "Snowball", 
+        null, 
+        "Snowball", 
+        "Snowball", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Spruce Wood Planks": [
+    {
+      "output": 4, 
+      "recipe": [
+        null, 
+        null, 
+        null, 
+        null, 
+        "Spruce Wood", 
+        null, 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 1
+    }
+  ], 
+  "Spruce Wood Slab": [
+    {
+      "output": 6, 
+      "recipe": [
+        null, 
+        null, 
+        "Spruce Wood Planks", 
+        null, 
+        null, 
+        "Spruce Wood Planks", 
+        null, 
+        null, 
+        "Spruce Wood Planks"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Spruce Wood Stairs": [
+    {
+      "output": 4, 
+      "recipe": [
+        null, 
+        null, 
+        "Spruce Wood Planks", 
+        null, 
+        "Spruce Wood Planks", 
+        "Spruce Wood Planks", 
+        "Spruce Wood Planks", 
+        "Spruce Wood Planks", 
+        "Spruce Wood Planks"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Stick": [
+    {
+      "output": 4, 
+      "recipe": [
+        null, 
+        null, 
+        null, 
+        null, 
+        "Oak Wood Planks", 
+        "Oak Wood Planks", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Sticky Piston": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        null, 
+        null, 
+        null, 
+        "Slimeball", 
+        "Piston", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Stone Axe": [
+    {
+      "output": 1, 
+      "recipe": [
+        "Cobblestone", 
+        "Cobblestone", 
+        null, 
+        "Cobblestone", 
+        "Stick", 
+        "Stick", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Stone Brick": [
+    {
+      "output": 4, 
+      "recipe": [
+        null, 
+        "Stone", 
+        "Stone", 
+        null, 
+        "Stone", 
+        "Stone", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Stone Brick Stairs": [
+    {
+      "output": 4, 
+      "recipe": [
+        null, 
+        null, 
+        "Stone Brick", 
+        null, 
+        "Stone Brick", 
+        "Stone Brick", 
+        "Stone Brick", 
+        "Stone Brick", 
+        "Stone Brick"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Stone Bricks Slab": [
+    {
+      "output": 6, 
+      "recipe": [
+        null, 
+        null, 
+        "Stone Brick", 
+        null, 
+        null, 
+        "Stone Brick", 
+        null, 
+        null, 
+        "Stone Brick"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Stone Hoe": [
+    {
+      "output": 1, 
+      "recipe": [
+        "Cobblestone", 
+        null, 
+        null, 
+        "Cobblestone", 
+        "Stick", 
+        "Stick", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Stone Pickaxe": [
+    {
+      "output": 1, 
+      "recipe": [
+        "Cobblestone", 
+        null, 
+        null, 
+        "Cobblestone", 
+        "Stick", 
+        "Stick", 
+        "Cobblestone", 
+        null, 
+        null
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Stone Pressure Plate": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        null, 
+        "Stone", 
+        null, 
+        null, 
+        "Stone", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Stone Shovel": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        null, 
+        null, 
+        "Cobblestone", 
+        "Stick", 
+        "Stick", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Stone Slab": [
+    {
+      "output": 6, 
+      "recipe": [
+        null, 
+        null, 
+        "Stone", 
+        null, 
+        null, 
+        "Stone", 
+        null, 
+        null, 
+        "Stone"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Stone Sword": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        null, 
+        null, 
+        "Cobblestone", 
+        "Cobblestone", 
+        "Stick", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Sugar": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        null, 
+        null, 
+        null, 
+        null, 
+        "Sugar Cane", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 1
+    }
+  ], 
+  "TNT": [
+    {
+      "output": 1, 
+      "recipe": [
+        "Gunpowder", 
+        "Sand", 
+        "Gunpowder", 
+        "Sand", 
+        "Gunpowder", 
+        "Sand", 
+        "Gunpowder", 
+        "Sand", 
+        "Gunpowder"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Torch": [
+    {
+      "output": 4, 
+      "recipe": [
+        null, 
+        null, 
+        null, 
+        null, 
+        "Coal", 
+        "Stick", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Trapdoor": [
+    {
+      "output": 2, 
+      "recipe": [
+        null, 
+        "Oak Wood Planks", 
+        "Oak Wood Planks", 
+        null, 
+        "Oak Wood Planks", 
+        "Oak Wood Planks", 
+        null, 
+        "Oak Wood Planks", 
+        "Oak Wood Planks"
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Trapped Chest": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        "Tripwire Hook", 
+        null, 
+        null, 
+        "Chest", 
+        null, 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Tripwire Hook": [
+    {
+      "output": 2, 
+      "recipe": [
+        null, 
+        null, 
+        null, 
+        "Iron Ingot", 
+        "Stick", 
+        "Oak Wood Planks", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Weighted Pressure Plate Heavy": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        null, 
+        "Iron Ingot", 
+        null, 
+        null, 
+        "Iron Ingot", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Weighted Pressure Plate Light": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        null, 
+        "Gold Ingot", 
+        null, 
+        null, 
+        "Gold Ingot", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "White Wool": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        "String", 
+        "String", 
+        null, 
+        "String", 
+        "String", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Wooden Axe": [
+    {
+      "output": 1, 
+      "recipe": [
+        "Oak Wood Planks", 
+        "Oak Wood Planks", 
+        null, 
+        "Oak Wood Planks", 
+        "Stick", 
+        "Stick", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Wooden Button": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        null, 
+        null, 
+        null, 
+        "Wooden Plank", 
+        null, 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Wooden Door": [
+    {
+      "output": 1, 
+      "recipe": [
+        "Oak Wood Planks", 
+        "Oak Wood Planks", 
+        "Oak Wood Planks", 
+        "Oak Wood Planks", 
+        "Oak Wood Planks", 
+        "Oak Wood Planks", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 0
+    }, 
+    {
+      "output": 1, 
+      "recipe": [
+        "Spruce Wood Planks", 
+        "Spruce Wood Planks", 
+        "Spruce Wood Planks", 
+        "Spruce Wood Planks", 
+        "Spruce Wood Planks", 
+        "Spruce Wood Planks", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 0
+    }, 
+    {
+      "output": 1, 
+      "recipe": [
+        "Birch Wood Planks", 
+        "Birch Wood Planks", 
+        "Birch Wood Planks", 
+        "Birch Wood Planks", 
+        "Birch Wood Planks", 
+        "Birch Wood Planks", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 0
+    }, 
+    {
+      "output": 1, 
+      "recipe": [
+        "Jungle Wood Planks", 
+        "Jungle Wood Planks", 
+        "Jungle Wood Planks", 
+        "Jungle Wood Planks", 
+        "Jungle Wood Planks", 
+        "Jungle Wood Planks", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Wooden Hoe": [
+    {
+      "output": 1, 
+      "recipe": [
+        "Oak Wood Planks", 
+        null, 
+        null, 
+        "Oak Wood Planks", 
+        "Stick", 
+        "Stick", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Wooden Pickaxe": [
+    {
+      "output": 1, 
+      "recipe": [
+        "Oak Wood Planks", 
+        null, 
+        null, 
+        "Oak Wood Planks", 
+        "Stick", 
+        "Stick", 
+        "Oak Wood Planks", 
+        null, 
+        null
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Wooden Pressure Plate": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        null, 
+        "Oak Wood Planks", 
+        null, 
+        null, 
+        "Oak Wood Planks", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 0
+    }, 
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        null, 
+        "Spruce Wood Planks", 
+        null, 
+        null, 
+        "Spruce Wood Planks", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 0
+    }, 
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        null, 
+        "Birch Wood Planks", 
+        null, 
+        null, 
+        "Birch Wood Planks", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 0
+    }, 
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        null, 
+        "Jungle Wood Planks", 
+        null, 
+        null, 
+        "Jungle Wood Planks", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Wooden Shovel": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        null, 
+        null, 
+        "Oak Wood Planks", 
+        "Stick", 
+        "Stick", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Wooden Sword": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        null, 
+        null, 
+        "Oak Wood Planks", 
+        "Oak Wood Planks", 
+        "Stick", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 0
+    }
+  ], 
+  "Yellow Wool": [
+    {
+      "output": 1, 
+      "recipe": [
+        null, 
+        null, 
+        "White Wool", 
+        null, 
+        null, 
+        "Dandelion Yellow", 
+        null, 
+        null, 
+        null
+      ], 
+      "shapeless": 1
     }
   ]
 }
