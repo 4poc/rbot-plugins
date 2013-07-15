@@ -1,6 +1,6 @@
 #
 # Zeitgeist Rubybot Plugin
-# Copyright (C) 2012  Matthias Hecker (http://github.com/4poc)
+# Copyright (C) 2012-2013  Matthias Hecker (http://github.com/4poc)
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -89,8 +89,8 @@ module ::Zeitgeist
       end
     end
 
-    def remote(url, tags = '', title = '', announce = false)
-      result = post('/new', :remote_url => url, :tags => tags, :title => [title], :announce => (announce ? 'true' : 'false'))
+    def remote(url, tags = '', title = '', announce = false, ignore_fingerprint = false, link = false)
+      result = post('/new', :remote_url => url, :tags => tags, :title => [title], :link => link, :announce => (announce ? 'true' : 'false'), :ignore_fingerprint => (ignore_fingerprint ? 'true' : 'false'))
       result[:items].map do |item|
         Item.new(item)
       end
@@ -125,7 +125,7 @@ module ::Zeitgeist
 
     def search(query, type)
       result = get('/search?q=%s&type=%s' % [URI::escape(query), URI::escape(type)]) 
-      if type == 'source' or type == 'title' # returned list of items
+      if %w{source title reverse}.include? type # returned list of items
         # deserialize items:
         result[:items].map do |item|
           Item.new(item)
@@ -179,7 +179,10 @@ module ::Zeitgeist
   class Error < StandardError
     attr_reader :type #original error type
     def initialize(obj)
-      debug obj.inspect
+      error obj.inspect
+      if not obj or not obj.has_key? :type
+        obj = {:type=>'Error',:message=>'error'}
+      end
       @type = obj[:type]
       super obj[:message]
     end
@@ -250,7 +253,7 @@ class ZeitgeistPlugin < Plugin
     host = URI.parse(@bot.config['zg.base_url']).host
     listen = @bot.config['zg.listen'].join ','
 
-    h = '*%s* | media links in *%s* are published | messages starting with *#* are ignored | end message with *# tag1, tag2* to submit with tags | end message with *! title* to submit with title | usage: zg [*command*] | commands: *(none)* user options/help; *show* item; *create*; *update*; *title*; *claim*; *delete*; *auth* reg/login; *enable* option; *disable* option; *alt* set alternative nicks; *test* show auth status; *search* | *shortcuts* for help with the ^~ in-channel shortcut commands | /msg %s help zg *<command or topic>*' % [host, listen, @bot.nick]
+    h = '*%s* | media links in *%s* are published | messages starting with *#* are ignored | url msgs starting with *+* are not checked for similar images | end message with *# tag1, tag2* to submit with tags | end message with *! title* to submit with title | usage: zg [*command*] | commands: *(none)* user options/help; *show* item; *create*; *update*; *title*; *claim*; *delete*; *auth* reg/login; *enable* option; *disable* option; *alt* set alternative nicks; *test* show auth status; *search* | *shortcuts* for help with the ^~ in-channel shortcut commands | /msg %s help zg *<command or topic>*' % [host, listen, @bot.nick]
 
     case topic
     when 'show'
@@ -712,7 +715,7 @@ class ZeitgeistPlugin < Plugin
   # Params: :channel (optional)
   # Access: open
   def cmd_item_search(m, params)
-    if not %w{tags title source}.include? params[:type]
+    if not %w{tags title source reverse}.include? params[:type]
       m.reply 'you can only search for tags, title or source'
       return
     end
@@ -736,6 +739,9 @@ class ZeitgeistPlugin < Plugin
 
       if type == 'title'
         s = items[0...10].map { |i| "#{Bold}%d#{NormalText} : %s" % [i.id, i.title] }.join ', '
+      elsif type == 'reverse'
+        item = items[0]
+        s = "#{Bold}%d#{NormalText} : %s" % [item.id, item_to_s(item)]
       else
         s = items[0...10].map { |i| "#{Bold}%d#{NormalText} : %s" % [i.id, i.source] }.join ', '
       end
@@ -767,11 +773,14 @@ class ZeitgeistPlugin < Plugin
   end
 
   def message(m, dummy=nil)
+    Thread.new do
     message = m.message.strip
     source = m.source.to_s
     channel = m.channel.to_s
     return if message[0...1] == '#' # ignore messages starting with #
     return if message.match /^[^\/]*#/
+    ignore_fingerprint = message.match(/^\+/) ? true : false
+    link = message.match(/^>/) ? true : false
     # this also ignores query messages, zg create should be used instead
     return if not @bot.config['zg.listen'].include? channel
     # try to find the user: user maybe nil for guest postings
@@ -815,7 +824,8 @@ class ZeitgeistPlugin < Plugin
 
       req = api_request(user)
       begin
-        items = req.remote(create_urls, create_tags || '', create_title)
+        #m.reply 'submit %d urls, link=%s' % [create_urls.length, link.to_s]
+        items = req.remote(create_urls, create_tags || '', create_title, false, ignore_fingerprint, link.to_s)
 
         # remember items submitted in channel
         items.each do |item|
@@ -825,17 +835,21 @@ class ZeitgeistPlugin < Plugin
         # prepare announce message:
         announce = "#{Bold + items.length.to_s + NormalText} item(s) submitted: #{items.map { |item| item_to_s(item)}.join(' | ')}"
 
-        # announce video title in channel:
+        # announce video/link title in channel:
         if not m.replied
           video_item = items.first
-          if video_item.type == 'video' and not video_item.title.empty?
+          if %w{video link}.include? video_item.type and not video_item.title.empty?
             if not channel.empty?
               if video_item.source.match %r{youtube\.com/watch\?.*v=([^&]+)} 
                 url = "http://youtu.be/#{$1}"
               else
                 url = video_item.source
               end
-              m.reply "\"#{Bold}#{video_item.title}#{NormalText}\" (#{url}) "
+              if video_item.type == 'video'
+                m.reply "\"#{Bold}#{video_item.title}#{NormalText}\" (#{url}) "
+              else
+                m.reply "\"#{Bold}#{video_item.title}#{NormalText}\""
+              end
             end
           end
         end
@@ -913,11 +927,11 @@ class ZeitgeistPlugin < Plugin
         if action and action.match /!(.*)/
           title = $1
           item = req.update_title(id, title)
-          if not title or title.empty?
-            m.reply "##{id} title removed."
-          else
-            m.reply "##{id} new title: \"#{title}\""
-          end
+          #if not title or title.empty?
+          #  m.reply "##{id} title removed."
+          #else
+          #  m.reply "##{id} new title: \"#{title}\""
+          #end
           if user[:notify]
             m.reply "item title changed: #{item_to_s(item)}", :to => :private
           end
@@ -951,8 +965,6 @@ class ZeitgeistPlugin < Plugin
           m.reply 'item: ' + item_to_s(item)
         end
 
-
-
       rescue ConnectionError => e
         debug "I can't connect to zeitgeist: #{e.message}"
       rescue Error => e
@@ -962,6 +974,7 @@ class ZeitgeistPlugin < Plugin
 
 
 
+    end
     end
   end
 
