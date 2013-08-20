@@ -1,9 +1,78 @@
-# rbot minecraft plugin
-begin
-  require 'rubygems'
-rescue LoadError
+#-- vim:sw=2:et
+#++
+#
+# :title: Minecraft utilities for rbot (ruby >= 1.9!)
+#
+# Copyright:: (C) 2013 Matthias Hecker
+#
+# License:: GPLv3 license
+
+require 'socket'
+
+##
+# Pings a minecraft server and returns motd and playercount.
+# Works with ruby >=1.9.3/2.0.0
+#
+# More information and sample code here:
+# http://wiki.vg/Server_List_Ping
+##
+class MinecraftPing
+  def initialize(host, port=25565)
+    @host = host
+    @port = port
+  end
+
+  def ping
+    socket = TCPSocket.open(@host, @port)
+    # packet identifier & payload ...
+    socket.write([0xFE, 0x01, 0xFA].pack('CCC'))
+    socket.write(encode_string('MC|PingHost'))
+    socket.write([7 + 2 * @host.length].pack('n'))
+    socket.write([74].pack('c'))
+    socket.write(encode_string(@host))
+    socket.write([@port].pack('N'))
+
+    # read server response
+    if socket.read(1).unpack('C').first != 0xFF # Kick packet
+      raise 'unexpected server response packet'
+    end
+
+    len = socket.read(2).unpack('n').first
+    resp = decode_string(socket.read(len*2)).split("\u0000")
+
+    socket.close
+
+    if resp.shift != "\u00A71"
+      raise 'unexpected server response fields'
+    end
+
+    return {
+      :protocol_version => resp.shift.to_i,
+      :minecraft_version => resp.shift,
+      :motd => resp.shift,
+      :current_players => resp.shift.to_i,
+      :max_players => resp.shift.to_i
+    }
+  end
+
+  private
+
+  def encode_string(s)
+    begin
+      [s.length].pack('n') + Iconv.conv('utf-16be', 'utf-8', s)
+    rescue
+      [s.length].pack('n') + s.encode('utf-16be').force_encoding('ASCII-8BIT')
+    end
+  end
+
+  def decode_string(s)
+    begin
+      Iconv.conv('utf-8', 'utf-16be', s)
+    rescue
+      s.force_encoding('utf-16be').encode('utf-8')
+    end
+  end
 end
-require 'json'
 
 class Minecraft < Plugin
 
@@ -172,9 +241,6 @@ class Minecraft < Plugin
         legend[short] = ingredient
       end
 
-
-
-
       lines = [] # recipe lines, 3 strings each 3 characters
       line = '' # current line
       recipe['recipe'].each do |ingredient|
@@ -197,9 +263,6 @@ class Minecraft < Plugin
         end
       end
 
-      # m.reply '[dbg] legend = ' + legend.inspect
-      # m.reply '[dbg] lines = ' + lines.inspect
-
       # output formatting:
       m.reply lines[0] + ' | Recipe for ' + product + ((recipe['shapeless'] == 1) ? ' (shapeless)' : '')
       m.reply lines[1] + ' |'
@@ -208,23 +271,6 @@ class Minecraft < Plugin
         legend_list << [short, name].join('=')
       }
       m.reply lines[2] + ' | ' + legend_list.join(' ')
-
-
-
-=begin
-      t = []
-      legend.each_pair do |short, name|
-        t << '%s=%s' % [short, name]
-      end
-      tmp << ' ' + t.join(' ')
-
-      m.reply tmp
-=end
-      
-
-
-
-
     end
   end
 
@@ -251,23 +297,13 @@ class Minecraft < Plugin
   def poll(m, params)
     host = params[:host]
     port = params[:port]
-    @socket = TCPSocket.open(host, port)
-    # --> byte 254 (0xFE)
-    @socket.write([0xFE].pack('c'))
-    s = StringIO.new @socket.read
-    # should return 0xFF
-    if s.read(1) != "\xFF"
-      m.reply 'invalid server reply'
-      return
-    end
 
-    # read short (length of string)
-    len = s.read(2).unpack('n').first.to_i
-    welcome = s.read(len*2)
-    welcome = Iconv.conv('utf-8', 'utf-16be', welcome)
-    welcome, current, max = welcome.split("\xC2\xA7")
-    m.reply "The server responded: #{welcome} (#{current}/#{max})"
-    @socket.close
+    begin
+      resp = MinecraftPing.new(host, port).ping
+      m.reply "The server responded: #{resp[:motd]} [#{resp[:minecraft_version]}] (#{resp[:current_players]}/#{resp[:max_players]})"
+    rescue
+      m.reply "error, #{$!}"
+    end
   end
 
   private
