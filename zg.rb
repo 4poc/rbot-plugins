@@ -333,7 +333,6 @@ class ZeitgeistPlugin < Plugin
       end
     end
 
-    #@lartfile.replace(datafile("larts-#{lang}"))
     @lartfile = IO.readlines(File.join(Config::datadir, 'templates/lart/larts-english'))
   end
 
