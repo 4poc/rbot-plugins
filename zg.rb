@@ -179,7 +179,6 @@ module ::Zeitgeist
   class Error < StandardError
     attr_reader :type #original error type
     def initialize(obj)
-      error obj.inspect
       if not obj or not obj.has_key? :type
         obj = {:type=>'Error',:message=>'error'}
       end
@@ -333,6 +332,13 @@ class ZeitgeistPlugin < Plugin
         @bot.sendq('WHO %s' % channel)
       end
     end
+
+    #@lartfile.replace(datafile("larts-#{lang}"))
+    @lartfile = IO.readlines(File.join(Config::datadir, 'templates/lart/larts-english'))
+  end
+
+  def lartfile
+    @lartfile
   end
 
   def cleanup
@@ -881,7 +887,8 @@ class ZeitgeistPlugin < Plugin
         error = e.error
         if e.error.class == DuplicateError
           item = req.item(e.error.id) 
-          m.reply "identical item found: #{item_to_s(item)}"
+          lart = @lartfile.sample.gsub('<who>', nick).strip
+          m.act lart + ', duplicate item found: ' +item_to_s(item)
         end
 
 
