@@ -8,6 +8,7 @@
 # License:: GPLv3 license
 
 require 'socket'
+require 'json'
 
 ##
 # Pings a minecraft server and returns motd and playercount.
