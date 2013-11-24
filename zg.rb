@@ -712,41 +712,67 @@ class ZeitgeistPlugin < Plugin
   # Params: :channel (optional)
   # Access: open
   def cmd_item_search(m, params)
+    max = 8
     type = params[:type]
     query = params[:query].join(' ')
 
     req = api_request
     items = req.search(query, type.to_s)
+
+    if items.length <= 0
+      types = %w{title source reverse}
+      types.delete(type.to_s)
+      types.each do |t|
+        items = req.search(query, t)
+        if items and items.length > 0
+          type = t.to_sym
+          break
+        end
+      end
+    end
     
     if items.length <= 0
       m.reply 'no items found for %s search: "%s"' % [type.to_s, query]
-    end
-
-    def opt_title(item)
-      if item.title and not item.title.empty?
-        '"*%s*" ' % [item.title.ircify_html]
-      else
-        ''
-      end
+      return
     end
 
     if type == :title or type == :source
-      res = colorize('[*%d*] ' % [items.length])
-      items = items[0...12]
+      if items.length > max
+        res = colorize('[*%d/%d*] ' % [max, items.length])
+      else
+        res = colorize('[*%d*] ' % [items.length])
+      end
+
+      items = items[0...max]
       res << colorize(items.map { |item|
-        case item.type
-        when 'image'
-          if item.tags and not item.tags.empty?
-            #str << " - #{(item.tags.map {|tag| tag.tagname}).join ', '}"
-            'I: %d %szeitgeist.li%s' % [item.id, opt_title(item), item.image.image]
+        #p = ['%s:' % item.type[0].upcase, item.id.to_s]
+        p = ['%s:' % item.type, item.id.to_s]
+
+        # title:
+        if item.title and not item.title.empty?
+          title = item.title.ircify_html
+          if title.downcase.include? query.downcase
+            title.gsub!(/(#{query})/i, '*\\1*')
+            p << '"%s"' % title
           else
-            'I: %d %szeitgeist.li%s' % [item.id, opt_title(item), item.image.image]
+            p << '"*%s*"' % title
           end
-        when 'audio'
-          'A: %d "*%s*" %s' % [item.id, item.title.ircify_html, item_url_to_s(item)]
-        when 'video'
-          'V: %d "*%s*" %s' % [item.id, item.title.ircify_html, item_url_to_s(item)]
         end
+
+        # tags: (only if no title)
+        if not item.title or item.title.empty? and item.tags and not item.tags.empty?
+          p << (item.tags.map {|tag| tag.tagname}).join(', ')
+        end
+
+        # url:
+        url = item_url_to_s(item)
+        if url.downcase.include? query.downcase
+          url.gsub!(/(#{query})/i, '*\\1*')
+          p << url
+        else
+          p << url
+        end
+        p.join(' ')
       }.join(' | '))
       m.reply res.strip
     elsif type == :reverse
@@ -1068,39 +1094,36 @@ class ZeitgeistPlugin < Plugin
 
   # convert item object to IRC string (with bold text, etc.)
   def item_to_s(item)
-    str = item.id.to_s + " - "
+    parts = [item.id.to_s]
     if item.type == 'image'
-      str << "#{item.mimetype} "
-      str << "#{format_size item.size} "
+      parts << '%s %s %s' % [item.mimetype, item.dimensions, format_size(item.size)]
     else
-      str << "#{item.type}"
+      parts << item.type
     end
 
     if item.title and not item.title.empty?
-      str << "\"#{Bold + item.title.ircify_html + NormalText}\""
+      parts << '"*%s*"' % item.title.ircify_html
     end
+
     if item.source and not item.source.match /http/
-      str << " #{Bold + item.source + NormalText}"
+      parts << '*%s*' % item.source
     end
 
     if item.tags and not item.tags.empty?
-      str << " - #{(item.tags.map {|tag| tag.tagname}).join ', '}"
+      parts << '%s' % [(item.tags.map {|tag| tag.tagname}).join(', ')]
     end
 
     url = item_url_to_s(item)
-
-    str << " - #{url}"
+    parts << url
 
     relative_create_at = distance_of_time_in_words(Time.parse(item.created_at), Time.now)
-    str << " - #{relative_create_at} ago"
+    parts << '%s ago' % relative_create_at
 
     if item.respond_to? 'username' and item.username
-      str << " - posted by #{Bold + item.username + NormalText}"
+      parts << 'posted by *%s*' % item.username
     end
 
-    # str << "{#{item.dm_user_id}}"
-
-    str
+    colorize(parts.join(' | '))
   end
 
   def item_url_to_s(item)
