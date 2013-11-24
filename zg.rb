@@ -283,7 +283,7 @@ class ZeitgeistPlugin < Plugin
       h = '*^[<ID/OFFSET>] [<TAG1, TAG2, ...>|<!TITLE>]* - used in channels the bot listens in, to show or update an item specified by *ID* or *OFFSET* (by default with -1/last, of the submitted items in that room) | you need to have the *shortcuts* option enabled | prefix with ! to set a title'
 
     when 'search', 'search-source', 'search-reverse'
-      h = '*zg search[-source|reverse] <QUERY>* - search for items by title or source url'
+      h = '*zg search[-source|reverse] <QUERY>* - search for items by title, source url or reverse search by asset image filename/url'
 
     end
 
@@ -732,7 +732,7 @@ class ZeitgeistPlugin < Plugin
 
     if type == :title or type == :source
       res = colorize('[*%d*] ' % [items.length])
-      items = items[0...5]
+      items = items[0...12]
       res << colorize(items.map { |item|
         case item.type
         when 'image'
@@ -891,7 +891,6 @@ class ZeitgeistPlugin < Plugin
             m.reply announce, :to => :private
           end
 
-<<<<<<< HEAD
         rescue ConnectionError => e
           debug "I can't connect to zeitgeist: #{e.message}"
         rescue CreateItemError => e
@@ -903,18 +902,6 @@ class ZeitgeistPlugin < Plugin
             lart = @lartfile.sample.gsub('<who>', nick || m.source.to_s).strip
             m.act lart + ', duplicate item found: ' +item_to_s(item)
           end
-=======
-      rescue ConnectionError => e
-        debug "I can't connect to zeitgeist: #{e.message}"
-      rescue CreateItemError => e
-        # m.reply 'CreateItemError: ' + e.error.inspect
-        error = e.error
-        if e.error.class == DuplicateError
-          item = req.item(e.error.id) 
-          lart = @lartfile.sample.gsub('<who>', nick).strip
-          m.act lart + ', duplicate item found: ' +item_to_s(item)
-        end
->>>>>>> 92bf87b322a9c4757e8a4c0009daa5becfd2e460
 
 
           if not @errorlog.has_key? channel
