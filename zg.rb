@@ -883,11 +883,7 @@ class ZeitgeistPlugin < Plugin
             video_item = items.first
             if %w{video link}.include? video_item.type and not video_item.title.empty?
               if not channel.empty?
-                if video_item.source.match %r{youtube\.com/watch\?.*v=([^&]+)} 
-                  url = "http://youtu.be/#{$1}"
-                else
-                  url = video_item.source
-                end
+                url = item_url_to_s(video_item)
                 if video_item.type == 'video'
                   m.reply "\"#{Bold}#{video_item.title.ircify_html}#{NormalText}\" (#{url}) "
                 else
@@ -1130,8 +1126,8 @@ class ZeitgeistPlugin < Plugin
     if item.type == 'image' or not item.source
       url = "#{@base_url}#{item.id}"
     else
-      if item.source.match %r{youtube\.com/watch\?v=([^&]+)} 
-        url = "youtu.be/#{$1}"
+      if item.source.match %r{youtube\.com/watch\?.*v=([^&]+)} 
+        url = "http://youtu.be/#{$1}"
       else
         url = item.source
       end
