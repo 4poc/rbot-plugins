@@ -23,20 +23,6 @@ require 'rest_client'
 require 'json'
 require 'action_view'
 
-=begin
-module HashExtensions
-  def symbolize_keys
-    inject({}) do |acc, (k,v)|
-      key = String === k ? k.to_sym : k
-    value = Hash === v ? v.symbolize_keys : v
-    acc[key] = value
-    acc
-    end
-  end
-end
-Hash.send(:include, HashExtensions)
-=end
-
 module ::Zeitgeist
   class HashObject
     def initialize(obj=nil)
@@ -89,8 +75,8 @@ module ::Zeitgeist
       end
     end
 
-    def remote(url, tags = '', title = '', announce = false, ignore_fingerprint = false, link = false)
-      result = post('/new', :remote_url => url, :tags => tags, :title => [title], :link => link, :announce => (announce ? 'true' : 'false'), :ignore_fingerprint => (ignore_fingerprint ? 'true' : 'false'))
+    def remote(url, tags = '', title = '', announce = false, ignore_fingerprint = false, link = false, as_username = nil)
+      result = post('/new', :remote_url => url, :tags => tags, :title => [title], :link => link, :announce => (announce ? 'true' : 'false'), :ignore_fingerprint => (ignore_fingerprint ? 'true' : 'false'), :as_username => as_username)
       result[:items].map do |item|
         Item.new(item)
       end
@@ -189,14 +175,19 @@ module ::Zeitgeist
     def self.create(obj)
       case obj[:type]
       when 'DuplicateError'
-        DuplicateError.new(obj)
+        e = DuplicateError.new(obj)
       when 'CreateItemError'
-        CreateItemError.new(obj)
+        e = CreateItemError.new(obj)
       when 'RemoteError'
-        RemoteError.new(obj)
+        e = RemoteError.new(obj)
       else
-        new(obj)
+        e = new(obj)
       end
+      begin
+      debug 'create returned: ' + e.inspect
+      rescue
+      end
+      return e
     end
   end
 
@@ -289,10 +280,10 @@ class ZeitgeistPlugin < Plugin
       h = '*zg test* - check authentication against *%s* and show nickserv status' % host 
 
     when 'shortcuts'
-      h = '*^[<ID/OFFSET>] [<TAG1, TAG2, ...>|<!TITLE>]* - used in channels the bot listens in, to show or update an item specified by *ID* or *OFFSET* (by default with -1/last, of the submitted items in that room) | you need to have the *shortcuts* option enabled | prefix with ! to set a title'
+      h = '*^[<ID/OFFSET>] [#<TAG1, TAG2, ...>|!<TITLE>]* - used in channels the bot listens in, to show or update an item specified by *ID* or *OFFSET* (by default with -1/last, of the submitted items in that room) | this is opt-out if you dont like this, feature opt-out using *zg enable noshortcuts* | prefix with ! to set or remove a title'
 
-    when 'search'
-      h = '*zg [tags|title|source] search <QUERY>* - search for tags or items by title and source url (default search by title)'
+    when 'search', 'search-source', 'search-reverse'
+      h = '*zg search[-source|reverse] <QUERY>* - search for items by title, source url or reverse search by asset image filename/url'
 
     end
 
@@ -373,7 +364,7 @@ class ZeitgeistPlugin < Plugin
       m.reply colorize(h), :to => :private
     else
       h = 'You\'re recognized as *%s*. You\'ve got the following options:' % [user[:email]]
-      h << ' | *shortcuts* (%s) - opt-in the ^ syntax: *help zg shortcuts*' % [user[:shortcuts] ? 'enabled' : 'disabled']
+      h << ' | *noshortcuts* (%s) - opt-out the ^ syntax: *help zg shortcuts*' % [user[:noshortcuts] ? 'enabled' : 'disabled']
       h << ' | *notify* (%s) - get queried about own submissions and taggings' % [user[:notify] ? 'enabled' : 'disabled']
       h << ' | *nickserv* (%s) - increase security by enforcing nickserv identification' % [user[:nickserv] ? 'enabled' : 'disabled']
       h << ' | *alt* (%s) - alternative nicknames to recognize you under' % [user[:alt].length > 0 ? user[:alt].join(', ') : 'none']
@@ -523,6 +514,7 @@ class ZeitgeistPlugin < Plugin
   # Access: no-control
   def cmd_item_show(m, params)
     id = params[:id]
+    id = $1.to_i if id.match /(\d+)/
     begin
       item = api_request.item id
       m.reply item_to_s item
@@ -714,46 +706,78 @@ class ZeitgeistPlugin < Plugin
 
   #############################################################################
   # 
-  # Search for tags, title or source links
+  # Search for items by title, source url or reverse by asset filename.
   #
-  # Command: .zg search [for [tag/source/title]] [query]
+  # Command: .zg search[-source|reverse] [query]
   # Params: :channel (optional)
   # Access: open
   def cmd_item_search(m, params)
-    if not %w{tags title source reverse}.include? params[:type]
-      m.reply 'you can only search for tags, title or source'
-      return
-    end
-
+    max = 8
     type = params[:type]
     query = params[:query].join(' ')
 
-    if not query or query.empty? or query.length < 3
-      m.reply 'search for what exactly?'
+    req = api_request
+    items = req.search(query, type.to_s)
+
+    if items.length <= 0
+      types = %w{title source reverse}
+      types.delete(type.to_s)
+      types.each do |t|
+        items = req.search(query, t)
+        if items and items.length > 0
+          type = t.to_sym
+          break
+        end
+      end
+    end
+    
+    if items.length <= 0
+      m.reply 'no items found for %s search: "%s"' % [type.to_s, query]
       return
     end
 
-    req = api_request
-    items = req.search(query, type)
-    if type == 'tags'
-      tags = items
-      s = tags[0...10].map { |t| t.tagname }.join ', '
-      s += '...' if tags.length > 10
-      m.reply "Found #{Bold}%d#{NormalText} tags: %s" % [tags.length, s]
-    else
-
-      if type == 'title'
-        s = items[0...10].map { |i| "#{Bold}%d#{NormalText} : %s" % [i.id, i.title] }.join ', '
-      elsif type == 'reverse'
-        item = items[0]
-        s = "#{Bold}%d#{NormalText} : %s" % [item.id, item_to_s(item)]
+    if type == :title or type == :source
+      if items.length > max
+        res = colorize('[*%d/%d*] ' % [max, items.length])
       else
-        s = items[0...10].map { |i| "#{Bold}%d#{NormalText} : %s" % [i.id, i.source] }.join ', '
+        res = colorize('[*%d*] ' % [items.length])
       end
-      s += '...' if items.length > 10
-      m.reply "Found #{Bold}%d#{NormalText} items: %s" % [items.length, s]
-    end
 
+      items = items[0...max]
+      res << colorize(items.map { |item|
+        #p = ['%s:' % item.type[0].upcase, item.id.to_s]
+        p = ['%s:' % item.type, item.id.to_s]
+
+        # title:
+        if item.title and not item.title.empty?
+          title = item.title.ircify_html
+          if title.downcase.include? query.downcase
+            title.gsub!(/(#{query})/i, '*\\1*')
+            p << '"%s"' % title
+          else
+            p << '"*%s*"' % title
+          end
+        end
+
+        # tags: (only if no title)
+        if not item.title or item.title.empty? and item.tags and not item.tags.empty?
+          p << (item.tags.map {|tag| tag.tagname}).join(', ')
+        end
+
+        # url:
+        url = item_url_to_s(item)
+        if url.downcase.include? query.downcase
+          url.gsub!(/(#{query})/i, '*\\1*')
+          p << url
+        else
+          p << url
+        end
+        p.join(' ')
+      }.join(' | '))
+      m.reply res.strip
+    elsif type == :reverse
+      m.reply item_to_s(items.first)
+    end
   end
 
   def cmd_item_announce(m, params)
@@ -778,209 +802,210 @@ class ZeitgeistPlugin < Plugin
   end
 
   def message(m, dummy=nil)
-    Thread.new do
     message = m.message.strip
     source = m.source.to_s
     channel = m.channel.to_s
+
+    # parse zg messages and trigger help
+    if message.match /^zg (.*)$/
+      arg = $1
+      topics = %w{show create update claim title delete auth enable disable search search-source search-reverse}
+
+      if topics.include? arg
+        m.reply help('zg', arg)
+        m.replied = true
+        return true
+      end
+    end
+
     return if message[0...1] == '#' # ignore messages starting with #
-    return if message.match /^[^\/]*#/
+    return if message.match /^[^\/]*#/ and not message.match /^(~|\^)/
     ignore_fingerprint = message.match(/^\+/) ? true : false
     link = message.match(/^>/) ? true : false
+    as_username = nil
+    if message.match(/<([^>]+)>/)
+      as_username = $1.strip
+    end
     # this also ignores query messages, zg create should be used instead
-    return if not @bot.config['zg.listen'].include? channel
-    # try to find the user: user maybe nil for guest postings
-    nick, user = auth m
+    return if m.channel and not @bot.config['zg.listen'].include? channel
 
-    #
-    # parsing
-    #
-    # create items by urls and tags (optional)
-    create_urls = nil
-    create_tags = nil
-    create_title = nil
-    urls = message.scan(%r{(http[s]?://[^ \)\}\]]+)})
-    if urls.length > 0
-      urls.flatten! # since we're only interested in the first matching group 
+    Thread.new do
+      # try to find the user: user maybe nil for guest postings
+      nick, user = auth m
 
-      create_urls = urls
+      #
+      # parsing
+      #
+      # create items by urls and tags (optional)
+      create_urls = nil
+      create_tags = nil
+      create_title = nil
+      urls = message.scan(%r{(http[s]?://[^ \)\}\]]+)})
+      if urls.length > 0
+        urls.flatten! # since we're only interested in the first matching group 
 
-      # search after last url for tags that follow #
-      after = message[(message.rindex(urls.last) + urls.last.length)..-1]
-      if after.match %r{ #\s*([^#!]+)}
-        create_tags = $1
-      end
-      if after.match %r{ !\s*([^#!]+)}
-        create_title = $1
-      end
-    end
+        create_urls = urls
 
-    # more...
-    # ignore base_url in messages?
-    if create_urls
-      create_urls.each do |url|
-        create_urls.delete(url) if url.include? @base_url
-      end
-    end
-    #
-    # URLs IN CHANNEL MESSAGES
-    #
-    if create_urls and create_urls.length > 0
-      debug "create_urls => #{create_urls.inspect}"
-
-      req = api_request(user)
-      begin
-        #m.reply 'submit %d urls, link=%s' % [create_urls.length, link.to_s]
-        items = req.remote(create_urls, create_tags || '', create_title, false, ignore_fingerprint, link.to_s)
-
-        # remember items submitted in channel
-        items.each do |item|
-          push_history channel, item.id
+        # search after last url for tags that follow #
+        after = message[(message.rindex(urls.last) + urls.last.length)..-1]
+        if after.match %r{ #\s*([^#!]+)}
+          create_tags = $1
         end
+        if after.match %r{ !\s*([^#!]+)}
+          create_title = $1
+        end
+      end
 
-        # prepare announce message:
-        announce = "#{Bold + items.length.to_s + NormalText} item(s) submitted: #{items.map { |item| item_to_s(item)}.join(' | ')}"
+      # more...
+      # ignore base_url in messages?
+      if create_urls
+        create_urls.each do |url|
+          create_urls.delete(url) if url.include? @base_url
+        end
+      end
+      #
+      # URLs IN CHANNEL MESSAGES
+      #
+      if create_urls and create_urls.length > 0
+        debug "create_urls => #{create_urls.inspect}"
 
-        # announce video/link title in channel:
-        if not m.replied
-          video_item = items.first
-          if %w{video link}.include? video_item.type and not video_item.title.empty?
-            if not channel.empty?
-              if video_item.source.match %r{youtube\.com/watch\?.*v=([^&]+)} 
-                url = "http://youtu.be/#{$1}"
-              else
-                url = video_item.source
-              end
-              if video_item.type == 'video'
-                m.reply "\"#{Bold}#{video_item.title}#{NormalText}\" (#{url}) "
-              else
-                m.reply "\"#{Bold}#{video_item.title}#{NormalText}\""
+        req = api_request(user)
+        begin
+          #m.reply 'submit %d urls, link=%s' % [create_urls.length, link.to_s]
+          items = req.remote(create_urls, create_tags || '', create_title, false, ignore_fingerprint, link.to_s, as_username)
+
+          # remember items submitted in channel
+          items.each do |item|
+            push_history channel, item.id
+          end
+
+          # prepare announce message:
+          announce = "#{Bold + items.length.to_s + NormalText} item(s) submitted: #{items.map { |item| item_to_s(item)}.join(' | ')}"
+
+          # announce video/link title in channel:
+          if not m.replied
+            video_item = items.first
+            if %w{video link}.include? video_item.type and not video_item.title.empty?
+              if not channel.empty?
+                url = item_url_to_s(video_item)
+                if video_item.type == 'video'
+                  m.reply "\"#{Bold}#{video_item.title.ircify_html}#{NormalText}\" (#{url}) "
+                else
+                  m.reply "\"#{Bold}#{video_item.title.ircify_html}#{NormalText}\""
+                end
               end
             end
           end
-        end
 
-        # guest user?
-        if not user
-          if not @reg.has_key? :ignore_guests
-            @reg[:ignore_guests] = []
-          end
-
-          if not @reg[:ignore_guests].include? source
-            # just inform them once!
-            @reg[:ignore_guests] << source
-
-            host = URI.parse(@bot.config['zg.base_url']).host
-            m.reply colorize('The link(s) you\'ve mentioned in *%s* have been submitted to %s: %s' % [channel, host, announce]), :to => :private
-            cmd_main(m)
-            m.reply '(I won\'t bother you again with this don\'t worry)', :to => :private
-          end
-        elsif user[:notify]
-          # @bot.say(source, )
-          m.reply announce, :to => :private
-        end
-
-      rescue ConnectionError => e
-        debug "I can't connect to zeitgeist: #{e.message}"
-      rescue CreateItemError => e
-        # m.reply 'CreateItemError: ' + e.error.inspect
-        error = e.error
-        if e.error.class == DuplicateError
-          item = req.item(e.error.id) 
-          lart = @lartfile.sample.gsub('<who>', nick).strip
-          m.act lart + ', duplicate item found: ' +item_to_s(item)
-        end
-
-
-        if not @errorlog.has_key? channel
-          @errorlog[channel] = []
-        end
-        @errorlog[channel] << {
-          :time => Time.now,
-          :error => e.error
-        }
-
-        e.items.map {|item| push_history channel, item.id }
-      rescue Error => e
-        m.reply "Error: #{e.message}"
-        debug "#{Bold}Error occured:#{NormalText} #{e.message}"
-      end
-
-
-    end
-
-    #
-    # SHORTCUTS ^ or ~ in the beginning of a line to show items or tag/untag
-    #
-    if message.match /^(\^|~)(-?[0-9]+)?( .*)?$/
-      return if not user or not user[:shortcuts]
-
-      if not $2 or $2.empty?
-        id = @reg[:history][channel][-1]
-      elsif $2[0...1] == '-' # offset in history:
-        id = @reg[:history][channel][$2.to_i] 
-      else
-        id = $2.to_i
-      end
-
-      req = api_request(user)
-      begin
-
-
-        # push_history channel, id
-
-        action = $3
-
-        if action and action.match /!(.*)/
-          title = $1
-          item = req.update_title(id, title)
-          #if not title or title.empty?
-          #  m.reply "##{id} title removed."
-          #else
-          #  m.reply "##{id} new title: \"#{title}\""
-          #end
-          if user[:notify]
-            m.reply "item title changed: #{item_to_s(item)}", :to => :private
-          end
-
-        elsif action and not action.empty?
-          tags = action.split ','
-          add_tags = []
-          del_tags = []
-
-          tags.each do |tag|
-            tag.strip!
-            if tag[0...1] == '-'
-              del_tags << tag[1..-1]
-            elsif tag[0...1] == '+'
-              add_tags << tag[1..-1]
-            else
-              add_tags << tag
+          # guest user?
+          if not user
+            if not @reg.has_key? :ignore_guests
+              @reg[:ignore_guests] = []
             end
-          end
 
-          # m.reply "add:#{add_tags.inspect} del:#{del_tags.inspect}"
+            if not @reg[:ignore_guests].include? source
+              # just inform them once!
+              @reg[:ignore_guests] << source
 
-          item = req.update(id, add_tags.join(','), del_tags.join(','))
-          # m.reply 'item: ' + item_to_s(item)
-          if user[:notify]
+              host = URI.parse(@bot.config['zg.base_url']).host
+              m.reply colorize('The link(s) you\'ve mentioned in *%s* have been submitted to %s: %s' % [channel, host, announce]), :to => :private
+              cmd_main(m)
+              m.reply '(I won\'t bother you again with this don\'t worry)', :to => :private
+            end
+          elsif user[:notify]
             # @bot.say(source, )
-            m.reply "item tagged: #{item_to_s(item)}", :to => :private
+            m.reply announce, :to => :private
           end
-        else
-          item = req.item(id)
-          m.reply 'item: ' + item_to_s(item)
+
+        rescue ConnectionError => e
+          debug "I can't connect to zeitgeist: #{e.message}"
+        rescue CreateItemError => e
+          # m.reply 'CreateItemError: ' + e.error.inspect
+          debug 'got create item error e: ' + e.inspect
+          error = e.error
+          if e.error.class == DuplicateError
+            item = req.item(e.error.id) 
+            lart = @lartfile.sample.gsub('<who>', nick || m.source.to_s).strip
+            m.act lart + ', duplicate item found: ' +item_to_s(item)
+          end
+
+
+          if not @errorlog.has_key? channel
+            @errorlog[channel] = []
+          end
+          @errorlog[channel] << {
+            :time => Time.now,
+            :error => e.error
+          }
+
+          e.items.map {|item| push_history channel, item.id }
+        rescue Error => e
+          m.reply "Error: #{e.message}"
+          debug "#{Bold}Error occured:#{NormalText} #{e.message}"
         end
 
-      rescue ConnectionError => e
-        debug "I can't connect to zeitgeist: #{e.message}"
-      rescue Error => e
-        debug "#{Bold}Error occured:#{NormalText} #{e.message}"
-        # maybe tell the error but nothing else
+
       end
 
+      #
+      # SHORTCUTS ^ or ~ in the beginning of a line to show items or tag/untag
+      #
+      if message.match /^(\^|~)(-?[0-9]+)?( .*)?$/
+        return if not user or user[:noshortcuts]
 
+        if not $2 or $2.empty?
+          id = @reg[:history][channel][-1]
+        elsif $2[0...1] == '-' # offset in history:
+          id = @reg[:history][channel][$2.to_i] 
+        else
+          id = $2.to_i
+        end
 
-    end
+        req = api_request(user)
+        begin
+          action = $3
+
+          if action and action.match /!(.*)/
+            title = $1
+            item = req.update_title(id, title)
+            if user[:notify]
+              m.reply "item title changed: #{item_to_s(item)}", :to => :private
+            end
+
+          elsif action and not action.empty?
+            action.gsub!(/^\s*#\s*/, '')
+            tags = action.split ','
+            add_tags = []
+            del_tags = []
+
+            tags.each do |tag|
+              tag.strip!
+              if tag[0...1] == '-'
+                del_tags << tag[1..-1]
+              elsif tag[0...1] == '+'
+                add_tags << tag[1..-1]
+              else
+                add_tags << tag
+              end
+            end
+
+            item = req.update(id, add_tags.join(','), del_tags.join(','))
+            # m.reply 'item: ' + item_to_s(item)
+            if user[:notify]
+              m.reply "item tagged: #{item_to_s(item)}", :to => :private
+            end
+          else
+            item = req.item(id)
+            m.reply 'item: ' + item_to_s(item)
+          end
+
+        rescue ConnectionError => e
+          debug "I can't connect to zeitgeist: #{e.message}"
+        rescue Error => e
+          debug "#{Bold}Error occured:#{NormalText} #{e.message}"
+          # maybe tell the error but nothing else
+        end
+      end
     end
   end
 
@@ -1009,7 +1034,7 @@ class ZeitgeistPlugin < Plugin
     @reg[:users][nick] = {
       :email => email,
       :api_secret => api_secret,
-      :shortcuts => false,
+      :noshortcuts => false,
       :shortupvotes => false,
       :notify => false, # query user about his published items, taggings and upvotes
       :nickserv => false, # enforce nickserv authentication, needs it to set it
@@ -1070,47 +1095,48 @@ class ZeitgeistPlugin < Plugin
 
   # convert item object to IRC string (with bold text, etc.)
   def item_to_s(item)
-    str = "#{Bold + item.id.to_s + NormalText} - "
+    parts = [item.id.to_s]
     if item.type == 'image'
-      str << "#{item.mimetype} "
-      str << "#{format_size item.size} "
+      parts << '%s %s %s' % [item.mimetype, item.dimensions, format_size(item.size)]
     else
-      str << "#{item.type} "
+      parts << item.type
     end
 
     if item.title and not item.title.empty?
-      str << "\"#{Bold + item.title + NormalText}\""
+      parts << '"*%s*"' % item.title.ircify_html
     end
+
     if item.source and not item.source.match /http/
-      str << " #{Bold + item.source + NormalText}"
+      parts << '*%s*' % item.source
     end
 
     if item.tags and not item.tags.empty?
-      str << " - tagged: #{(item.tags.map {|tag| tag.tagname}).join ', '}"
+      parts << '%s' % [(item.tags.map {|tag| tag.tagname}).join(', ')]
     end
 
+    url = item_url_to_s(item)
+    parts << url
+
+    relative_create_at = distance_of_time_in_words(Time.parse(item.created_at), Time.now)
+    parts << '%s ago' % relative_create_at
+
+    if item.respond_to? 'username' and item.username
+      parts << 'posted by *%s*' % item.username
+    end
+
+    colorize(parts.join(' | '))
+  end
+
+  def item_url_to_s(item)
     if item.type == 'image' or not item.source
       url = "#{@base_url}#{item.id}"
     else
-      if item.source.match %r{youtube\.com/watch\?v=([^&]+)} 
+      if item.source.match %r{youtube\.com/watch\?.*v=([^&]+)} 
         url = "http://youtu.be/#{$1}"
       else
         url = item.source
       end
     end
-
-    str << " #{Bold + url + NormalText}"
-
-    relative_create_at = distance_of_time_in_words(Time.parse(item.created_at), Time.now)
-    str << " - #{relative_create_at} ago"
-
-    if item.respond_to? 'username' and item.username
-      str << " - posted by #{Bold + item.username + NormalText}"
-    end
-
-    # str << "{#{item.dm_user_id}}"
-
-    str
   end
 
   def format_size(size)
@@ -1202,8 +1228,18 @@ plugin.map 'zg announce :id',
            :threaded => true, 
            :action => 'cmd_item_announce' 
 
-plugin.map 'zg [:type] search *query', # search for title
+plugin.map 'zg search *query', # search for title
            :threaded => true, 
-           :defaults => {:type => 'title'} ,
+           :defaults => {:type => :title} ,
+           :action => 'cmd_item_search' 
+
+plugin.map 'zg search-source *query', # search in source url
+           :threaded => true, 
+           :defaults => {:type => :source} ,
+           :action => 'cmd_item_search' 
+
+plugin.map 'zg search-reverse *query', # reverse search from asset filename/url
+           :threaded => true, 
+           :defaults => {:type => :reverse} ,
            :action => 'cmd_item_search' 
 
