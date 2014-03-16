@@ -16,10 +16,10 @@ class TestIMDb < Test::Unit::TestCase
     f = IMDb::Formatter.new
     api = IMDb::Api.new
     entry = api.create('tt0098904', :load_series => true)
-    assert_equal('172 episodes | 9 seasons | last episode 15 years ago [14.05.1998] S09E22 "The Finale"', f.schedule(entry))
+    assert_match(%r{172 episodes | 9 seasons | last episode \d+ years ago [14.05.1998] S09E22 "The Finale"}, f.schedule(entry))
 
     entry = api.create('tt0068098', :load_series => true)
-    assert_equal('251 episodes | 11 seasons | last episode 30 years ago [28.02.1983] S11E16 "Goodbye, Farewell, and Amen"', f.schedule(entry))
+    assert_match(%r{251 episodes | 11 seasons | last episode \d+ years ago [28.02.1983] S11E16 "Goodbye, Farewell, and Amen"}, f.schedule(entry))
   end
 
   def test_formatter_overview_series
@@ -40,7 +40,7 @@ class TestIMDb < Test::Unit::TestCase
     f = IMDb::Formatter.new
     api = IMDb::Api.new
     entry = api.create('tt0133093')
-    assert_match(%r{^The Matrix \(USA/Australia, 1999\) \| #{RE_RATINGS} \| Action/Adventure/Sci-Fi by Andy Wachowski and Lana Wachowski \| http://www\.imdb\.com/title/tt0133093$}, f.overview(entry))
+    assert_match(%r{^The Matrix \(USA/Australia, 1999\) \| #{RE_RATINGS} \| Action/Sci-Fi by Andy Wachowski and Lana Wachowski \| http://www\.imdb\.com/title/tt0133093$}, f.overview(entry))
 
     entry = api.create('tt2705546')
     assert_match(%r{^Les Aventures de Franck et Foo-Yang, TV Mini Series \(France, 1989\) \| Sci-Fi with Jean-Yves Chalangeas, Jacques Duby and Yamato Huy \| http://www\.imdb\.com/title/tt2705546$}, f.overview(entry))
@@ -163,7 +163,7 @@ class TestIMDb < Test::Unit::TestCase
     assert_equal(['Andy Wachowski', 'Lana Wachowski'], mov.director)
     assert_match(/^\d+\.\d+$/, mov.rating)
     assert_match(/^\d+,\d+$/, mov.votes)
-    assert_equal(['Action', 'Adventure', 'Sci-Fi'], mov.genre)
+    assert_equal(['Action', 'Sci-Fi'], mov.genre)
   end
 
   def test_search
@@ -186,7 +186,7 @@ class TestIMDb < Test::Unit::TestCase
     assert_equal(['Andy Wachowski', 'Lana Wachowski'], mov.director)
     assert_match(/^\d+\.\d+$/, mov.rating)
     assert_match(/^\d+,\d+$/, mov.votes)
-    assert_equal(['Action', 'Adventure', 'Sci-Fi'], mov.genre)
+    assert_equal(['Action', 'Sci-Fi'], mov.genre)
   end
 
   def test_english_title
@@ -271,6 +271,16 @@ class TestIMDb < Test::Unit::TestCase
     assert_equal('TV Series', api.create('tt0108778').type)
   end
 
+  def test_tv_show_episodes_without_airdate
+    api = IMDb::Api.new
+    results = api.search('Quick Draw')
+    assert(results.length > 0)
+    entry = results.first
+    item = api.create(entry[:id], :load_series => true)
+    puts item.get_sorted_episodes.first
+
+  end
+
   def test_tv_show_episodes
     api = IMDb::Api.new
     show = api.create('tt0108778')
@@ -299,8 +309,8 @@ class TestIMDb < Test::Unit::TestCase
 
     res = api.search('The Americans', :type => 'tt')
     americans = api.create(res.first[:id], :load_series => true)
-    episode = americans.get_sorted_episodes.last
-    assert_equal(2014, episode.airdate.year)
+    episode = americans.get_sorted_episodes.first
+    assert_equal(2013, episode.airdate.year)
 
     res = api.search('Homeland', :type => 'tt')
     homeland = api.create(res.first[:id], :load_series => true)
@@ -349,11 +359,11 @@ class TestIMDb < Test::Unit::TestCase
   def test_list_ratings
     api = IMDb::Api.new
     #require 'method_profiler'
-    ratings = api.list('ur22053040')
+    #ratings = api.list('ur22053040')
     # ur22760319
     #log = File.new('brief_test_log', 'w')
-    puts
-    puts
+    #puts
+    #puts
     #profiler = MethodProfiler.observe(IMDb::Title)
     #ratings.each do |id|
     #  next if not id.match /\d+$/

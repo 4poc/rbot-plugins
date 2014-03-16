@@ -1,6 +1,6 @@
 # vim: tabstop=4 expandtab shiftwidth=2 softtabstop=2
 # Scraping IMDb API Library for Ruby
-# Copyright (C) 2013  Matthias Hecker <http://apoc.cc/>
+# Copyright (C) 2013-2014  Matthias Hecker <http://apoc.cc/>
 #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,6 +18,7 @@
 ##
 # Developed for and tested with ruby >= 1.9.3 and >= 2.0.0
 # Latest version at: https://github.com/4poc/rbot-plugins/tree/master/imdb2api
+# Requires Mechanize.
 #
 
 require 'mechanize'
@@ -122,6 +123,7 @@ module ::IMDb
     #        limit (nil) limit search result number
     ##
     def search(query, opts={})
+      clear_cookies
       find_url = BASE_URL + '/find?q=%s' % CGI.escape(query)
       results = @cache.get(find_url)
       if not results or not @use_cache
@@ -162,6 +164,7 @@ module ::IMDb
     end
 
     def create(id, opts={})
+      clear_cookies
       case id.match(RE_ID)[2]
       when 'tt'
         # discover if its a title, series or episode:
@@ -202,6 +205,62 @@ module ::IMDb
       end
     end
 
+    def clear_cookies
+      @agent.cookie_jar = Mechanize::CookieJar.new
+    end
+
+    def set_cookies(cookies)
+      @agent.cookie_jar = cookies
+    end
+
+    # login, return cookie
+    def login(username, password)
+      url = 'https://secure.imdb.com/oauth/login?show_imdb_panel=1'
+      begin
+        clear_cookies
+        page = @agent.get(url)
+        form = page.forms.first
+        form.login = username
+        form.password = password
+        page = form.submit
+        if page.uri.to_s.match /closer/
+          @agent.cookie_jar
+        else
+          nil
+        end
+      rescue
+        error $!.to_s
+        error $@.join '\n'
+        nil
+      end
+    end
+
+    def feed(imdb_id, type='ratings')
+      url = 'http://rss.imdb.com/user/%s/%s' % [imdb_id, type]
+      ratings = []
+
+      feed = @agent.get url
+      feed = Nokogiri::XML(feed.body)
+      feed.xpath('//item').each do |item|
+        link = item.xpath('./link').inner_text
+        if link.match /(tt\d+)/
+          imdb_id = $1
+        end
+
+        rate = item.xpath('./description').inner_text
+        if rate.match /rated this (\d+)\./
+          rate = $1
+        end
+ 
+        ratings << {
+          :imdb_id => imdb_id,
+          :rating => rate,
+        }
+      end
+
+      ratings
+    end
+
     def list(uid, type='ratings')
       url = BASE_URL + '/list/export?list_id=%s&author_id=%s' % [type, uid]
       csv = @cache.get(url)
@@ -224,10 +283,10 @@ module ::IMDb
   end
 
   class Formatter
-    attr_accessor :irc_color, :brief, :tv_schedule
+    attr_accessor :color_markup, :brief, :tv_schedule
 
     def initialize(opts={})
-      @irc_color = opts[:irc_color]
+      @color_markup = opts[:color_markup]
     end
 
     def overview(entry)
@@ -344,13 +403,19 @@ module ::IMDb
 
     def title(entry)
       if entry.instance_of? Series or entry.instance_of? Episode
-        '"%s"' % entry.title
+        ('"'+cl('bold')+'%s'+cl+'"') % entry.title
       else
         if entry.type != 'Feature Film'
-          '%s, %s' % [entry.title, entry.type]
+          (cl('bold')+'%s'+cl+', %s') % [entry.title, entry.type]
         else
-          entry.title
+          cl('bold')+entry.title+cl
         end
+      end
+    end
+
+    def plot(entry)
+      if entry.respond_to? :plot
+        entry.plot
       end
     end
 
@@ -447,6 +512,18 @@ module ::IMDb
     end
 
     private
+
+    def cl(color=nil)
+      if @color_markup
+        if not color
+          '[/c]'
+        else
+          '[%s]' % color
+        end
+      else
+        ''
+      end
+    end
 
     def hr_list(list)
       list = list.dup
@@ -578,7 +655,11 @@ module ::IMDb
     end
 
     def to_s
-      super + (' %s (%s %s)' % [@type, @country.join('/'), @year])
+      if @country and @year
+        super + (' %s (%s %s)' % [@type, @country.join('/'), @year])
+      else
+        super + (' %s' % [@type])
+      end
     end
 
     def load! api
@@ -587,6 +668,7 @@ module ::IMDb
       # parse type
       type = @page.search(TYPE).first
       if type
+        #debug type.inspect
         matches = type.content.scan(/\w+/)
         if not matches.empty?
           @type = matches.join(' ')
@@ -693,7 +775,7 @@ module ::IMDb
         sorted_episodes.each do |epi|
           epi.number = num
           num += 1
-          #debug 'S%02dE%02d [%d] -- %s' % [epi.season, epi.episode, epi.number, epi.airdate]
+          #debug '%s S%02dE%02d [%d] -- %s' % [title, epi.season, epi.episode, epi.number, epi.airdate]
         end
       end
       @series_loaded = true
@@ -782,10 +864,14 @@ module ::IMDb
       @page.search('.info[itemprop="episodes"]').each do |episode|
         episode_num = episode.search('meta[itemprop="episodeNumber"]/@content').first.value.to_i
         airdate = episode.search('.airdate').first.content.strip
-        if airdate.match /^\w+\.? \d+, \d{4}$/
+        if airdate.match /^\d+ \w+\.? \d{4}$/
+          airdate = Date.strptime(airdate.gsub(/(\w+)\./, '\\1'), '%e %b %Y')
+        elsif airdate.match /^\w+\.? \d+, \d{4}$/
           airdate = Date.strptime(airdate.gsub(/^(\w+)\./, '\\1'), '%b %e, %Y')
-        elsif airdate.match /\d{4}/
-          airdate = Date.strptime(airdate, '%Y')
+        #elsif airdate.match /(\w+). (\d{4})/
+        #  airdate = Date.strptime('01 %s %d' % [$1, $2], '%d %b %Y')
+        #elsif airdate.match /(\d{4})/
+        #  airdate = Date.strptime('01 01 %d' % $1, '%d %m %Y')
         else
           airdate = nil
         end
