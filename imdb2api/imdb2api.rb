@@ -25,6 +25,7 @@ require 'mechanize'
 
 require 'date'
 require 'csv'
+require 'net/http'
 
 if not defined? debug
   def debug(msg)
@@ -190,6 +191,7 @@ module ::IMDb
         debug $@.join("\n")
         return nil
       end
+      entry.page = nil
       entry
     end
 
@@ -233,7 +235,7 @@ module ::IMDb
         end
       rescue
         error $!.to_s
-        error $@.join '\n'
+        error $@.join "\n"
         nil
       end
     end
@@ -250,7 +252,11 @@ module ::IMDb
       url = 'http://rss.imdb.com/user/%s/%s' % [user_id, type]
       ratings = []
 
-      feed = @agent.get url
+      begin
+        feed = @agent.get url
+      rescue # Net::HTTPNotFound
+        return nil # user set this to private (probaply)
+      end
       feed = Nokogiri::XML(feed.body)
       feed.xpath('//item').each do |item|
         obj = {}
@@ -276,7 +282,11 @@ module ::IMDb
       url = BASE_URL + '/list/export?list_id=%s&author_id=%s' % [type, user_id]
       csv = @cache.get(url)
       if not csv or not @use_cache
-        page = @agent.get url
+        begin
+          page = @agent.get url
+        rescue # Net::HTTPNotFound
+          return nil # user set this to private (probaply)
+        end
         csv = page.body
         @cache.put(url, csv, EXPIRE_LIST)
       end
@@ -304,12 +314,13 @@ module ::IMDb
     end
 
     def rate(imdb_id, rate)
-      page = @agent.get '%s/title/%s/reference' % [BASE_URL, imdb_id]
-      link = page.search '//a[contains(@href, "vote?v=%d;")]/@href' % [rating]
+      url = '%s/title/%s' % [BASE_URL, imdb_id]
+      page = @agent.get url+'/reference'
+      link = page.search '//a[contains(@href, "vote?v=%d;")]/@href' % [rate]
       if not link or link.empty?
         return false
       end
-      agent.get movie.url + '/' + link.first.value
+      agent.get url + '/' + link.first.value
       return true
     end
   end
@@ -329,6 +340,20 @@ module ::IMDb
       elsif entry.kind_of? Character
         overview_character entry
       end
+    end
+
+    def short_title(entry)
+      format([
+          # title, in quotes if tv series/ episode
+          title(entry),
+
+          # season/episode and series
+          format([
+            season_and_episode(entry),
+            'of',
+            series(entry)
+          ], :ignore => true),
+      ], :seperator => [' '])
     end
 
     def overview_title(entry)
@@ -632,6 +657,7 @@ module ::IMDb
   # Like titles (tt), names (nm) or characters (ch)
   ##
   class Entry
+    attr_accessor :page # just to remove it later
     attr_reader :id, :description
 
     def initialize(id)
