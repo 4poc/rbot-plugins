@@ -93,6 +93,7 @@ module ::IMDb
     end
 
     def put(key, obj, expire=EXPIRE_DEFAULT)
+      debug 'filecache, put in cache: '+key.inspect
       @cache[key] = new_entry(obj, expire)
 
       save_cache
@@ -110,7 +111,8 @@ module ::IMDb
   end
 
   class Api
-    attr_reader :agent, :cache, :use_cache
+    attr_accessor :use_cache
+    attr_reader :agent, :cache
 
     def initialize(opts={})
       @cache = opts[:cache] || FileCache.new
@@ -322,6 +324,15 @@ module ::IMDb
       end
       agent.get url + '/' + link.first.value
       return true
+    end
+
+    def check_cache(imdb_id)
+      # check if urls of this item can be found in the cache:
+      url = '%s/title/%s' % [BASE_URL, imdb_id]
+      {
+        :base => (@cache.get(url)),
+        :series => (@cache.get(url + '/episodes?season=1')),
+      }
     end
   end
 

@@ -123,12 +123,14 @@ class ImdbNgPlugin < Plugin
   end
 
   def update_feed(type)
+    @imdb.use_cache = false
     # updates the ratings of every user
     @users.each_pair do |nick, user|
       debug 'update feed for user: %s' % [nick]
       user_id = user[:user_id]
       yield(nick, (@imdb.feed(user_id, type) or []))
     end
+    @imdb.use_cache = true
   end
 
   def update_export(type)
@@ -137,12 +139,14 @@ class ImdbNgPlugin < Plugin
       error 'unable to export, unable to login as export user (not configured?)'
       return false
     end
+    @imdb.use_cache = false
     # updates the ratings of every user
     @users.each_pair do |nick, user|
       debug 'update export csv for user: %s' % [nick]
       user_id = user[:user_id]
       yield(nick, (@imdb.export(user_id, type) or []))
     end
+    @imdb.use_cache = true
   end
 
   def update_ratings(nick, ratings)
@@ -228,11 +232,30 @@ class ImdbNgPlugin < Plugin
     return if params[:query].join(' ').include? 'login'
     entry = find_entry(m, params[:query].join(' '), :limit => 1) or return
     reply m, format_entry(entry, :overview, :plot)
+    reply m, summary_community(entry.id)
   end
 
   def search_tv(m, params)
-    entry = find_entry(m, params[:query].join(' '), :limit => 1, :load_series => true) or return
+    entry = find_entry(m, params[:query].join(' '), :limit => 1) or return
+    if entry.kind_of? IMDb::Series
+      unless @imdb.check_cache(entry.id)[:series]
+        reply m, '[brown](load tv show data, this might take awhile)[/c]'
+      end
+      entry.load_series!(@imdb)
+    end
     reply m, format_entry(entry, :overview, :plot, :schedule)
+    reply m, summary_community(entry.id)
+  end
+
+  def summary_community(imdb_id)
+    groups = []
+
+    ratings = get_user_ratings_for_movie(imdb_id)
+    groups << '[olive]Others voted[/c]: ' + ratings.join(', ') if ratings and not ratings.empty?
+    watchlist = get_user_watchlist_for_movie(imdb_id)
+    groups << '[royal_blue]Planning to watch[/c]: ' + watchlist.join(', ') if watchlist and not watchlist.empty?
+
+    groups.join(' | ')
   end
 
   def rate(m, params)
@@ -384,6 +407,7 @@ class ImdbNgPlugin < Plugin
   ###################################################################
   
   def message(m, dummy=nil)
+    return if m.address?
     message = m.message.strip
     nick = m.source.to_s
 
@@ -393,7 +417,6 @@ class ImdbNgPlugin < Plugin
       rating = $3.to_i
       entry = @imdb.create(imdb_id)
       if not entry or not entry.kind_of? IMDb::Title
-        #reply m, '[red]error movie not found'
         debug 'entry not found, entry was: ' + entry.inspect
         return
       end
@@ -409,17 +432,23 @@ class ImdbNgPlugin < Plugin
       end
     elsif message.match %r{(@)?(tt\d+)}
       debug 'show via inline message: %s' % [$2]
-      brief = $1
+      long = $1
       imdb_id = $2
       entry = @imdb.create(imdb_id)
-      if not entry or entry.class >= IMDb::Title
-        #reply m, '[red]error movie not found'
+      if not entry or not entry.kind_of? IMDb::Title
+        debug 'entry not found, entry was: ' + entry.inspect
         return
       end
-      if brief and not brief.empty?
-        reply m, format_entry(entry, :overview)
+      if long and not long.empty?
+        if entry.kind_of? IMDb::Series
+          unless @imdb.check_cache(entry.id)[:series]
+            reply m, '[brown](load tv show data, this might take awhile)[/c]'
+          end
+          entry.load_series!(@imdb)
+        end
+        reply m, format_entry(entry, :overview, :plot, :schedule)
       else
-        reply m, format_entry(entry, :overview, :plot)
+        reply m, format_entry(entry, :overview)
       end
     end
 
@@ -445,6 +474,26 @@ class ImdbNgPlugin < Plugin
     end
   end
 
+  def get_user_ratings_for_movie(imdb_id, exclude_nick=nil)
+    s = []
+    @users.keys.each do |nick|
+      next if exclude_nick and nick == exclude_nick
+      user_rating = get_user_from_list(@ratings, nick, imdb_id)
+      s << '[b]%s[/c] (%d)' % [nohl(nick), user_rating[:rating]] if user_rating
+    end
+    s
+  end
+
+  def get_user_watchlist_for_movie(imdb_id, exclude_nick=nil)
+    s = []
+    @users.keys.each do |nick|
+      next if exclude_nick and nick == exclude_nick
+      user_watchlist = get_user_from_list(@watchlist, nick, imdb_id)
+      s << '[b]%s[/c]' % [nohl(nick)] if user_watchlist
+    end
+    s
+  end
+
   def get_announcements
     # poll from event manager:
     rating = @events.poll('rating')
@@ -458,12 +507,7 @@ class ImdbNgPlugin < Plugin
     lines = []
     lines += format_announcements(rating, '%s rated %s: ') do |entry, imdb| 
       imdb_id = imdb.id
-      s = []
-      @users.keys.each do |nick|
-        next if nick == entry[:nick]
-        user_rating = get_user_from_list(@ratings, nick, imdb_id)
-        s << '[b]%s[/c] (%d)' % [nohl(nick), user_rating[:rating]] if user_rating
-      end
+      s = get_user_ratings_for_movie(imdb_id, entry[:nick])
       if s.length > 0
         ' | ' + s.join(', ')
       else
@@ -472,12 +516,7 @@ class ImdbNgPlugin < Plugin
     end
     lines += format_announcements(watchlist, '%s added %s to watchlist. ') do |entry, imdb| 
       imdb_id = imdb.id
-      s = []
-      @users.keys.each do |nick|
-        next if nick == entry[:nick]
-        user_watchlist = get_user_from_list(@watchlist, nick, imdb_id)
-        s << '[b]%s[/c]' % [nohl(nick)] if user_watchlist
-      end
+      s = get_user_watchlist_for_movie(imdb_id, entry[:nick])
       if s.length > 0
         ' | ' + s.join(', ')
       else
@@ -586,8 +625,8 @@ plugin.map 'imdb user add [:user_id]', :action => :user_add, :threaded => true
 plugin.map 'imdb user login [:username] [*password]', :action => :user_login, :threaded => true
 plugin.map 'imdb user remove', :action => :user_remove
 
+plugin.map 'imdb tv *query', :action => :search_tv, :threaded => true
 plugin.map 'imdb [search] *query', :action => :search, :threaded => true
-plugin.map 'imdb [tv] *query', :action => :search_tv, :threaded => true
 
 # clears the cache of ratings / watchlist entries
 plugin.map 'imdb-clear', :action => :manual_clear
