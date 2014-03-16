@@ -35,6 +35,9 @@ if not defined? debug
     end
     msg.each { |m| puts '[%s] - %s' % [Time.now, m] }
   end
+  def error(msg)
+    debug(msg)
+  end
 end
 
 module ::IMDb
@@ -235,34 +238,42 @@ module ::IMDb
       end
     end
 
-    def feed(imdb_id, type='ratings')
-      url = 'http://rss.imdb.com/user/%s/%s' % [imdb_id, type]
+    def get_user_id
+      page = @agent.get 'http://www.imdb.com/list/ratings'
+      # should redirect us, now with ur<id> in the url:
+      if page.uri.to_s.match /(ur\d+)/
+        return $1
+      end
+    end
+
+    def feed(user_id, type='ratings')
+      url = 'http://rss.imdb.com/user/%s/%s' % [user_id, type]
       ratings = []
 
       feed = @agent.get url
       feed = Nokogiri::XML(feed.body)
       feed.xpath('//item').each do |item|
+        obj = {}
+
         link = item.xpath('./link').inner_text
         if link.match /(tt\d+)/
-          imdb_id = $1
+          obj[:imdb_id] = $1
         end
 
         rate = item.xpath('./description').inner_text
         if rate.match /rated this (\d+)\./
-          rate = $1
+          obj[:rating] = $1.to_i
         end
  
-        ratings << {
-          :imdb_id => imdb_id,
-          :rating => rate,
-        }
+        ratings << obj
       end
 
       ratings
     end
 
-    def list(uid, type='ratings')
-      url = BASE_URL + '/list/export?list_id=%s&author_id=%s' % [type, uid]
+    # csv export of any user requires login as anyone user
+    def export(user_id, type='ratings')
+      url = BASE_URL + '/list/export?list_id=%s&author_id=%s' % [type, user_id]
       csv = @cache.get(url)
       if not csv or not @use_cache
         page = @agent.get url
@@ -270,15 +281,36 @@ module ::IMDb
         @cache.put(url, csv, EXPIRE_LIST)
       end
       list = CSV.parse(csv)
-      list.map { |x| x[1] }
+      header = list.shift
+      fields = {
+        :imdb_id => /const/,
+        :rating => /.* rated/
+      }
+      fields.each_key do |key|
+        header.each_index do |i|
+          heading = header[i]
+          if fields[key].instance_of?(Regexp) and heading.match(fields[key])
+            fields[key] = i
+          end
+        end
+      end
+      list.map do |entry|
+        obj = {}
+        fields.each_pair do |key, i|
+          obj[key] = entry[i].match(/^\d+$/) ? entry[i].to_i : entry[i]
+        end
+        obj
+      end
+    end
 
-      #puts
-#[["position", "const", "created", "modified", "description", "Title", "Title type", "Directors", "jessor rated", "IMDb Rating", "Runtime (mins)", "Year", "Genres", "Num. Votes", "Release Date (month/day/year)", "URL"],
-#  ["1", "tt1959332", "Sat Aug  3 00:00:00 2013", "", "", "American Mary", "Feature Film", "Jen, Sylvia Soska", "8", "6.1", "103", "2012", "horror, thriller", "5448", "2012-08-27", "http://www.imdb.com/title/tt1959332/"]]
-
-      #puts list.first.inspect
-      #puts list.first(2).inspect
-      #puts
+    def rate(imdb_id, rate)
+      page = @agent.get '%s/title/%s/reference' % [BASE_URL, imdb_id]
+      link = page.search '//a[contains(@href, "vote?v=%d;")]/@href' % [rating]
+      if not link or link.empty?
+        return false
+      end
+      agent.get movie.url + '/' + link.first.value
+      return true
     end
   end
 
@@ -444,9 +476,14 @@ module ::IMDb
     end
 
     def country_and_year(entry)
+      if entry.respond_to? :airdate
+        year = entry.airdate.strftime('%d.%m.%Y')
+      else
+        year = entry.year
+      end
       format([
         entry.country,
-        entry.year
+        year
       ], :seperator => [', ', '/'],
          :format => '(%s)',
          :ignore => true)
@@ -699,9 +736,18 @@ module ::IMDb
 
       @in_development = @page.root.inner_html.match RE_IN_DEVELOPMENT
 
-      @plot = parse(PLOT, 'plot').first
+      # parse plot without 'see more'
+      plot_node = @page.search(PLOT)
+      if plot_node and plot_node.length > 0
+        plot_node.first.children.each do |child|
+          child.remove if child.name == 'a'
+        end
+        @plot = plot_node.children.map(&:content).map(&:strip).first.strip
+      else
+        @plot = nil
+      end
+
       @year = parse(YEAR, 'release year').first
-      @plot = parse(PLOT, 'plot').first
       @budget = parse(BUDGET, 'budget').first
       @release_date = parse(RELEASE_DATE, 'release date').first
       @rating = parse(RATING, 'rating').first
@@ -878,7 +924,7 @@ module ::IMDb
         title = episode.search('a[itemprop="name"]').first
         url = title.attributes['href'].value
         title = title.content.strip
-        plot = episode.search('.item_description[itemprop="description"]').first.content
+        plot = episode.search('.item_description[itemprop="description"]').first.content.strip
 
         raise 'episode url not found' if not url.match(RE_ID)
 
@@ -913,6 +959,14 @@ module ::IMDb
       if numbers.match /Season (\d+), Episode (\d+)/
         @season = $1.to_i
         @episode = $2.to_i
+      end
+
+      if @year.match /^\d+ \w+\.? \d{4}$/
+        @airdate = Date.strptime(@year.gsub(/(\w+)\./, '\\1'), '%e %b %Y')
+        @year = @airdate.strftime('%Y')
+      elsif @year.match /^\w+\.? \d+, \d{4}$/
+        @airdate = Date.strptime(@year.gsub(/^(\w+)\./, '\\1'), '%b %e, %Y')
+        @year = @airdate.strftime('%Y')
       end
     end
   end

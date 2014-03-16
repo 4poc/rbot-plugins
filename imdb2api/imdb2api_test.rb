@@ -3,6 +3,15 @@ require_relative 'imdb2api'
 
 require 'test/unit'
 
+# create a file named 'test_user.rb' with user credentials
+begin
+  require_relative 'test_user.rb'
+rescue LoadError
+  # alterntivly use envvars
+  USERNAME = ENV['IMDB_USERNAME']
+  PASSWORD = ENV['IMDB_PASSWORD']
+end
+
 class TestIMDb < Test::Unit::TestCase
   RE_RATINGS = %r{[\d\.]+ \([\d,]+ voters\)}
 
@@ -33,7 +42,10 @@ class TestIMDb < Test::Unit::TestCase
     f = IMDb::Formatter.new
     api = IMDb::Api.new
     entry = api.create('tt0697782')
-    assert_match(%r{^"The Soup Nazi" S07E06 of "Seinfeld" \(USA, 2 Nov\. 1995\) \| #{RE_RATINGS} \| Comedy by Larry David and Jerry Seinfeld \| http://www\.imdb\.com/title/tt0697782$}, f.overview(entry))
+    assert(entry.instance_of? IMDb::Episode)
+    assert_match(%r{^"The Soup Nazi" S07E06 of "Seinfeld" \(USA, 02\.11\.1995\) \| #{RE_RATINGS} \| Comedy by Larry David and Jerry Seinfeld \| http://www\.imdb\.com/title/tt0697782$}, f.overview(entry))
+    entry = api.create('tt2397391')
+    assert_match(%r{^"Rites of Passage" S01E01 of "Vikings" \(Ireland/Canada, 03\.03\.2013\) \| #{RE_RATINGS} \| Action/Drama/History/War by Michael Hirst and Michael Hirst \| http://www\.imdb\.com/title/tt2397391$}, f.overview(entry))
   end
 
   def test_formatter_overview_movie
@@ -127,11 +139,19 @@ class TestIMDb < Test::Unit::TestCase
   def test_episode
     api = IMDb::Api.new
     entry = api.create('tt0697782')
+    assert(entry.instance_of? IMDb::Episode)
     assert_equal('Seinfeld', entry.series)
     assert_equal('tt0098904', entry.series_id)
     assert_equal(7, entry.season)
     assert_equal(6, entry.episode)
-    assert_equal('2 Nov. 1995', entry.year)
+    assert_equal('1995', entry.year)
+    assert_equal('02.11.1995', entry.airdate.strftime('%d.%m.%Y'))
+  end
+
+  def test_episode_plot
+    api = IMDb::Api.new
+    entry = api.create('tt2397391')
+    assert_equal("At a meeting to discuss the summer raids Ragnar Lothbrok urges Earl Haraldson to send his ships to the west to raid an island called England. Ragnar believes he's found a way across the ...", entry.plot)
   end
 
   def test_file_cache
@@ -277,8 +297,14 @@ class TestIMDb < Test::Unit::TestCase
     assert(results.length > 0)
     entry = results.first
     item = api.create(entry[:id], :load_series => true)
-    puts item.get_sorted_episodes.first
 
+    epi = item.get_sorted_episodes.first
+    assert_equal('tt2911142', epi.id)
+    assert_equal(1, epi.season)
+    assert_equal(1, epi.episode)
+    assert_equal('Murder at the Webb Ranch', epi.title)
+    assert_equal('When a rancher is murdered, Sheriff John Henry Hoyle attempts to use his state-of-the-art forensics training to solve the crime.', epi.plot)
+    assert_equal('2013-08-05', epi.airdate.strftime('%Y-%m-%d'))
   end
 
   def test_tv_show_episodes
@@ -356,39 +382,100 @@ class TestIMDb < Test::Unit::TestCase
     assert_equal(0, series.get_future_episode_count)
   end
 
-  def test_list_ratings
+  def test_feed_ratings
     api = IMDb::Api.new
-    #require 'method_profiler'
-    #ratings = api.list('ur22053040')
-    # ur22760319
-    #log = File.new('brief_test_log', 'w')
-    #puts
-    #puts
-    #profiler = MethodProfiler.observe(IMDb::Title)
-    #ratings.each do |id|
-    #  next if not id.match /\d+$/
-    #  puts "Testing ID #{id}"
-    #  begin
-    #    entry = api.create(id)
-    #    formatter = IMDb::Formatter.new(entry)
-    #    brief = formatter.brief
-    #    #log << brief + "\n"
-    #    #log.flush
-    #    puts brief
-    #  rescue
-    #    puts "An error occured with ID #{id}!"
-    #    puts $!
-    #    puts $@.join("\n")
-    #    #log.close
-    #    exit
-    #  end
-    #end
-    #puts profiler.report
-    #log.close
-    #puts
-    #puts
-
+    ratings = api.feed('ur22104883')
+    assert_equal(250, ratings.length, 'imdb feeds are 250 last rated things')
+    ratings.each do |entry|
+      assert_match(%r{^tt\d+$}, entry[:imdb_id], 'should contain the title id')
+      assert(entry[:rating].instance_of?(Fixnum), 'should contain a users rating') 
+      assert(entry[:rating] > 0, 'should contain a users rating')
+      assert(entry[:rating] < 11, 'should contain a users rating')
+    end
   end
+
+  def test_feed_watchlist
+    api = IMDb::Api.new
+    watchlist = api.feed('ur22104883', 'watchlist')
+    assert(watchlist.length > 0, 'should contain users watchlist')
+    watchlist.each do |entry|
+      assert_match(%r{^tt\d+$}, entry[:imdb_id], 'should contain the title id')
+    end
+  end
+
+  def test_login
+    return if not USERNAME
+    api = IMDb::Api.new
+    # login and return session (cookiejar)
+    cookie = api.login(USERNAME, PASSWORD)
+    assert_not_nil(cookie)
+
+    cookie = api.login('does-not', 'exist')
+    assert_nil(cookie)
+  end
+
+  def test_user_id
+    return if not USERNAME
+    api = IMDb::Api.new
+    # login and return session (cookiejar)
+    cookie = api.login(USERNAME, PASSWORD)
+    assert_not_nil(cookie)
+    api.set_cookies(cookie)
+    user_id = api.get_user_id
+    assert_match(%r{ur\d+}, user_id, 'should figure out user id')
+  end
+
+  def test_export_ratings
+    return if not USERNAME
+    api = IMDb::Api.new
+    cookie = api.login(USERNAME, PASSWORD)
+    user_id = api.get_user_id
+
+    all_ratings = api.export(user_id)
+    assert(all_ratings.length > 0, 'should return something')
+    all_ratings.each do |entry|
+      assert_match(%r{^tt\d+$}, entry[:imdb_id], 'should contain the title id')
+      assert(entry[:rating].instance_of?(Fixnum), 'should contain a users rating') 
+      assert(entry[:rating] > 0, 'should contain a users rating')
+      assert(entry[:rating] < 11, 'should contain a users rating')
+    end
+  end
+
+  def test_export_ratings_different_user
+    return if not USERNAME
+    api = IMDb::Api.new
+    api.login(USERNAME, PASSWORD)
+
+    all_ratings = api.export('ur51322141')
+    assert(all_ratings.length > 0, 'should return something')
+    all_ratings.each do |entry|
+      assert_match(%r{^tt\d+$}, entry[:imdb_id], 'should contain the title id')
+      assert(entry[:rating].instance_of?(Fixnum), 'should contain a users rating') 
+      assert(entry[:rating] > 0, 'should contain a users rating')
+      assert(entry[:rating] < 11, 'should contain a users rating')
+    end
+  end
+
+  def test_export_watchlist
+    return if not USERNAME
+    api = IMDb::Api.new
+    api.login(USERNAME, PASSWORD)
+    user_id = api.get_user_id
+
+    watchlist = api.export('ur22104883', 'watchlist')
+    assert(watchlist.length > 0, 'should return something')
+    watchlist.each do |entry|
+      assert_match(%r{^tt\d+$}, entry[:imdb_id], 'should contain the title id')
+    end
+  end
+
+  #def test_rate
+  #  return if not USERNAME
+  #  api = IMDb::Api.new
+  #  api.login(USERNAME, PASSWORD)
+  #  api.rate('tt0082096', 10)
+  #  ratings = api.feed(api.get_user_id)
+  #end
 end
 
 
