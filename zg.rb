@@ -297,7 +297,6 @@ class ZeitgeistPlugin < Plugin
     @base_url = @bot.config['zg.base_url']
     @reg = @registry[:zg]
     if not @reg
-      @bot.say('apoc', 'warning, empty zeitgeist registry!!!!')
       @reg = {
         :users => {},
         # links in listened channel are posted to zg and guest users
@@ -333,6 +332,7 @@ class ZeitgeistPlugin < Plugin
 
   def cleanup
     @bot.timer.remove(@who_timer)
+    super
   end
 
   def join(m)
