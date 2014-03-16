@@ -388,24 +388,27 @@ class ImdbNgPlugin < Plugin
     nick = m.source.to_s
 
     if message.match %r{(@)?(tt\d+) \((\d+)(?:\/10)?\)}
+      debug 'vote via inline message: %s %s' % [$2, $3]
       imdb_id = $2
-      rating = $3
+      rating = $3.to_i
       entry = @imdb.create(imdb_id)
-      if not entry or entry.class >= IMDb::Title
+      if not entry or not entry.kind_of? IMDb::Title
         #reply m, '[red]error movie not found'
+        debug 'entry not found, entry was: ' + entry.inspect
         return
       end
       if not login_as(nick)
         reply m, '[red]unable to rate a movie[/c], you need to login first, [b]imdb login <username> <password>[/c] (in query)'
         return
       end
-      if @imdb.rate(entry.id, rating)
+      if @imdb.rate(entry.id, rating.to_i)
         update_ratings(nick, [{:nick => nick, :imdb_id => entry.id, :rating => rating.to_i}])
         announce
       else
         reply m, '[red]unknown error occured :('
       end
     elsif message.match %r{(@)?(tt\d+)}
+      debug 'show via inline message: %s' % [$2]
       brief = $1
       imdb_id = $2
       entry = @imdb.create(imdb_id)
@@ -431,7 +434,9 @@ class ImdbNgPlugin < Plugin
   # does the announcement in channel(s)
   # announce, ratings, watchlist etc.
   def announce
+    debug 'get announce messages (will remove them)'
     messages = get_announcements
+    debug 'messages = %d' % messages.length
 
     @bot.config['imdbng.announce'].each do |channel|
       messages.each do |line|
@@ -457,7 +462,7 @@ class ImdbNgPlugin < Plugin
       @users.keys.each do |nick|
         next if nick == entry[:nick]
         user_rating = get_user_from_list(@ratings, nick, imdb_id)
-        s << '[b]%s[/c] (%d)' % [nick, user_rating[:rating]] if user_rating
+        s << '[b]%s[/c] (%d)' % [nohl(nick), user_rating[:rating]] if user_rating
       end
       if s.length > 0
         ' | ' + s.join(', ')
@@ -471,7 +476,7 @@ class ImdbNgPlugin < Plugin
       @users.keys.each do |nick|
         next if nick == entry[:nick]
         user_watchlist = get_user_from_list(@watchlist, nick, imdb_id)
-        s << '[b]%s[/c]' % [nick] if user_watchlist
+        s << '[b]%s[/c]' % [nohl(nick)] if user_watchlist
       end
       if s.length > 0
         ' | ' + s.join(', ')
