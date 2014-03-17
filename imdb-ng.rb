@@ -1,6 +1,9 @@
 # IMDb.com Search and Community Plugin
 
 require 'method_profiler'
+require 'json'
+
+require 'active_support'
 
 class EventManager
   def initialize
@@ -38,8 +41,9 @@ class EventManager
   end
 end
 
+
 class ImdbNgPlugin < Plugin
-  attr_accessor :users, :ratings, :imdb
+  attr_accessor :users, :ratings, :imdb, :cache
   EXPORT_TICK = 25
 
   Config.register(Config::ArrayValue.new('imdbng.announce',
@@ -48,15 +52,23 @@ class ImdbNgPlugin < Plugin
   Config.register(Config::StringValue.new('imdbng.export_user',
     :default => nil,
     :desc => 'User (must exist!) to export csv with.'))
+  Config.register(Config::StringValue.new('imdbng.export_path',
+    :default => nil,
+    :desc => 'Path to export json files to.'))
 
   def initialize
     super
 
     load File.dirname(__FILE__) + '/imdb2api/imdb2api.rb'
+    load File.dirname(__FILE__) + '/thread-pool.rb'
 
     @events = EventManager.new
 
-    @imdb = IMDb::Api.new
+    if not @registry.has_key?(:cache)
+      @registry[:cache] = {}
+    end
+    @cache = IMDb::MemoryCache.new(@registry[:cache])
+    @imdb = IMDb::Api.new(:cache => @cache)
 
     # store nickname, imdb-id, username, password
     @users = @registry.has_key?(:users) ? @registry[:users] : {}
@@ -95,6 +107,8 @@ class ImdbNgPlugin < Plugin
     @registry[:users] = @users if @users and @users.length > 0
     @registry[:ratings] = @ratings
     @registry[:watchlist] = @watchlist
+    @registry[:cache] = @cache.cache
+    debug 'store cache entries: '+@cache.cache.length.to_s
   end
 
   def cleanup
@@ -158,6 +172,8 @@ class ImdbNgPlugin < Plugin
       obj = get_user_from_list(@ratings, nick, imdb_id)
       if obj and obj[:rating].to_i == rating[:rating].to_i
         # exact same rating already exists
+        # still merge the objects:
+        obj.merge!(rating)
         next
       end
       if obj and obj[:rating].to_i != rating[:rating].to_i
@@ -186,6 +202,8 @@ class ImdbNgPlugin < Plugin
       obj = get_user_from_list(@watchlist, nick, imdb_id)
       if obj
         # exact same watchlist entry
+        # still merge the objects:
+        obj.merge!(entry)
         next
       end
 
@@ -242,6 +260,7 @@ class ImdbNgPlugin < Plugin
         reply m, '[brown](load tv show data, this might take awhile)[/c]'
       end
       entry.load_series!(@imdb)
+      entry.cache!(@imdb)
     end
     reply m, format_entry(entry, :overview, :plot, :schedule)
     reply m, summary_community(entry.id)
@@ -285,6 +304,32 @@ class ImdbNgPlugin < Plugin
     else
       reply m, '[red]no users found!'
     end
+  end
+
+  def user_stats(m, params)
+    nick = m.source.to_s
+    if params.has_key? :nick and not params[:nick].empty?
+      nick = params[:nick]
+    end
+
+    stats = {}
+    reply m, '[brown](crunching numbers, this can take a long time)'
+    @ratings.each_pair do |imdb_id, obj|
+      obj = get_user_from_list(@ratings, nick, imdb_id)
+      next unless obj
+      entry = @imdb.create(imdb_id)
+      if entry.respond_to? :type
+        type = entry.type
+      else
+        type = entry.class.to_s
+      end
+      stats[type] = 0 unless stats.has_key? type
+      stats[type] += 1
+    end
+
+    m.reply stats.inspect
+    #apoc voted 1,512 titles: 412 tv shows, 23 movies and 41 episodes.
+
   end
 
   def user_add(m, params)
@@ -404,6 +449,94 @@ class ImdbNgPlugin < Plugin
     end
   end
 
+  def manual_export(m, param)
+    reply m, '[b][royal_blue]prepare for export this can take a long time'
+    preload_ids = []
+    @ratings.each_pair do |imdb_id, user_ratings|
+      preload_ids << imdb_id
+    end
+    @watchlist.each_pair do |imdb_id, user_watchlist|
+      preload_ids << imdb_id
+    end
+    preload_ids.uniq!
+    
+    reply m, '[b][royal_blue]preload %d titles...' % preload_ids.length
+    p = Pool.new(5)
+    i = 0
+    start = Time.new
+    #preload_ids = preload_ids[0...250]
+    preload_ids.each do |imdb_id|
+      p.schedule do
+        begin
+        @imdb.create(imdb_id)
+        #sleep 0.2
+        i+=1
+        if (i % (preload_ids.length/4).to_i) == 0
+          current = i
+          duration = Time.new - start
+          each_duration = duration / current
+          total = preload_ids.length
+          est = each_duration * (total - i)
+
+          debug 'export: preload progress: %d/%d - EST: %.2f sec (%.2f min)' % [ i, total, est, est/60.0 ]
+          reply m, '[b][royal_blue]export: preload progress: %d/%d - EST: %.2f sec (%.2f min)' % [ i, total, est, est/60.0 ]
+        end
+        rescue
+
+        debug $!.to_s
+        debug $@.join("\n")
+        end
+      end
+    end
+    p.shutdown
+
+    # prepare for json:
+    ratings = {}
+    @ratings.each_key do |imdb_id|
+      @ratings[imdb_id].each do |obj|
+        ratings[obj[:nick]] = [] unless ratings.has_key? obj[:nick]
+        created = obj[:created].rfc2822 unless obj[:created] == ''
+        updated = obj[:updated].rfc2822 unless obj[:updated] == ''
+        ratings[obj[:nick]] << {
+          :imdb_id => obj[:imdb_id],
+          :rating => obj[:rating],
+          :created => (created or nil),
+          :updated => (updated or nil)
+        }
+      end
+    end
+    watchlist = {}
+    @watchlist.each_key do |imdb_id|
+      @watchlist[imdb_id].each do |obj|
+        watchlist[obj[:nick]] = [] unless watchlist.has_key? obj[:nick]
+        created = obj[:created].rfc2822 unless obj[:created] == ''
+        updated = obj[:updated].rfc2822 unless obj[:updated] == ''
+        watchlist[obj[:nick]] << {
+          :imdb_id => obj[:imdb_id],
+          :created => (created or nil),
+          :updated => (updated or nil)
+        }
+      end
+    end
+    titles = {}
+    preload_ids.each do |imdb_id|
+      begin
+        entry = @imdb.create(imdb_id)
+        entry = entry.to_hash
+      rescue
+        entry = nil
+      end
+      titles[imdb_id] = entry
+    end
+    filename = File.join((@bot.config['imdbng.export_path'] or @bot.path), Time.now.strftime('imdbng_export_%Y-%m-%d_%H%M%S.json'))
+    File.open(filename, 'w') do |f|
+      f.puts ActiveSupport::JSON.encode({:ratings => ratings, :watchlist => watchlist, :titles => titles})
+      #f.puts JSON.pretty_generate()
+    end
+    reply m, '[b][green]export done: ' + filename
+
+  end
+
   ###################################################################
   
   def message(m, dummy=nil)
@@ -445,6 +578,7 @@ class ImdbNgPlugin < Plugin
             reply m, '[brown](load tv show data, this might take awhile)[/c]'
           end
           entry.load_series!(@imdb)
+          entry.cache!(@imdb)
         end
         reply m, format_entry(entry, :overview, :plot, :schedule)
       else
@@ -621,6 +755,7 @@ plugin.map 'imdb rate *query :rating', :action => :rate, :requirements => {:rati
 
 plugin.map 'imdb users', :action => :user_list
 plugin.map 'imdb user [list]', :action => :user_list
+plugin.map 'imdb user stats [:nick]', :action => :user_stats, :threaded => true
 plugin.map 'imdb user add [:user_id]', :action => :user_add, :threaded => true
 plugin.map 'imdb user login [:username] [*password]', :action => :user_login, :threaded => true
 plugin.map 'imdb user remove', :action => :user_remove
@@ -638,6 +773,8 @@ plugin.map 'imdb-announce', :action => :manual_announce, :threaded => true
 plugin.map 'imdb-clear-announce', :action => :manual_announce_clear
 # manually add a user (add id for a user not present/etc.)
 plugin.map 'imdb-add [:nick] [:user_id]', :action => :manual_add
+# parallel loads of all titles in the database (so that its in the cache)
+plugin.map 'imdb-export', :action => :manual_export, :threaded => true
 
 plugin.map 'ctest [*test]', :action => :ctest
 

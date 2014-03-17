@@ -311,6 +311,7 @@ class TestIMDb < Test::Unit::TestCase
     api = IMDb::Api.new
     show = api.create('tt0108778')
     show.load_series! api
+    show.cache! api
     assert_equal('1994-2004', show.year)
     assert_equal(10, show.seasons)
     episode = show.get_episode(10, 13)

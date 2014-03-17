@@ -27,6 +27,8 @@ require 'date'
 require 'csv'
 require 'net/http'
 
+require 'date'
+
 if not defined? debug
   def debug(msg)
     if msg.index("\n")
@@ -102,11 +104,38 @@ module ::IMDb
     private
 
     def load_cache
-      @cache = Marshal.load(File.read(@filename))
+      begin
+        @cache = Marshal.load(File.read(@filename))
+      rescue
+        error 'load cache error: '+$!.to_s
+        error $@.join("\n")
+        @cache = {}
+      end
     end
 
     def save_cache
       File.open(@filename, 'w') { |f| f.write(Marshal.dump(@cache)) }
+    end
+  end
+
+  class MemoryCache < Cache
+    attr_accessor :cache
+
+    def initialize(cache)
+      @cache = cache
+    end
+
+    def get(key)
+      if @cache.has_key? key and not expired? @cache[key]
+      else
+      end
+      #puts
+      @cache[key][:obj] if @cache.has_key? key # and not expired? @cache[key]
+    end
+
+    def put(key, obj, expire=EXPIRE_DEFAULT)
+      #debug 'memorycache, put with key: '+key.inspect
+      @cache[key] = new_entry(obj, expire)
     end
   end
 
@@ -117,6 +146,7 @@ module ::IMDb
     def initialize(opts={})
       @cache = opts[:cache] || FileCache.new
       @agent = Mechanize.new
+      @agent.max_history = 1
       @agent.user_agent_alias = 'Linux Firefox'
       @use_cache = opts.has_key?(:use_cache) ? opts[:use_cache] : true
     end
@@ -173,6 +203,14 @@ module ::IMDb
       clear_cookies
       case id.match(RE_ID)[2]
       when 'tt'
+        if @use_cache
+          entry = @cache.get(id)
+          if entry
+            #debug '--- (use object cache for id=%s)' % id
+            entry.load_series!(self) if opts[:load_series] and entry.instance_of? Series and not entry.series_loaded?
+            return entry
+          end
+        end
         # discover if its a title, series or episode:
         type = Title.discover(self, id)
         entry = type.new id
@@ -193,7 +231,7 @@ module ::IMDb
         debug $@.join("\n")
         return nil
       end
-      entry.page = nil
+      entry.cache!(self)
       entry
     end
 
@@ -296,7 +334,9 @@ module ::IMDb
       header = list.shift
       fields = {
         :imdb_id => /const/,
-        :rating => /.* rated/
+        :rating => /.* rated/,
+        :created => /created/,
+        :updated => /modified/
       }
       fields.each_key do |key|
         header.each_index do |i|
@@ -310,6 +350,9 @@ module ::IMDb
         obj = {}
         fields.each_pair do |key, i|
           obj[key] = entry[i].match(/^\d+$/) ? entry[i].to_i : entry[i]
+          if key == :created or key == :updated
+            obj[key] = DateTime.parse(obj[key]) if not obj[key].empty?
+          end
         end
         obj
       end
@@ -328,11 +371,18 @@ module ::IMDb
 
     def check_cache(imdb_id)
       # check if urls of this item can be found in the cache:
-      url = '%s/title/%s' % [BASE_URL, imdb_id]
-      {
-        :base => (@cache.get(url)),
-        :series => (@cache.get(url + '/episodes?season=1')),
-      }
+      base = false
+      series = false
+      cached_entry = @cache.get(imdb_id)
+      if cached_entry
+        base = true
+        if cached_entry.kind_of? Series
+          if cached_entry.series_loaded?
+            series = true
+          end
+        end
+      end
+      {:base => base, :series => series}
     end
   end
 
@@ -680,10 +730,28 @@ module ::IMDb
     end
 
     def load! api
-      @page = api.get_cached_url url
+      @page = api.agent.get url
 
       # description (og:description) includes producers, actors, plot
       @description = @page.search('meta[name="description"]/@content').first.value
+    end
+
+    def cache! api
+      if api.use_cache
+        @page = nil
+        api.cache.put(@id, self)
+      end
+    end
+
+    def to_hash
+      hash = {}
+      instance_variables.each do |v| 
+        begin
+          hash[v[1..-1]] = public_send("#{v[1..-1]}")
+        rescue
+        end
+      end
+      return hash
     end
 
     def to_s
@@ -771,7 +839,7 @@ module ::IMDb
         @title = original_title
       end
 
-      @in_development = @page.root.inner_html.match RE_IN_DEVELOPMENT
+      @in_development = (not (@page.root.inner_html.match(RE_IN_DEVELOPMENT)).nil?)
 
       # parse plot without 'see more'
       plot_node = @page.search(PLOT)
@@ -808,7 +876,11 @@ module ::IMDb
     # this needs to be done before the entry instance is initialized,
     # it caches the page (reparsed through)
     def self.discover(api, id)
-      page = api.get_cached_url(BASE_URL + '/title/' + id)
+      if api.use_cache
+        entry = api.cache.get(id)
+        return entry.class if entry
+      end
+      page = api.agent.get(BASE_URL + '/title/' + id)
       type = page.search(TYPE).first
       if type
         matches = type.content.scan(/\w+/)
@@ -861,6 +933,12 @@ module ::IMDb
           #debug '%s S%02dE%02d [%d] -- %s' % [title, epi.season, epi.episode, epi.number, epi.airdate]
         end
       end
+
+      # remove pages:
+      @episodes.each do |episode|
+        episode.page = nil
+      end
+
       @series_loaded = true
     end
 
@@ -922,14 +1000,7 @@ module ::IMDb
     private
 
     def load_season!(api, url, num)
-      body = api.cache.get(url)
-      if not body or not api.use_cache
-        page = api.agent.get(url)
-        @page = page.parser
-        api.cache.put(url, page.body)
-      else
-        @page = Nokogiri::HTML(body)
-      end
+      @page = api.agent.get(url)
 
       #
       # SIDEFFECT! This updates the @seasons attribute with the total number
