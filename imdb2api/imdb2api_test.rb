@@ -477,6 +477,13 @@ class TestIMDb < Test::Unit::TestCase
   #  api.rate('tt0082096', 10)
   #  ratings = api.feed(api.get_user_id)
   #end
+  
+  def test_bug_duplicate_names
+    api = IMDb::Api.new
+    entry = api.create('tt0359950')
+
+    assert_equal(["Steve Conrad"], entry.creator, 'Should not contain two of the same.')
+  end
 end
 
 

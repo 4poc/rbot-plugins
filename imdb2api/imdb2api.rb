@@ -95,7 +95,7 @@ module ::IMDb
     end
 
     def put(key, obj, expire=EXPIRE_DEFAULT)
-      debug 'filecache, put in cache: '+key.inspect
+      #debug 'filecache, put in cache: '+key.inspect
       @cache[key] = new_entry(obj, expire)
 
       save_cache
@@ -130,7 +130,7 @@ module ::IMDb
       else
       end
       #puts
-      @cache[key][:obj] if @cache.has_key? key # and not expired? @cache[key]
+      @cache[key][:obj] if @cache.has_key? key and not expired? @cache[key]
     end
 
     def put(key, obj, expire=EXPIRE_DEFAULT)
@@ -414,6 +414,9 @@ module ::IMDb
             'of',
             series(entry)
           ], :ignore => true),
+
+          # countries and release year
+          country_and_year(entry),
       ], :seperator => [' '])
     end
 
@@ -859,9 +862,9 @@ module ::IMDb
       @votes = parse(VOTES, 'votes').first
       @country = parse(COUNTRY, 'countries')
       @genre = parse(GENRE, 'genre')
-      @director = parse(DIRECTOR, 'list of directors')
-      @creator = parse(CREATOR, 'list of creators/writers')
-      @actors = parse(ACTORS, 'list of actors')
+      @director = parse(DIRECTOR, 'list of directors').uniq
+      @creator = parse(CREATOR, 'list of creators/writers').uniq
+      @actors = parse(ACTORS, 'list of actors').uniq
       @language = parse(LANGUAGE, 'languages')
       @runtime = parse(RUNTIME, 'runtime/duration')
 

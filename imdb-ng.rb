@@ -105,6 +105,7 @@ class ImdbNgPlugin < Plugin
       end
     end
     @registry[:users] = @users if @users and @users.length > 0
+    # TODO: the ratings sometimes don't serialize :(
     @registry[:ratings] = @ratings
     @registry[:watchlist] = @watchlist
     @registry[:cache] = @cache.cache
@@ -123,15 +124,15 @@ class ImdbNgPlugin < Plugin
   def tick
     @stats = {:export => false, :feed => false, :rating => 0, :new_rating => 0, :watchlist => 0, :new_watchlist => 0}
     # runs every n-minutes, every n-nth time we do a full scan (using csv-export)
-    if (@ticks+1) % EXPORT_TICK == 0
-      @stats[:export] = true
-      update_export('ratings') { |nick, entries| update_ratings(nick, entries) }
-      update_export('watchlist') { |nick, entries| update_watchlist(nick, entries) }
-    else
+    #if (@ticks+1) % EXPORT_TICK == 0
+    #  @stats[:export] = true
+    #  update_export('ratings') { |nick, entries| update_ratings(nick, entries) }
+    #  update_export('watchlist') { |nick, entries| update_watchlist(nick, entries) }
+    #else
       @stats[:feed] = true
       update_feed('ratings') { |nick, entries| update_ratings(nick, entries) }
       update_feed('watchlist') { |nick, entries| update_watchlist(nick, entries) }
-    end
+    #end
 
     @ticks += 1
   end
@@ -274,6 +275,7 @@ class ImdbNgPlugin < Plugin
     watchlist = get_user_watchlist_for_movie(imdb_id)
     groups << '[royal_blue]Planning to watch[/c]: ' + watchlist.join(', ') if watchlist and not watchlist.empty?
 
+    debug 'summary community is: ' + groups.inspect
     groups.join(' | ')
   end
 
@@ -581,8 +583,10 @@ class ImdbNgPlugin < Plugin
           entry.cache!(@imdb)
         end
         reply m, format_entry(entry, :overview, :plot, :schedule)
+        reply m, summary_community(entry.id)
       else
-        reply m, format_entry(entry, :overview)
+        community = summary_community(entry.id)
+        reply m, format_entry(entry, :overview).first + (community.empty? ? '' : (' | ' + community))
       end
     end
 
