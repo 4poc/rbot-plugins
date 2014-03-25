@@ -233,6 +233,10 @@ class ImdbNgPlugin < Plugin
       s = '[b]imdb[/c] [search] [b]<QUERY>[/c] : search IMDb.com by [b]<QUERY>[/c] and display first result.'
     elsif topic == 'tv'
       s = '[b]imdb[/c] tv [b]<QUERY>[/c] : search IMDb.com for TV Shows, return schedule information.'
+    elsif topic == 'announce'
+      s = 'anyone can add their imdb user account to the bot, it will announce new (public) ratings and watchlist entries. You can suppress this temporarily by using [b]imdb announce[/c] which will toggle between announcing/suppress.'
+    elsif topic == 'inline'
+      s = 'certain patterns are recognized in all channel messages: [b]tt[0-9]+[/c] will display brief information about that imdb entry, [b]@tt[0-9]+[/c] (proceeding @) will display a more lengthy summary of the entry.'
     elsif topic == 'user'
       s = 'IMDb User Management: '
       s << '[b]imdb user [list][/c] : lists known users | '
@@ -240,7 +244,7 @@ class ImdbNgPlugin < Plugin
       s << '[b]imdb user login <username> <password>[/c] : login to rate movies | '
       s << '[b]imdb user remove[/c] : deletes your user information'
     else
-      s = '[b]IMDb[/c] Plugin - Topics: [b]search[/c], [b]tv[/c], [b]user[/c] (read with [b]help imdb <topic>[/c])'
+      s = '[b]IMDb[/c] Plugin - Topics: [b]search[/c], [b]tv[/c], [b]user[/c], [b]announce[/c], [b]inline[/c] (read with [b]help imdb <topic>[/c])'
     end
     color_markup(s)
   end
@@ -336,16 +340,17 @@ class ImdbNgPlugin < Plugin
 
   def user_add(m, params)
     user_id = params[:user_id]
-    if user_id and user_id.match /^ur\d+$/
+    if user_id and not user_id.match /^ur\d+$/
       reply m, '[red]error[/c] - you need a valid user-id, like ur1234567'
+      return
     end
     nick = m.source.to_s
     if @users.has_key? nick
-      @users[:user_id] = user_id
-      m.reply '[b]success[/c] - updated your user, set user id to %s' % [user_id]
+      @users[nick][:user_id] = user_id
+      reply m, '[b]success[/c] - updated your user, set user id to %s' % [user_id]
     else
-      @users = {:user_id => user_id}
-      m.reply '[b]success[/c] - created a user for you, and set your user id to %s' % [user_id]
+      @users[nick] = {:user_id => user_id}
+      reply m, '[b]success[/c] - created a user for you, and set your user id to %s' % [user_id]
     end
   end
 
@@ -400,6 +405,35 @@ class ImdbNgPlugin < Plugin
     end
   end
 
+  def user_announce(m, params)
+    nick = m.source.to_s
+    unless @users.has_key? nick
+      reply m, '[red]error[/c] - user not found'
+      return
+    end
+
+    status = get_user_announce(nick)
+    if status
+      status = false
+      reply m, '[red]suppress[/c] channel announcements of your latest ratings'
+    else
+      status = true
+      reply m, '[green]active[/c] channel announcements of your latest ratings'
+    end
+    @users[nick][:announce] = status
+  end
+
+  def get_user_announce(nick)
+    unless @users.has_key? nick
+      false
+    else
+      if not @users[nick].has_key? :announce
+        @users[nick][:announce] = true
+      end
+      @users[nick][:announce]
+    end
+  end
+
   def manual_add(m, param)
     nick = param[:nick]
     user_id = param[:user_id]
@@ -423,8 +457,10 @@ class ImdbNgPlugin < Plugin
 
   def manual_clear(m, param)
     reply m, '[b][green]removes cached ratings/watchlist'
-    @ratings = {}
-    @watchlist = {}
+    @registry[:cache] = {}
+    @cache = IMDb::MemoryCache.new(@registry[:cache])
+    #@ratings = {}
+    #@watchlist = {}
   end
 
   def manual_tick(m, param)
@@ -674,6 +710,8 @@ class ImdbNgPlugin < Plugin
       # load imdb object:
       entry[:obj][:cache] = imdb = @imdb.create(imdb_id)
 
+      next unless get_user_announce(nick)
+
       line = format % ['[b]'+nohl(nick)+'[/c]', format_entry(imdb, :short_title).first]
       line += '[b]%d[/c]/10. ' % entry[:rating] if entry.has_key? :rating
       line += '(%s) ' % imdb.url
@@ -763,6 +801,7 @@ plugin.map 'imdb user stats [:nick]', :action => :user_stats, :threaded => true
 plugin.map 'imdb user add [:user_id]', :action => :user_add, :threaded => true
 plugin.map 'imdb user login [:username] [*password]', :action => :user_login, :threaded => true
 plugin.map 'imdb user remove', :action => :user_remove
+plugin.map 'imdb announce', :action => :user_announce
 
 plugin.map 'imdb tv *query', :action => :search_tv, :threaded => true
 plugin.map 'imdb [search] *query', :action => :search, :threaded => true
