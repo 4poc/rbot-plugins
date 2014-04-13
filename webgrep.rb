@@ -29,8 +29,11 @@ class WebGrepPlugin < Plugin
     agent.user_agent_alias = 'Linux Mozilla'
     page = agent.get url
     title = page.title
-    content = page.search('body').text
-    content.gsub! %r{<[^>]+>}, ''
+    content = page.search('body').inner_html
+    content.gsub! %r{<br[^>]*>}, "\n"
+    content.gsub! %r{<p[^>]*>}, "\n"
+    content.gsub! %r{<div[^>]*>}, "\n"
+    content.gsub! %r{<[^>]*>}, ''
     found_line = nil
     content.split("\n").each do |line|
       include_all = true
@@ -73,13 +76,17 @@ class WebGrepPlugin < Plugin
       m.reply 'words not found on that page :('
       return
     end
-    if result.length > 390
-      result = result [0...390] + Bold + '…' + NormalText
-    end
     words.each do |word|
       result.gsub!(/(#{word})/i, Bold+'\\1'+NormalText)
     end
-    m.reply '»' + result + '« — ' + Bold + Color + ('%02d' % ColorCode[:yellow]) + title + NormalText
+    def format(result, title)
+      return '»' + result + '« — ' + Bold + Color + ('%02d' % ColorCode[:yellow]) + title + NormalText
+    end
+    len = format(result, title).length
+    if len + 44 > 512
+      result = result[0...result.length-(len + 44 - 512)] + Bold.to_s + '…' + NormalText.to_s
+    end
+    m.reply format(result, title)
   end
 
   def message(m)
