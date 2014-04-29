@@ -820,6 +820,7 @@ class ZeitgeistPlugin < Plugin
 
     return if message[0...1] == '#' # ignore messages starting with #
     return if message.match /^[^\/]*#/ and not message.match /^(~|\^)/
+    anonymous = message[0...1] == '|' or (message.match /^[^\/]*\|/ and not message.match /^(~|\^)/)
     ignore_fingerprint = message.match(/^\+/) ? true : false
     link = message.match(/^>/) ? true : false
     as_username = nil
@@ -869,7 +870,7 @@ class ZeitgeistPlugin < Plugin
       if create_urls and create_urls.length > 0
         debug "create_urls => #{create_urls.inspect}"
 
-        req = api_request(user)
+        req = api_request(anonymous ? nil : user)
         begin
           #m.reply 'submit %d urls, link=%s' % [create_urls.length, link.to_s]
           items = req.remote(create_urls, create_tags || '', create_title, false, ignore_fingerprint, link.to_s, as_username)
