@@ -262,7 +262,7 @@ class ImdbNgPlugin < Plugin
     entry = find_entry(m, params[:query].join(' '), :limit => 1) or return
     if entry.kind_of? IMDb::Series
       unless @imdb.check_cache(entry.id)[:series]
-        reply m, '[brown](load tv show data, this might take awhile)[/c]'
+        #reply m, '[brown](load tv show data, this might take awhile)[/c]'
       end
       entry.load_series!(@imdb)
       entry.cache!(@imdb)
@@ -275,9 +275,9 @@ class ImdbNgPlugin < Plugin
     groups = []
 
     ratings = get_user_ratings_for_movie(imdb_id)
-    groups << '[olive]Others voted[/c]: ' + ratings.join(', ') if ratings and not ratings.empty?
+    groups << '[olive]#woot rated[/c]: ' + get_user_avg_ratings_for_movie(imdb_id) + ratings.join(', ') if ratings and not ratings.empty?
     watchlist = get_user_watchlist_for_movie(imdb_id)
-    groups << '[royal_blue]Planning to watch[/c]: ' + watchlist.join(', ') if watchlist and not watchlist.empty?
+    groups << '[royal_blue]watchlist[/c]: ' + watchlist.join(', ') if watchlist and not watchlist.empty?
 
     debug 'summary community is: ' + groups.inspect
     groups.join(' | ')
@@ -585,6 +585,7 @@ class ImdbNgPlugin < Plugin
     if message.match %r{(@)?(tt\d+) \((\d+)(?:\/10)?\)}
       debug 'vote via inline message: %s %s' % [$2, $3]
       imdb_id = $2
+      return unless imdb_id.match /^tt\d{4,}$/
       rating = $3.to_i
       entry = @imdb.create(imdb_id)
       if not entry or not entry.kind_of? IMDb::Title
@@ -605,6 +606,7 @@ class ImdbNgPlugin < Plugin
       debug 'show via inline message: %s' % [$2]
       long = $1
       imdb_id = $2
+      return unless imdb_id.match /^tt\d{4,}$/
       entry = @imdb.create(imdb_id)
       if not entry or not entry.kind_of? IMDb::Title
         debug 'entry not found, entry was: ' + entry.inspect
@@ -650,12 +652,35 @@ class ImdbNgPlugin < Plugin
 
   def get_user_ratings_for_movie(imdb_id, exclude_nick=nil)
     s = []
-    @users.keys.each do |nick|
+    # sort by nick:
+    users = @users.keys.sort_by { |nick| 
+      user_rating = get_user_from_list(@ratings, nick, imdb_id)
+      if user_rating
+        user_rating[:rating]
+      else
+        0.0
+      end
+    }.reverse
+    users.each do |nick|
       next if exclude_nick and nick == exclude_nick
       user_rating = get_user_from_list(@ratings, nick, imdb_id)
       s << '[b]%s[/c] (%d)' % [nohl(nick), user_rating[:rating]] if user_rating
     end
     s
+  end
+
+  def get_user_avg_ratings_for_movie(imdb_id)
+    ratings = @users.keys.map { |nick|
+      user_rating = get_user_from_list(@ratings, nick, imdb_id)
+      if user_rating
+        user_rating[:rating]
+      end
+    }.compact
+    if ratings.length > 1
+      '~%0.2f | ' % (ratings.inject(0.0) { |sum, el| sum + el } / ratings.length)
+    else
+      ''
+    end
   end
 
   def get_user_watchlist_for_movie(imdb_id, exclude_nick=nil)
