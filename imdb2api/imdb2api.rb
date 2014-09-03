@@ -455,6 +455,25 @@ module ::IMDb
       ], :seperator => [' | ', ' '])
     end
 
+    def title_year_rating(entry)
+      format([
+          # title, in quotes if tv series/ episode
+          title(entry),
+
+          # season/episode and series
+          format([
+            season_and_episode(entry),
+            'of',
+            series(entry)
+          ], :ignore => true),
+
+          # countries and release year
+          country_and_rating(entry),
+
+          entry.url
+      ], :seperator => [' '])
+    end
+
     def overview_name(entry)
       format([
         entry.name,
@@ -540,6 +559,10 @@ module ::IMDb
       end
     end
 
+    def link(entry)
+      entry.url
+    end
+
     def genre(entry)
       entry.genre.join('/')
     end
@@ -573,6 +596,20 @@ module ::IMDb
       format([
         entry.country,
         year
+      ], :seperator => [', ', '/'],
+         :format => '(%s)',
+         :ignore => true)
+    end
+
+    def country_and_rating(entry)
+      if entry.respond_to? :airdate
+        year = entry.airdate.strftime('%d.%m.%Y')
+      else
+        year = entry.year
+      end
+      format([
+        entry.country,
+        entry.rating
       ], :seperator => [', ', '/'],
          :format => '(%s)',
          :ignore => true)

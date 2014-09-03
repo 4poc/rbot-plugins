@@ -5,6 +5,12 @@ require 'json'
 
 require 'active_support'
 
+# user suggestions powered by prediction.io are optional:
+begin
+require 'predictionio'
+rescue
+end
+
 class EventManager
   def initialize
     @listeners = {}
@@ -42,6 +48,85 @@ class EventManager
 end
 
 
+# prediction.io for user suggestions
+class ImdbPrediction
+  def initialize(plugin, apiurl, appkey)
+    @plugin = plugin
+    @client = PredictionIO::Client.new(appkey, 10, apiurl)
+    debug '[prediction] client connected: ' + @client.get_status
+  end
+
+  def init_users
+    @plugin.users.each_pair do |nick, user|
+      @client.create_user(user[:user_id], :nick => nick)
+      debug '[prediction] user created: ' + nick
+    end
+  end
+
+  def add_item(item_id)
+    begin
+      item = @plugin.imdb.create(item_id)
+      types = item.genre
+      debug @client.create_item(item_id, types, :title => item.title).inspect
+    rescue
+      debug '[prediction] error adding item! %s' % [$!.to_s]
+      debug $@.join("\n")
+    end
+  end
+
+  def add_rating(nick, item_id, rating)
+    begin
+      user_id = @plugin.users[nick][:user_id]
+      pio_rate = (rating / 10.0 * 5).floor
+      pio_rate = pio_rate <= 0 ? 1 : pio_rate
+      debug '---------'
+      debug user_id.inspect
+      debug @client.identify(user_id).inspect
+      debug @client.record_action_on_item('rate', item_id, 'pio_rate' => pio_rate).inspect
+      debug '[prediction] rate item %s with %d [ %d ]' % [item_id, rating, pio_rate]
+    rescue
+      debug '[prediction] error during rating! %s' % [$!.to_s]
+      debug $@.join("\n")
+    end
+  end
+
+  # import all items / movies and ratings of all users
+  # the prediction.io db must be empty!
+  def init_ratings
+    i = 0
+    all = @plugin.ratings.length
+    @plugin.ratings.each_pair do |item_id, item_ratings|
+      i += 1
+      if item_ratings.length <= 0
+        next
+      end
+      debug '[prediction] %d/%d ' % [i, all]
+      begin
+        add_item(item_id)
+
+        item_ratings.each do |rating|
+          rate = rating[:rating]
+          add_rating(rating[:nick], item_id, rate)
+        end
+
+      rescue
+        debug '[prediction] error during import: %s' % [$!.to_s]
+        debug $@.join("\n")
+      end
+    end
+  end
+
+  def get_recommend(nick, n)
+    user_id = @plugin.users[nick][:user_id]
+    @client.identify(user_id)
+    @client.get_itemrec_top_n('recommend', n).map do |item_id|
+      @plugin.imdb.create(item_id)
+    end
+  end
+
+end
+
+
 class ImdbNgPlugin < Plugin
   attr_accessor :users, :ratings, :imdb, :cache
   EXPORT_TICK = 25
@@ -55,6 +140,13 @@ class ImdbNgPlugin < Plugin
   Config.register(Config::StringValue.new('imdbng.export_path',
     :default => nil,
     :desc => 'Path to export json files to.'))
+
+  Config.register(Config::StringValue.new('imdbng.predict.url',
+    :default => nil,
+    :desc => 'URL of prediction.io endpoint to use for predictions.'))
+  Config.register(Config::StringValue.new('imdbng.predict.key',
+    :default => nil,
+    :desc => 'The appkey of the prediction.io endpoint.'))
 
   def initialize
     super
@@ -95,6 +187,17 @@ class ImdbNgPlugin < Plugin
 
     @ticks = 0
     @stats = {:export => false, :feed => false, :rating => 0, :new_rating => 0, :watchlist => 0, :new_watchlist => 0}
+
+    # optional prediction.io:
+    if @bot.config['imdbng.predict.url']
+      url = @bot.config['imdbng.predict.url']
+      appkey = @bot.config['imdbng.predict.key']
+      @predict = ImdbPrediction.new(self, url, appkey)
+      @predict.init_users
+    else
+      debug '[prediction] inactive, set url to activate'
+      @predict = nil
+    end
   end
 
   def save
@@ -191,6 +294,11 @@ class ImdbNgPlugin < Plugin
       end
       @stats[:new_rating] += 1
       @events.notify('rating', {:method => method, :imdb_id => imdb_id, :nick => nick, :rating => rating[:rating], :obj => obj})
+      if @predict
+        debug '[predict] add announced rating'
+        @predict.add_item(imdb_id)
+        @predict.add_rating(nick, imdb_id, rating[:rating])
+      end
     end
   end
 
@@ -243,8 +351,10 @@ class ImdbNgPlugin < Plugin
       s << '[b]imdb user add <imdb-id>[/c] : create user with id | '
       s << '[b]imdb user login <username> <password>[/c] : login to rate movies | '
       s << '[b]imdb user remove[/c] : deletes your user information'
+    elsif topic == 'recommend'
+      s = '[b]imdb recommend [random][/c] : returns personalized recommendations based solely on #woot\'s ratings (powered by prediction.io)'
     else
-      s = '[b]IMDb[/c] Plugin - Topics: [b]search[/c], [b]tv[/c], [b]user[/c], [b]announce[/c], [b]inline[/c] (read with [b]help imdb <topic>[/c])'
+      s = '[b]IMDb[/c] Plugin - Topics: [b]search[/c], [b]tv[/c], [b]user[/c], [b]announce[/c], [b]inline[/c], [b]recommend[/c] (read with [b]help imdb <topic>[/c])'
     end
     color_markup(s)
   end
@@ -575,6 +685,43 @@ class ImdbNgPlugin < Plugin
 
   end
 
+  def predict_import(m, params)
+    if @predict
+      reply m, '[b][royal_blue]prediction import... this can take some time'
+      @predict.init_ratings
+      reply m, '[b][green]import done'
+    else
+      reply m, '[b][red]prediction not available, configure then rescan'
+    end
+  end
+
+  def recommend_random(m, params)
+    recommend(m, params, true)
+  end
+
+  def recommend(m, params, random=false)
+    nick = m.source.to_s
+    if not @predict
+      reply m, '[red]prediction not setup'
+      return
+    end
+    begin
+      if random
+        top = @predict.get_recommend(nick, 50).sample(10)
+      else
+        top = @predict.get_recommend(nick, 10)
+      end
+      names = top.map do |item|
+        format_entry(item, :title_year_rating).first
+      end
+      reply m, '[olive]#woot recommends[/c]: ' + names.join(', ')
+    rescue
+      debug '[prediction] error during recommending: %s' % [$!.to_s]
+      debug $@.join("\n")
+      reply m, 'an error occured / do I know your imdb account? add it using: [b]imdb user add u<ID>'
+    end
+  end
+
   ###################################################################
   
   def message(m, dummy=nil)
@@ -818,6 +965,8 @@ end
 
 plugin = ImdbNgPlugin.new
 
+plugin.default_auth('admin', false)
+
 plugin.map 'imdb rate *query :rating', :action => :rate, :requirements => {:rating => /^\d+$/}, :threaded => true
 
 plugin.map 'imdb users', :action => :user_list
@@ -827,6 +976,8 @@ plugin.map 'imdb user add [:user_id]', :action => :user_add, :threaded => true
 plugin.map 'imdb user login [:username] [*password]', :action => :user_login, :threaded => true
 plugin.map 'imdb user remove', :action => :user_remove
 plugin.map 'imdb announce', :action => :user_announce
+plugin.map 'imdb recommend', :action => :recommend
+plugin.map 'imdb recommend random', :action => :recommend_random
 
 plugin.map 'imdb tv *query', :action => :search_tv, :threaded => true
 plugin.map 'imdb [search] *query', :action => :search, :threaded => true
@@ -843,6 +994,9 @@ plugin.map 'imdb-clear-announce', :action => :manual_announce_clear
 plugin.map 'imdb-add [:nick] [:user_id]', :action => :manual_add
 # parallel loads of all titles in the database (so that its in the cache)
 plugin.map 'imdb-export', :action => :manual_export, :threaded => true
+
+# import all ratings
+plugin.map 'imdb-predict-import', :action => :predict_import, :threaded => true, :auth_path => 'admin'
 
 plugin.map 'ctest [*test]', :action => :ctest
 
