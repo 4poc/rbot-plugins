@@ -241,7 +241,7 @@ class ImdbNgPlugin < Plugin
       s << '[b]imdb user [list][/c] : lists known users | '
       s << '[b]imdb user export[/c] : exports all users lists | '
       s << '[b]imdb user add <imdb-id>[/c] : create user with id | '
-      s << '[b]imdb user login <username> <password>[/c] : login to rate movies | '
+      s << '[b]imdb user login[/c] : login to rate movies | '
       s << '[b]imdb user remove[/c] : deletes your user information'
     else
       s = '[b]IMDb[/c] Plugin - Topics: [b]search[/c], [b]tv[/c], [b]user[/c], [b]announce[/c], [b]inline[/c] (read with [b]help imdb <topic>[/c])'
@@ -874,12 +874,11 @@ plugin.map 'imdb rate *query :rating', :action => :rate, :requirements => {:rati
 plugin.map 'imdb users', :action => :user_list
 plugin.map 'imdb user [list]', :action => :user_list
 
-  # DEPRICATED
+# DEPRICATED
 plugin.map 'imdb user stats [:nick]', :action => :user_stats, :threaded => true
 
 plugin.map 'imdb user add [:user_id]', :action => :user_add, :threaded => true
-#plugin.map 'imdb user login [:username] [*password]', :action => :user_login, :threaded => true
-plugin.map 'imdb user login', :action => :user_login, :threaded => true
+plugin.map 'imdb user login', :action => :user_login, :threaded => true, :public => false
 plugin.map 'imdb user remove', :action => :user_remove
 plugin.map 'imdb announce', :action => :user_announce
 
