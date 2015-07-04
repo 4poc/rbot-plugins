@@ -44,7 +44,7 @@ if not defined? debug
 end
 
 module ::IMDb
-  EXPIRE_DEFAULT = 86400 # one day
+  EXPIRE_DEFAULT = 300 # 86400 # one day
   EXPIRE_LIST = 300 # 5min
   BASE_URL = 'http://www.imdb.com'
   RE_ID = %r{((tt|nm|ch)\d+)}
@@ -121,20 +121,22 @@ module ::IMDb
   class MemoryCache < Cache
     attr_accessor :cache
 
-    def initialize(cache)
+    def initialize(cache={})
       @cache = cache
     end
 
     def get(key)
-      if @cache.has_key? key and not expired? @cache[key]
-      else
-      end
-      #puts
       @cache[key][:obj] if @cache.has_key? key and not expired? @cache[key]
     end
 
     def put(key, obj, expire=EXPIRE_DEFAULT)
-      #debug 'memorycache, put with key: '+key.inspect
+      # delete expired:
+      @cache.keys.each do |key|
+        if expired? @cache[key]
+          @cache.delete key
+        end
+      end
+
       @cache[key] = new_entry(obj, expire)
     end
   end
@@ -145,7 +147,7 @@ module ::IMDb
 
     def initialize(opts={})
       @cache = opts[:cache] || FileCache.new
-      @agent = Mechanize.new
+      @agent = opts[:agent] || Mechanize.new
       @agent.max_history = 1
       @agent.user_agent_alias = 'Linux Firefox'
       @use_cache = opts.has_key?(:use_cache) ? opts[:use_cache] : true
@@ -255,29 +257,8 @@ module ::IMDb
     end
 
     def set_cookies(cookies)
-      @agent.cookie_jar = cookies
-    end
-
-    # login, return cookie
-    def login(username, password)
-      url = 'https://secure.imdb.com/oauth/login?show_imdb_panel=1'
-      begin
-        clear_cookies
-        page = @agent.get(url)
-        form = page.forms.first
-        form.login = username
-        form.password = password
-        page = form.submit
-        if page.uri.to_s.match /closer/
-          @agent.cookie_jar
-        else
-          nil
-        end
-      rescue
-        error $!.to_s
-        error $@.join "\n"
-        nil
-      end
+      s = StringIO.new cookies
+      @agent.cookie_jar.load(s, :cookiestxt, :session => true)
     end
 
     def get_user_id

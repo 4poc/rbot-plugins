@@ -1,15 +1,8 @@
 # IMDb.com Search and Community Plugin
 
-require 'method_profiler'
 require 'json'
-
 require 'active_support'
-
-# user suggestions powered by prediction.io are optional:
-begin
-require 'predictionio'
-rescue
-end
+require 'method_profiler'
 
 class EventManager
   def initialize
@@ -48,88 +41,13 @@ class EventManager
 end
 
 
-# prediction.io for user suggestions
-class ImdbPrediction
-  def initialize(plugin, apiurl, appkey)
-    @plugin = plugin
-    @client = PredictionIO::Client.new(appkey, 10, apiurl)
-    debug '[prediction] client connected: ' + @client.get_status
-  end
-
-  def init_users
-    @plugin.users.each_pair do |nick, user|
-      @client.create_user(user[:user_id], :nick => nick)
-      debug '[prediction] user created: ' + nick
-    end
-  end
-
-  def add_item(item_id)
-    begin
-      item = @plugin.imdb.create(item_id)
-      types = item.genre
-      debug @client.create_item(item_id, types, :title => item.title).inspect
-    rescue
-      debug '[prediction] error adding item! %s' % [$!.to_s]
-      debug $@.join("\n")
-    end
-  end
-
-  def add_rating(nick, item_id, rating)
-    begin
-      user_id = @plugin.users[nick][:user_id]
-      pio_rate = (rating / 10.0 * 5).floor
-      pio_rate = pio_rate <= 0 ? 1 : pio_rate
-      debug '---------'
-      debug user_id.inspect
-      debug @client.identify(user_id).inspect
-      debug @client.record_action_on_item('rate', item_id, 'pio_rate' => pio_rate).inspect
-      debug '[prediction] rate item %s with %d [ %d ]' % [item_id, rating, pio_rate]
-    rescue
-      debug '[prediction] error during rating! %s' % [$!.to_s]
-      debug $@.join("\n")
-    end
-  end
-
-  # import all items / movies and ratings of all users
-  # the prediction.io db must be empty!
-  def init_ratings
-    i = 0
-    all = @plugin.ratings.length
-    @plugin.ratings.each_pair do |item_id, item_ratings|
-      i += 1
-      if item_ratings.length <= 0
-        next
-      end
-      debug '[prediction] %d/%d ' % [i, all]
-      begin
-        add_item(item_id)
-
-        item_ratings.each do |rating|
-          rate = rating[:rating]
-          add_rating(rating[:nick], item_id, rate)
-        end
-
-      rescue
-        debug '[prediction] error during import: %s' % [$!.to_s]
-        debug $@.join("\n")
-      end
-    end
-  end
-
-  def get_recommend(nick, n)
-    user_id = @plugin.users[nick][:user_id]
-    @client.identify(user_id)
-    @client.get_itemrec_top_n('recommend', n).map do |item_id|
-      @plugin.imdb.create(item_id)
-    end
-  end
-
-end
-
-
 class ImdbNgPlugin < Plugin
   attr_accessor :users, :ratings, :imdb, :cache
   EXPORT_TICK = 25
+
+  SECURE_URL='https://secure.imdb.com'
+
+  include WebPlugin
 
   Config.register(Config::ArrayValue.new('imdbng.announce',
     :default => [],
@@ -141,13 +59,6 @@ class ImdbNgPlugin < Plugin
     :default => nil,
     :desc => 'Path to export json files to.'))
 
-  Config.register(Config::StringValue.new('imdbng.predict.url',
-    :default => nil,
-    :desc => 'URL of prediction.io endpoint to use for predictions.'))
-  Config.register(Config::StringValue.new('imdbng.predict.key',
-    :default => nil,
-    :desc => 'The appkey of the prediction.io endpoint.'))
-
   def initialize
     super
 
@@ -156,11 +67,9 @@ class ImdbNgPlugin < Plugin
 
     @events = EventManager.new
 
-    if not @registry.has_key?(:cache)
-      @registry[:cache] = {}
-    end
-    @cache = IMDb::MemoryCache.new(@registry[:cache])
-    @imdb = IMDb::Api.new(:cache => @cache)
+    # short in-memory cache only
+    @cache = IMDb::MemoryCache.new
+    @imdb = IMDb::Api.new(:cache => @cache, :agent => @bot.agent.create)
 
     # store nickname, imdb-id, username, password
     @users = @registry.has_key?(:users) ? @registry[:users] : {}
@@ -188,31 +97,16 @@ class ImdbNgPlugin < Plugin
     @ticks = 0
     @stats = {:export => false, :feed => false, :rating => 0, :new_rating => 0, :watchlist => 0, :new_watchlist => 0}
 
-    # optional prediction.io:
-    if @bot.config['imdbng.predict.url']
-      url = @bot.config['imdbng.predict.url']
-      appkey = @bot.config['imdbng.predict.key']
-      @predict = ImdbPrediction.new(self, url, appkey)
-      @predict.init_users
-    else
-      debug '[prediction] inactive, set url to activate'
-      @predict = nil
-    end
+    @loginkeys = {}
   end
 
   def save
-    # cookies are not serializable, remove them:
-    @users.each_pair do |nick, user|
-      if user.has_key? :cookie
-        user.delete(:cookie)
-      end
-    end
     @registry[:users] = @users if @users and @users.length > 0
     # TODO: the ratings sometimes don't serialize :(
     @registry[:ratings] = @ratings
     @registry[:watchlist] = @watchlist
-    @registry[:cache] = @cache.cache
-    debug 'store cache entries: '+@cache.cache.length.to_s
+    #@registry[:cache] = @cache.cache
+    #debug 'store cache entries: '+@cache.cache.length.to_s
   end
 
   def cleanup
@@ -227,15 +121,17 @@ class ImdbNgPlugin < Plugin
   def tick
     @stats = {:export => false, :feed => false, :rating => 0, :new_rating => 0, :watchlist => 0, :new_watchlist => 0}
     # runs every n-minutes, every n-nth time we do a full scan (using csv-export)
-    #if (@ticks+1) % EXPORT_TICK == 0
-    #  @stats[:export] = true
-    #  update_export('ratings') { |nick, entries| update_ratings(nick, entries) }
-    #  update_export('watchlist') { |nick, entries| update_watchlist(nick, entries) }
-    #else
+    if (@ticks+1) % EXPORT_TICK == 0
+      debug '(in tick) export update using csv'
+      @stats[:export] = true
+      update_export('ratings') { |nick, entries| update_ratings(nick, entries) }
+      update_export('watchlist') { |nick, entries| update_watchlist(nick, entries) }
+    else
+      debug '(in tick) export update using rss'
       @stats[:feed] = true
       update_feed('ratings') { |nick, entries| update_ratings(nick, entries) }
       update_feed('watchlist') { |nick, entries| update_watchlist(nick, entries) }
-    #end
+    end
 
     @ticks += 1
   end
@@ -294,11 +190,6 @@ class ImdbNgPlugin < Plugin
       end
       @stats[:new_rating] += 1
       @events.notify('rating', {:method => method, :imdb_id => imdb_id, :nick => nick, :rating => rating[:rating], :obj => obj})
-      if @predict
-        debug '[predict] add announced rating'
-        @predict.add_item(imdb_id)
-        @predict.add_rating(nick, imdb_id, rating[:rating])
-      end
     end
   end
 
@@ -348,13 +239,12 @@ class ImdbNgPlugin < Plugin
     elsif topic == 'user'
       s = 'IMDb User Management: '
       s << '[b]imdb user [list][/c] : lists known users | '
+      s << '[b]imdb user export[/c] : exports all users lists | '
       s << '[b]imdb user add <imdb-id>[/c] : create user with id | '
       s << '[b]imdb user login <username> <password>[/c] : login to rate movies | '
       s << '[b]imdb user remove[/c] : deletes your user information'
-    elsif topic == 'recommend'
-      s = '[b]imdb recommend [random][/c] : returns personalized recommendations based solely on #woot\'s ratings (powered by prediction.io)'
     else
-      s = '[b]IMDb[/c] Plugin - Topics: [b]search[/c], [b]tv[/c], [b]user[/c], [b]announce[/c], [b]inline[/c], [b]recommend[/c] (read with [b]help imdb <topic>[/c])'
+      s = '[b]IMDb[/c] Plugin - Topics: [b]search[/c], [b]tv[/c], [b]user[/c], [b]announce[/c], [b]inline[/c] (read with [b]help imdb <topic>[/c])'
     end
     color_markup(s)
   end
@@ -422,6 +312,7 @@ class ImdbNgPlugin < Plugin
     end
   end
 
+  # DEPRICATED
   def user_stats(m, params)
     nick = m.source.to_s
     if params.has_key? :nick and not params[:nick].empty?
@@ -465,31 +356,80 @@ class ImdbNgPlugin < Plugin
   end
 
   def user_login(m, params)
-    if m.channel
-      reply m, '[red]command must not be given in public[/c]'
+    key = SecureRandom.hex
+    @loginkeys[key] = {
+      nick: m.source.to_s,
+      agent: @bot.agent.create,
+    }
+
+    url = @bot.config['webservice.url'] + '/imdb/login?' +
+      URI.encode_www_form({key: key})
+    m.reply('To login to imdb.com please visit the following url: ' + url)
+  end
+
+  def web_user_login(m, params)
+    key = m.args['key']
+    login = @loginkeys[key]
+    unless login
+      m.send_plaintext('invalid login key', 400)
       return
     end
-    nick = m.source.to_s
-    username = params[:username]
-    password = params[:password].join(' ')
-    # test first:
-    cookie = @imdb.login(username, password)
-    if not cookie
-      reply m, '[red]error[/c] - unable to login'
-    else
-      user_id = @imdb.get_user_id
-      if @users.has_key? nick
-        @users[nick][:user_id] = user_id
-        @users[nick][:username] = username
-        @users[nick][:password] = password
-        @users[nick][:cookie] = cookie
-        m.reply 'set your imdb id to %s' % [user_id]
-        reply m, '[b]success[/c] - updated your user, set user/pw, set user id to %s' % [user_id]
-      else
-        @users[nick] = {:user_id => user_id, :username => username, :password => password, :cookie => cookie}
-        reply m, '[b]success[/c] - created a user for you, set user/pw, set user id to %s' % [user_id]
-      end
+    page = login[:agent].get(SECURE_URL + '/register-imdb/login')
+
+    # maintain the last request object
+    login[:last] = page
+
+    captcha = SECURE_URL + page.search("//img[contains(@src,'/widget/captcha')]/@src").text
+    
+    m.render('imdb-ng/login.html.erb', key: key, captcha: captcha, nick: login[:nick])
+  end
+
+  def web_user_login_submit(m, params)
+    key = m.post['key']
+    email = m.post['email']
+    password = m.post['password']
+    captcha = m.post['captcha']
+
+    agent = @loginkeys[key][:agent]
+    page = @loginkeys[key][:last]
+
+    # get the login form
+    form = page.form_with(:method => 'POST')
+
+    form.login = email
+    form.password = password
+    form.captcha_answer = captcha
+
+    page = agent.submit form
+
+    # load cookie jar as a string
+    s = StringIO.new
+    agent.cookie_jar.save(s, :cookiestxt, :session => true)
+    cookie = s.string
+
+    @imdb.set_cookies(cookie)
+
+    # the user id as determined by the api:
+    user_id = @imdb.get_user_id
+
+    debug('user_id is ' + user_id.inspect)
+    unless user_id
+      m.send_html('bad login', 400)
+      return
     end
+
+    # store in registry
+    nick = @loginkeys[key][:nick] 
+    unless @users.has_key? nick
+      @users[nick] = {}
+    end
+
+    @users[nick][:user_id] = user_id
+    @users[nick][:cookie] = cookie
+
+    debug '@users[' + nick + '] => ' + @users[nick].inspect
+
+    m.render('imdb-ng/login_success.html.erb', nick: nick, user_id: user_id)
   end
 
   def login_as(nick)
@@ -499,9 +439,7 @@ class ImdbNgPlugin < Plugin
         @imdb.set_cookies(user[:cookie])
         return true if @imdb.get_user_id
       end
-      cookie = @imdb.login(user[:username], user[:password])
-      user[:cookie] = cookie if cookie
-      return true if cookie and @imdb.get_user_id
+      false
     end
   end
 
@@ -567,8 +505,8 @@ class ImdbNgPlugin < Plugin
 
   def manual_clear(m, param)
     reply m, '[b][green]removes cached ratings/watchlist'
-    @registry[:cache] = {}
-    @cache = IMDb::MemoryCache.new(@registry[:cache])
+    #@registry[:cache] = {}
+    #@cache = IMDb::MemoryCache.new(@registry[:cache])
     #@ratings = {}
     #@watchlist = {}
   end
@@ -683,43 +621,6 @@ class ImdbNgPlugin < Plugin
     end
     reply m, '[b][green]export done: ' + filename
 
-  end
-
-  def predict_import(m, params)
-    if @predict
-      reply m, '[b][royal_blue]prediction import... this can take some time'
-      @predict.init_ratings
-      reply m, '[b][green]import done'
-    else
-      reply m, '[b][red]prediction not available, configure then rescan'
-    end
-  end
-
-  def recommend_random(m, params)
-    recommend(m, params, true)
-  end
-
-  def recommend(m, params, random=false)
-    nick = m.source.to_s
-    if not @predict
-      reply m, '[red]prediction not setup'
-      return
-    end
-    begin
-      if random
-        top = @predict.get_recommend(nick, 50).sample(10)
-      else
-        top = @predict.get_recommend(nick, 10)
-      end
-      names = top.map do |item|
-        format_entry(item, :title_year_rating).first
-      end
-      reply m, '[olive]#woot recommends[/c]: ' + names.join(', ')
-    rescue
-      debug '[prediction] error during recommending: %s' % [$!.to_s]
-      debug $@.join("\n")
-      reply m, 'an error occured / do I know your imdb account? add it using: [b]imdb user add u<ID>'
-    end
   end
 
   ###################################################################
@@ -880,7 +781,8 @@ class ImdbNgPlugin < Plugin
       nick = entry[:nick]
       imdb_id = entry[:imdb_id]
       # load imdb object:
-      entry[:obj][:cache] = imdb = @imdb.create(imdb_id)
+      #entry[:obj][:cache] = 
+      imdb = @imdb.create(imdb_id)
 
       next unless get_user_announce(nick)
 
@@ -971,13 +873,15 @@ plugin.map 'imdb rate *query :rating', :action => :rate, :requirements => {:rati
 
 plugin.map 'imdb users', :action => :user_list
 plugin.map 'imdb user [list]', :action => :user_list
+
+  # DEPRICATED
 plugin.map 'imdb user stats [:nick]', :action => :user_stats, :threaded => true
+
 plugin.map 'imdb user add [:user_id]', :action => :user_add, :threaded => true
-plugin.map 'imdb user login [:username] [*password]', :action => :user_login, :threaded => true
+#plugin.map 'imdb user login [:username] [*password]', :action => :user_login, :threaded => true
+plugin.map 'imdb user login', :action => :user_login, :threaded => true
 plugin.map 'imdb user remove', :action => :user_remove
 plugin.map 'imdb announce', :action => :user_announce
-plugin.map 'imdb recommend', :action => :recommend
-plugin.map 'imdb recommend random', :action => :recommend_random
 
 plugin.map 'imdb tv *query', :action => :search_tv, :threaded => true
 plugin.map 'imdb [search] *query', :action => :search, :threaded => true
@@ -995,8 +899,8 @@ plugin.map 'imdb-add [:nick] [:user_id]', :action => :manual_add
 # parallel loads of all titles in the database (so that its in the cache)
 plugin.map 'imdb-export', :action => :manual_export, :threaded => true
 
-# import all ratings
-plugin.map 'imdb-predict-import', :action => :predict_import, :threaded => true, :auth_path => 'admin'
-
 plugin.map 'ctest [*test]', :action => :ctest
+
+plugin.web_map '/imdb/login', :action => :web_user_login, :method => 'GET'
+plugin.web_map '/imdb/login/submit', :action => :web_user_login_submit, :method => 'POST'
 

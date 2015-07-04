@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>rbot -- IMDb Login</title>
+  <style>
+  body {
+    font-family: sans-serif;
+    font-size: 12px;
+    color: #333;
+  }
+  label {
+    font-weight: bold;
+  }
+  input {
+    display: block;
+    margin-bottom: 15px;
+    width: 300px;
+    color: #333;
+    padding: 5px;
+    font-size: 14px;
+  }
+  img.captcha {
+    padding: 4px;
+    border: 1px solid #f0f0f0;
+    display: block;
+  }
+  </style>
+</head>
+<body>
+
+  <h1>IMDb Login for <%= nick %>:</h1>
+
+  <p>This will grant rbot the ability to receive the complete watchlist and
+    rating lists, it will furthermore allow you to rate things via irc.</p>
+
+  <form method="POST" action="/imdb/login/submit">
+
+    <input type="hidden" name="key" value="<%= key %>" />
+
+    <label for="email">eMail:</label>
+    <input type="email" name="email" id="email" value="" />
+
+    <label for="password">Password:</label>
+    <input type="password" name="password" id="password" value="" />
+
+    <label for="email">Type the name you see:</label>
+    <img src="<%= captcha %>" width="300" height="70" alt="IMDb Login Captcha" class="captcha" />
+    <input type="text" name="captcha" id="captcha" value="" />
+
+    <button type="submit">Login</button>
+
+    <p>This does not store the password in the bot, only the session cookie.</p>
+
+  </form>
+
+</body>
+</html>
+
