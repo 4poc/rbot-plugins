@@ -42,7 +42,7 @@ end
 
 
 class ImdbNgPlugin < Plugin
-  attr_accessor :users, :ratings, :imdb, :cache
+  attr_accessor :users, :ratings, :watchlist, :imdb, :cache
   EXPORT_TICK = 25
 
   SECURE_URL='https://secure.imdb.com'
