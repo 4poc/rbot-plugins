@@ -285,7 +285,7 @@ class ImdbNgPlugin < Plugin
 
   def rate(m, params)
     entry = find_entry(m, params[:query].join(' '), :limit => 1)
-    if not entry or entry.class >= IMDb::Title
+    if not entry #or entry.class >= IMDb::Title
       reply m, '[red]error movie not found'
       return
     end
@@ -296,6 +296,38 @@ class ImdbNgPlugin < Plugin
     end
     if @imdb.rate(entry.id, params[:rating])
       update_ratings(nick, [{:nick => nick, :imdb_id => entry.id, :rating => params[:rating].to_i}])
+      announce
+    else
+      reply m, '[red]unknown error occured :('
+    end
+  end
+
+  def rate_tv(m, params)
+    entry = find_entry(m, params[:query].join(' '), :limit => 1)
+    if not entry or not entry.kind_of? IMDb::Series
+      reply m, '[red]error tv series not found'
+      return
+    else
+      unless @imdb.check_cache(entry.id)[:series]
+        #reply m, '[brown](load tv show data, this might take awhile)[/c]'
+      end
+      entry.load_series!(@imdb)
+      entry.cache!(@imdb)
+    end
+    nick = m.source.to_s
+    if not login_as(nick)
+      reply m, '[red]unable to rate an episode[/c], you need to login first, [b]imdb login <username> <password>[/c] (in query)'
+      return
+    end
+    if params[:seasonepisode].match /^\S(\d+)\E(\d+)$/
+      episode_entry = entry.get_episode($1.to_i, $2.to_i)
+      if not episode_entry or not episode_entry.kind_of? IMDb::Episode
+        reply m, '[red]error episode not found'
+        return
+	  end
+    end
+    if @imdb.rate(episode_entry.id, params[:rating])
+      update_ratings(nick, [{:nick => nick, :imdb_id => episode_entry.id, :rating => params[:rating].to_i}])
       announce
     else
       reply m, '[red]unknown error occured :('
@@ -869,6 +901,7 @@ plugin = ImdbNgPlugin.new
 
 plugin.default_auth('admin', false)
 
+plugin.map 'imdb rate tv *query :seasonepisode :rating', :action => :rate_tv, :requirements => {:seasonepisode => /^\S\d+\E\d+$/, :rating => /^\d+$/}, :threaded => true
 plugin.map 'imdb rate *query :rating', :action => :rate, :requirements => {:rating => /^\d+$/}, :threaded => true
 
 plugin.map 'imdb users', :action => :user_list
